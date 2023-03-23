@@ -1,4 +1,4 @@
-# Multitenant ötletkezelő alkalmazás Spring alapokon
+# Multitenant ötletkezelő alkalmazás Spring alapokon - Specifikáció
 
 version: 1.0
 
