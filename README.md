@@ -1,5 +1,7 @@
 # Multitenant ötletkezelő alkalmazás Spring alapokon
 
+**Varga Ádám** <br>
+
 **Félév:** 2022-2023 tavasz <br>
 **Konzulens:** Forstner Bertalan
 
