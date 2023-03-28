@@ -7,12 +7,12 @@ data class Tag (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
-    val name: String,
+    var name: String,
 
     @ManyToMany(mappedBy = "tags")
-    val taggedIdeas: Set<Idea>
+    var taggedIdeas: Set<Idea>
 
 
 )

@@ -7,15 +7,15 @@ data class Score (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
-    val score: Int,
+    var score: Int,
 
     @Enumerated(EnumType.STRING)
-    val type: ScoreType,
+    var type: ScoreType,
 
     @ManyToOne
-    @JoinColumn(name = "idea_id", nullable = false)
-    val idea: Idea,
+    @JoinColumn(name = "idea_id")
+    var idea: Idea,
 
 )

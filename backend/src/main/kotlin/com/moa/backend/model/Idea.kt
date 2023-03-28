@@ -6,23 +6,23 @@ import javax.persistence.*
 @Entity
 data class Idea (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
-    val title: String,
+    var title: String,
 
-    val description: String,
+    var description: String,
 
     @OneToMany(mappedBy = "idea")
-    val score: Set<Score>,
+    var score: Set<Score>,
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    val owner: User,
+    @JoinColumn(name = "user_id")
+    var owner: User,
 
     @Enumerated(EnumType.STRING)
-    val status: Status,
+    var status: Status,
 
-    val creationDate: Date,
+    var creationDate: Date,
 
     @ManyToMany
     @JoinTable(
@@ -30,14 +30,14 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
-    val tags: List<Tag>,
+    var tags: List<Tag>?,
 
     @OneToMany(mappedBy = "idea")
-    val comments: List<Comment>,
+    var comments: List<Comment>?,
 
     @ManyToOne
-    @JoinColumn(name = "ideaBox_id", nullable = false)
-    val ideaBox: IdeaBox,
+    @JoinColumn(name = "ideaBox_id")
+    var ideaBox: IdeaBox,
 
     @ManyToMany
     @JoinTable(
@@ -45,6 +45,6 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    val likes: Set<User>
+    var likes: Set<User>?
 
 )

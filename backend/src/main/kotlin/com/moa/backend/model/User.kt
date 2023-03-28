@@ -7,29 +7,29 @@ data class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
-    val firstName: String,
+    var firstName: String,
 
-    val lastName: String,
+    var lastName: String,
 
-    val email: String,
+    var email: String,
 
     @Enumerated(EnumType.STRING)
-    val role: Role,
+    var role: Role,
 
     @ManyToMany(mappedBy = "likes")
-    val likedIdeas: Set<Idea>,
+    var likedIdeas: Set<Idea>?,
 
     @ManyToMany(mappedBy = "likes")
-    val likedComments: Set<Comment>,
+    var likedComments: Set<Comment>?,
 
     @OneToMany(mappedBy = "owner")
-    val ideas: Set<Idea>,
+    var ideas: Set<Idea>?,
 
     @OneToMany(mappedBy = "creator")
-    val ideaBoxes: Set<IdeaBox>,
+    var ideaBoxes: Set<IdeaBox>?,
 
     @OneToMany(mappedBy = "owner")
-    val comments: Set<Comment>
+    var comments: Set<Comment>?
 )

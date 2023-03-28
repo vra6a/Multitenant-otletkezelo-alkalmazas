@@ -8,20 +8,20 @@ data class IdeaBox (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
-    val name: String,
+    var name: String,
 
-    val description: String,
+    var description: String,
 
-    val startDate: Date,
+    var startDate: Date,
 
-    val endDate: Date,
+    var endDate: Date,
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    val creator: User,
+    @JoinColumn(name = "user_id")
+    var creator: User,
 
     @OneToMany(mappedBy = "ideaBox")
-    val ideas: Set<Idea>
+    var ideas: Set<Idea>
 )
