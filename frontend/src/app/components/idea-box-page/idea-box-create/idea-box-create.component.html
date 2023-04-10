@@ -1,0 +1,48 @@
+<div class="container">
+    <mat-card>
+        <mat-card-title>Új Ötletdoboz rögzítése</mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="IdeaBoxForm">
+                <mat-form-field appearance="fill">
+                    <mat-label>Title: </mat-label>
+                    <input
+                      matInput
+                      id="name"
+                      type="text"
+                      formControlName="name"
+                    />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Description: </mat-label>
+                    <input
+                      matInput
+                      id="description"
+                      type="text"
+                      formControlName="description"
+                    />
+                  </mat-form-field>
+        
+                  <mat-form-field appearance="fill">
+                    <mat-label>Nyitott időszak</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                      <input matStartDate formControlName="startDate" placeholder="Kezdeti dátum">
+                      <input matEndDate formControlName="endDate" placeholder="Zárás dátum">
+                    </mat-date-range-input>
+                    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                  </mat-form-field>
+                  <div class="actions">
+                    <button
+                        [disabled]="!IdeaBoxForm.valid" 
+                        (click)="create()"
+                        [ngClass]="IdeaBoxForm.valid ? '' : 'disabled'"
+                    >
+                      Create
+                    </button>
+                    <button class="cancel" routerLink="/login">Cancel</button>
+                  </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
