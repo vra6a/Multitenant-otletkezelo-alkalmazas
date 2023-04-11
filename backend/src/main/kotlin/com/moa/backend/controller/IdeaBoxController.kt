@@ -34,6 +34,11 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
         return ideaBoxService.getIdeaBoxes(s, PageRequest.of(page-1, items, direction))
     }
 
+    @GetMapping("/idea-box-count")
+    fun getIdeaBoxCount(): Int {
+        return ideaBoxService.getIdeaBoxCount()
+    }
+
     @GetMapping("/idea-box/{id}")
     fun getIdeaBox(@PathVariable id: Long): IdeaBox {
         return  ideaBoxService.getIdeaBox(id)

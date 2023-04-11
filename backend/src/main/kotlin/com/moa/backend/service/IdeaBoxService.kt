@@ -25,6 +25,10 @@ class IdeaBoxService {
         return mapToListView(ideaBoxes)
     }
 
+    fun getIdeaBoxCount(): Int {
+        return ideaBoxRepository.findAll().size
+    }
+
     fun createIdeaBox(box: IdeaBox): IdeaBox {
         if(box.id != 0L) {
             throw Exception("IdeaBox with this id ${box.id} already exists!")
