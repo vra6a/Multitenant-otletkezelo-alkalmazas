@@ -1,1 +1,21 @@
-<p>idea-box-list works!</p>
+<p>asd</p>
+<h1>asd</h1>
+<mat-paginator
+  #paginator
+  [length]="ideaBoxCount"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[4, 8, 12]"
+  aria-label="Select page"
+  (page)="getServerData($event)"
+>
+</mat-paginator>
+<mat-grid-list cols="4" rowHeight="100px">
+  <mat-grid-tile
+    *ngFor="let box of ideaBoxes"
+    [colspan]="1"
+    [rowspan]="1"
+    [style.background]="'#949494'"
+  >
+    {{ box.name }}
+  </mat-grid-tile>
+</mat-grid-list>

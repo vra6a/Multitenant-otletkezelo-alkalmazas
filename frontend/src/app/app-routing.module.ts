@@ -10,6 +10,7 @@ import { IdeaBoxEditComponent } from './components/idea-box-page/idea-box-edit/i
 import { IdeaComponent } from './components/idea-box-page/idea/idea.component';
 import { IdeaCreateComponent } from './components/idea-box-page/idea/idea-create/idea-create.component';
 import { IdeaEditComponent } from './components/idea-box-page/idea/idea-edit/idea-edit.component';
+import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -21,18 +22,23 @@ const routes: Routes = [
   },
   {
     path: 'idea-boxes',
+    component: IdeaBoxPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea-boxes/list',
+    component: IdeaBoxListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea-boxes/create',
     component: IdeaBoxCreateComponent,
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'create',
-        component: IdeaBoxCreateComponent
-      },
-      {
-        path: 'edit',
-        component: IdeaBoxEditComponent
-      }
-    ],
+  },
+  {
+    path: 'idea-boxes/edit',
+    component: IdeaBoxEditComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'idea',
@@ -41,13 +47,13 @@ const routes: Routes = [
     children: [
       {
         path: 'create',
-        component: IdeaCreateComponent
+        component: IdeaCreateComponent,
       },
       {
         path: 'edit',
-        component: IdeaEditComponent
-      }
-    ]
+        component: IdeaEditComponent,
+      },
+    ],
   },
   {
     path: 'login',

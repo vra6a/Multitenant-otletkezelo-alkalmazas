@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,7 +28,7 @@ import { IdeaCreateComponent } from './components/idea-box-page/idea/idea-create
 import { IdeaEditComponent } from './components/idea-box-page/idea/idea-edit/idea-edit.component';
 import { IdeaListComponent } from './components/idea-box-page/idea/idea-list/idea-list.component';
 import { IdeaListViewComponent } from './components/idea-box-page/idea/idea-list/idea-list-view/idea-list-view.component';
-
+import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 
 @NgModule({
   declarations: [
@@ -38,12 +40,12 @@ import { IdeaListViewComponent } from './components/idea-box-page/idea/idea-list
     RegisterComponent,
     IdeaBoxCreateComponent,
     IdeaBoxEditComponent,
+    IdeaBoxListComponent,
     IdeaComponent,
     IdeaCreateComponent,
     IdeaEditComponent,
     IdeaListComponent,
     IdeaListViewComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -58,7 +60,9 @@ import { IdeaListViewComponent } from './components/idea-box-page/idea/idea-list
     MatInputModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatGridListModule,
+    MatPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

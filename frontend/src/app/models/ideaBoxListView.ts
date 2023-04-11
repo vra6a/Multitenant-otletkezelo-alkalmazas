@@ -1,5 +1,5 @@
-export interface IdeaBox {
-    id?: number;
-    name?: string;
-    endDate?: Date
+export interface IdeaBoxListView {
+  id?: number;
+  name?: string;
+  endDate?: Date;
 }
