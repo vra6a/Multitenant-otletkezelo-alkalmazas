@@ -24,4 +24,10 @@ data class IdeaBox (
 
     @OneToMany(mappedBy = "ideaBox")
     var ideas: Set<Idea>
-)
+) {
+    public fun IdeaBox.toIdeaBoxListView() = IdeaBoxListView(
+        id = id,
+        name = name,
+        endDate = endDate
+    )
+}
