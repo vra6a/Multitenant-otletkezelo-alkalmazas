@@ -41,10 +41,6 @@ export class IdeaBoxListComponent implements OnInit {
     );
   }
 
-  keyPressed(event: Event) {
-    console.log(event);
-  }
-
   private getIdeaBoxList(
     search: string,
     sort: string,
