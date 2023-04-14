@@ -1,12 +1,13 @@
 package com.moa.backend.controller
 
-import com.moa.backend.model.IdeaBox
-import com.moa.backend.model.IdeaBoxListView
+import com.moa.backend.model.dto.IdeaBoxDto
+import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.service.IdeaBoxService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -23,7 +24,7 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
         @RequestParam("sort", defaultValue = "") sort: String,
         @RequestParam("page", defaultValue = "1") page: Int,
         @RequestParam("items", defaultValue = "12") items: Int
-    ): List<IdeaBoxListView> {
+    ): ResponseEntity<MutableList<IdeaBoxSlimDto>> {
         var direction = Sort.unsorted()
         when(sort) {
             "newest" -> direction = Sort.by(Sort.Direction.DESC, "startDate")
@@ -40,17 +41,17 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     }
 
     @GetMapping("/idea-box/{id}")
-    fun getIdeaBox(@PathVariable id: Long): IdeaBox {
+    fun getIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
         return  ideaBoxService.getIdeaBox(id)
     }
 
     @PostMapping("/idea-box")
-    fun createIdeaBox(@RequestBody box: IdeaBox): IdeaBox {
+    fun createIdeaBox(@RequestBody box: IdeaBoxDto): ResponseEntity<*> {
         return ideaBoxService.createIdeaBox(box)
     }
 
     @PutMapping("/idea-box/{id}")
-    fun updateIdeaBox(@PathVariable id: Long, @RequestBody box: IdeaBox): IdeaBox {
+    fun updateIdeaBox(@PathVariable id: Long, @RequestBody box: IdeaBoxDto): ResponseEntity<*> {
         return ideaBoxService.updateIdeaBox(id, box)
     }
 

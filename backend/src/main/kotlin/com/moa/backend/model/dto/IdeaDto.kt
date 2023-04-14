@@ -24,7 +24,7 @@ data class IdeaDto (
 
     var comments: MutableList<CommentSlimDto>?,
 
-    var ideaBox: IdeaSlimDto,
+    var ideaBox: IdeaBoxSlimDto,
 
     var likes: MutableList<UserSlimDto>?,
 )

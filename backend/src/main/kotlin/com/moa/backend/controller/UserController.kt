@@ -1,11 +1,11 @@
 package com.moa.backend.controller
 
-import com.moa.backend.model.User
-import com.moa.backend.model.UserListView
 import com.moa.backend.model.dto.UserDto
+import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -17,22 +17,22 @@ class UserController(private val userRepository: UserRepository) {
     lateinit var userService: UserService
 
     @GetMapping("/users")
-    fun getUsers(): List<UserListView> {
+    fun getUsers(): ResponseEntity<MutableList<UserSlimDto>> {
         return userService.getUsers()
     }
 
     @GetMapping("/user/{id}")
-    fun getUser(@PathVariable id: Long): UserDto {
+    fun getUser(@PathVariable id: Long): ResponseEntity<*> {
         return  userService.getUser(id)
     }
 
     @PostMapping("/user")
-    fun createUser(@RequestBody user: User): User {
+    fun createUser(@RequestBody user: UserDto): ResponseEntity<*> {
         return userService.createUser(user)
     }
 
     @PutMapping("/user/{id}")
-    fun updateUser(@PathVariable id: Long, @RequestBody user: User): User {
+    fun updateUser(@PathVariable id: Long, @RequestBody user: UserDto): ResponseEntity<*> {
         return userService.updateUser(id, user)
     }
 

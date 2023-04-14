@@ -1,12 +1,12 @@
 package com.moa.backend.service
 
-import com.moa.backend.converter.UserConverter
-import com.moa.backend.model.User
-import com.moa.backend.model.UserListView
+import com.moa.backend.converter.UserMapper
 import com.moa.backend.model.dto.UserDto
+import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.UserRepository
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,30 +15,47 @@ class UserService {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    fun getUser(id: Long): UserDto {
-        var usermodel = userRepository.findById(id).orElse(null)
-            ?: throw Exception("Cannot find User with this id!")
+    @Autowired
+    lateinit var userMapper: UserMapper
 
-        var converter = UserConverter()
-        val userDto = converter.convertToDto(usermodel)
-        return userDto
+
+    fun getUser(id: Long): ResponseEntity<*> {
+        val user = userRepository.findById(id).orElse(null)
+            ?: return ResponseEntity("Cannot find User with id $id!", HttpStatus.NOT_FOUND)
+
+        return ResponseEntity.ok(userMapper.modelToDto(user))
     }
 
-    fun getUsers(): List<UserListView> {
+    fun getUsers(): ResponseEntity<MutableList<UserSlimDto>> {
         val users = userRepository.findAll()
-        return mapToListView(users)
-    }
+        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
 
-    fun createUser(user: User): User {
-        if(user.id != 0L) {
-            throw Exception("User with this id ${user.id} already exists!")
+        for( user in users ) {
+            user?.let {
+                response.add(userMapper.modelToSlimDto(user))
+            }
         }
-        return userRepository.saveAndFlush(user)
+        return ResponseEntity.ok(response)
     }
 
-    fun updateUser(id: Long, user: User): User {
+    fun createUser(user: UserDto): ResponseEntity<*> {
+        if(user.id != 0L) {
+            return ResponseEntity("User with this id ${user.id} already exists!", HttpStatus.NOT_FOUND)
+
+        }
+
+        return ResponseEntity.ok(
+            userMapper.modelToDto(
+                userRepository.saveAndFlush(
+                    userMapper.dtoToModel(user)
+                )
+            )
+        )
+    }
+
+    fun updateUser(id: Long, user: UserDto): ResponseEntity<*> {
         val originalUser = userRepository.findById(id).orElse(null)
-            ?: throw Exception("Cannot find User with this id!")
+            ?: return ResponseEntity("Cannot find User with id $id!", HttpStatus.NOT_FOUND)
 
         if(!originalUser.firstName.isNullOrEmpty() && originalUser.firstName != user.firstName) {
             originalUser.firstName = user.firstName
@@ -55,33 +72,21 @@ class UserService {
         if( originalUser.role != user.role) {
             originalUser.role = user.role
         }
-        return userRepository.saveAndFlush(originalUser)
+        return ResponseEntity.ok(
+            userMapper.modelToDto(
+                userRepository.saveAndFlush(originalUser)
+            )
+        )
     }
 
     fun deleteUser(id: Long): Any {
         kotlin.runCatching {
             userRepository.deleteById(id)
         }.onFailure {
-            throw Exception("Nothing to delete! No User exists with the id ${id}.")
+            return ResponseEntity("Nothing to delete! No User exists with the id $id!", HttpStatus.NOT_FOUND)
         }
 
-        return "OK"
+        return ResponseEntity.ok()
     }
 
-    private fun mapToListView(users: List<User>): MutableList<UserListView> {
-        val userListView: MutableList<UserListView> = emptyList<UserListView>().toMutableList()
-        if(!users.isEmpty()) {
-            users.forEach{ user: User ->
-                val userlv = UserListView(
-                    user.id,
-                    user.firstName,
-                    user.lastName,
-                    user.email,
-                    user.role
-                )
-                userListView.add(userlv)
-            }
-        }
-        return userListView
-    }
 }

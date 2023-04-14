@@ -16,7 +16,7 @@ data class UserDto(
 
      var role: Role,
 
-     var likedIdeas: MutableList<IdeaSlimDto>,
+     var likedIdeas: MutableList<IdeaSlimDto>?,
 
      var likedComments: MutableList<CommentSlimDto>?,
 
