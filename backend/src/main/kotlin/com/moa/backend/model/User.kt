@@ -19,17 +19,17 @@ data class User (
     var role: Role,
 
     @ManyToMany(mappedBy = "likes")
-    var likedIdeas: Set<Idea>?,
+    var likedIdeas: MutableList<Idea>?,
 
     @ManyToMany(mappedBy = "likes")
-    var likedComments: Set<Comment>?,
+    var likedComments: MutableList<Comment>?,
 
     @OneToMany(mappedBy = "owner")
-    var ideas: Set<Idea>?,
+    var ideas: MutableList<Idea>?,
 
     @OneToMany(mappedBy = "creator")
-    var ideaBoxes: Set<IdeaBox>?,
+    var ideaBoxes: MutableList<IdeaBox>?,
 
     @OneToMany(mappedBy = "owner")
-    var comments: Set<Comment>?
+    var comments: MutableList<Comment>?
 )

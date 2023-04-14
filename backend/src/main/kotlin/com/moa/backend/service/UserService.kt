@@ -1,7 +1,11 @@
 package com.moa.backend.service
 
+import com.moa.backend.converter.UserConverter
 import com.moa.backend.model.User
+import com.moa.backend.model.UserListView
+import com.moa.backend.model.dto.UserDto
 import com.moa.backend.repository.UserRepository
+import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -11,13 +15,18 @@ class UserService {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    fun getUser(id: Long): User {
-        return userRepository.findById(id).orElse(null)
+    fun getUser(id: Long): UserDto {
+        var usermodel = userRepository.findById(id).orElse(null)
             ?: throw Exception("Cannot find User with this id!")
+
+        var converter = UserConverter()
+        val userDto = converter.convertToDto(usermodel)
+        return userDto
     }
 
-    fun getUsers(): List<User> {
-        return userRepository.findAll()
+    fun getUsers(): List<UserListView> {
+        val users = userRepository.findAll()
+        return mapToListView(users)
     }
 
     fun createUser(user: User): User {
@@ -59,5 +68,20 @@ class UserService {
         return "OK"
     }
 
-
+    private fun mapToListView(users: List<User>): MutableList<UserListView> {
+        val userListView: MutableList<UserListView> = emptyList<UserListView>().toMutableList()
+        if(!users.isEmpty()) {
+            users.forEach{ user: User ->
+                val userlv = UserListView(
+                    user.id,
+                    user.firstName,
+                    user.lastName,
+                    user.email,
+                    user.role
+                )
+                userListView.add(userlv)
+            }
+        }
+        return userListView
+    }
 }

@@ -13,7 +13,7 @@ data class Idea (
     var description: String,
 
     @OneToMany(mappedBy = "idea")
-    var score: Set<Score>,
+    var score: MutableList<Score>,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -30,10 +30,10 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
-    var tags: List<Tag>?,
+    var tags: MutableList<Tag>?,
 
     @OneToMany(mappedBy = "idea")
-    var comments: List<Comment>?,
+    var comments: MutableList<Comment>?,
 
     @ManyToOne
     @JoinColumn(name = "ideaBox_id")
@@ -45,6 +45,6 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var likes: Set<User>?
+    var likes: MutableList<User>?
 
 )

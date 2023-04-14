@@ -72,17 +72,13 @@ class IdeaBoxService {
     private fun mapToListView(ideaBoxes: List<IdeaBox>): MutableList<IdeaBoxListView> {
         val ideaBoxListView: MutableList<IdeaBoxListView> = emptyList<IdeaBoxListView>().toMutableList()
         if(!ideaBoxes.isEmpty()) {
-            ideaBoxes.forEach{ ideaBox: IdeaBox? ->
-                val ideaBoxlv = ideaBox?.id?.let {
-                    IdeaBoxListView(
-                        it,
-                        ideaBox.name,
-                        ideaBox.endDate
-                    )
-                }
-                if (ideaBoxlv != null) {
-                    ideaBoxListView.add(ideaBoxlv)
-                }
+            ideaBoxes.forEach{ ideaBox: IdeaBox ->
+                val ideaBoxlv = IdeaBoxListView(
+                    ideaBox.id,
+                    ideaBox.name,
+                    ideaBox.endDate
+                )
+                ideaBoxListView.add(ideaBoxlv)
             }
         }
         return ideaBoxListView

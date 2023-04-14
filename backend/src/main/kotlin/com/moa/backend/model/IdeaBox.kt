@@ -23,11 +23,5 @@ data class IdeaBox (
     var creator: User,
 
     @OneToMany(mappedBy = "ideaBox")
-    var ideas: Set<Idea>
-) {
-    public fun IdeaBox.toIdeaBoxListView() = IdeaBoxListView(
-        id = id,
-        name = name,
-        endDate = endDate
-    )
-}
+    var ideas: MutableList<Idea>
+)

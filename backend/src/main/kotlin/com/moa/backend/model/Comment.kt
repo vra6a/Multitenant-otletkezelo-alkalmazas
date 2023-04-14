@@ -30,5 +30,5 @@ data class Comment (
         joinColumns = [JoinColumn(name = "comment_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var likes: Set<User>
+    var likes: MutableList<User>
 )
