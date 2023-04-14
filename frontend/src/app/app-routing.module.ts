@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginMainComponent } from './components/login/login.component';
 import { UserPageComponent } from './components/user-page/user-page.component';
@@ -11,6 +11,7 @@ import { IdeaComponent } from './components/idea-box-page/idea/idea.component';
 import { IdeaCreateComponent } from './components/idea-box-page/idea/idea-create/idea-create.component';
 import { IdeaEditComponent } from './components/idea-box-page/idea/idea-edit/idea-edit.component';
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
+import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -25,6 +26,7 @@ const routes: Routes = [
     component: IdeaBoxPageComponent,
     canActivate: [AuthGuard],
   },
+
   {
     path: 'idea-boxes/list',
     component: IdeaBoxListComponent,
@@ -39,6 +41,10 @@ const routes: Routes = [
     path: 'idea-boxes/edit',
     component: IdeaBoxEditComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea-boxes/:id',
+    component: IdeaBoxComponent,
   },
   {
     path: 'idea',

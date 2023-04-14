@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
 import { IdeaBoxService } from 'src/app/services/ideaBox/ideaBox.service';
@@ -13,7 +14,7 @@ import { IdeaBoxService } from 'src/app/services/ideaBox/ideaBox.service';
 export class IdeaBoxListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
-  constructor(private ideaBoxService: IdeaBoxService) {}
+  constructor(private ideaBoxService: IdeaBoxService, private router: Router) {}
 
   ideaBoxes: IdeaBoxListView[] = [];
   ideaBoxCount: number = 0;
@@ -53,5 +54,10 @@ export class IdeaBoxListComponent implements OnInit {
       .subscribe((boxes: IdeaBoxListView[]): void => {
         this.ideaBoxes = boxes;
       });
+  }
+
+  openIdeaBox(id: number) {
+    this.router.navigate(['idea-boxes/' + id]);
+    console.log(id);
   }
 }

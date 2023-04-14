@@ -1,0 +1,14 @@
+.container {
+  padding: 5%;
+  width: 90%;
+  height: 90%;
+  transition: transform 0.2s;
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+p {
+  text-align: right;
+  margin: auto 0;
+}

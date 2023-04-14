@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +30,8 @@ import { IdeaEditComponent } from './components/idea-box-page/idea/idea-edit/ide
 import { IdeaListComponent } from './components/idea-box-page/idea/idea-list/idea-list.component';
 import { IdeaListViewComponent } from './components/idea-box-page/idea/idea-list/idea-list-view/idea-list-view.component';
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
+import { IdeaBoxListViewComponent } from './components/idea-box-page/idea-box-list/idea-box-list-view/idea-box-list-view.component';
+import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,8 @@ import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/i
     IdeaEditComponent,
     IdeaListComponent,
     IdeaListViewComponent,
+    IdeaBoxListViewComponent,
+    IdeaBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +68,7 @@ import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/i
     MatNativeDateModule,
     MatGridListModule,
     MatPaginatorModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -9,23 +9,24 @@ import { Subject } from 'rxjs';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  currentUser?: User;
+  currentUser: User = null;
   login = new Subject<User>();
 
   setCurrentUser(user: User) {
-    if (this.currentUser == undefined) {
+    if (this.currentUser == null) {
       this.currentUser = user;
       this.login.next(this.currentUser);
     }
   }
 
-  getCurrentUser(): User | undefined {
+  getCurrentUser(): User {
+    console.log(this.currentUser);
     return this.currentUser;
   }
 
   logOut() {
-    if (this.currentUser != undefined) {
-      this.currentUser = undefined;
+    if (this.currentUser) {
+      this.currentUser = null;
     }
   }
 }

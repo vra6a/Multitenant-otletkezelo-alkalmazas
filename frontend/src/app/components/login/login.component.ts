@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserService } from 'src/app/services/user/user.service';
 import { Router } from '@angular/router';
+import { UserListView } from 'src/app/models/userListView';
 
 @UntilDestroy()
 @Component({
@@ -25,7 +26,7 @@ export class LoginMainComponent implements OnInit {
     private router: Router
   ) {}
 
-  users: User[] = [];
+  users: UserListView[] = [];
 
   loginForm = this.fb.group({
     user: ['', Validators.required],
@@ -35,7 +36,7 @@ export class LoginMainComponent implements OnInit {
     this.userService
       .getUsers$()
       .pipe(untilDestroyed(this))
-      .subscribe((data: User[]): void => {
+      .subscribe((data: UserListView[]): void => {
         this.users = data;
         console.log(this.users);
       });
@@ -43,6 +44,6 @@ export class LoginMainComponent implements OnInit {
 
   login() {
     this.auth.setCurrentUser(this.loginForm.value);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/idea-boxes']);
   }
 }

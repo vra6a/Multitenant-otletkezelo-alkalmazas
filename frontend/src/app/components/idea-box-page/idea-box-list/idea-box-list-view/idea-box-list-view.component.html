@@ -1,1 +1,12 @@
-<p>idea-box-list-view works!</p>
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        {{ ideaBox.name }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Closing at {{ ideaBox.endDate | date }}</p></mat-card-content
+    >
+  </mat-card>
+</div>

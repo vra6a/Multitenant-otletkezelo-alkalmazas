@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Role } from 'src/app/models/Role';
 import { environment } from 'src/environments/environment';
 import { User } from '../../models/user';
+import { UserListView } from 'src/app/models/userListView';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class UserService {
   apiUrl = `${environment.apiUrl}`;
 
   getUsers$(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
+    return this.http.get<UserListView[]>(`${this.apiUrl}/users`);
   }
 
   getUser$(id: number): Observable<User> {
