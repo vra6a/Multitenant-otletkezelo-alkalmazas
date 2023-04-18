@@ -1,0 +1,1022 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Multitenant ötletkezelő alkalmazás - OpenAPI 3.0",
+    "description": "Az alkalamzás egy célja egy ötletkezelő rendszer megvalósítása. Ebvben a rendszerben a felhasználók egy weboldalon a saját ötleteikkel járulhatnak hozzá egy jövendőbeli projekt vagy cél sikeréhez. Az oldalon lévő ötletládákba szabadon helyezhetnek el ötleteket, vagy akár saját ötletládát is nzithatnak.",
+    "contact": {
+      "email": "varga.99.adam@gmail.com"
+    },
+    "version": "v1.1"
+  },
+  "externalDocs": {
+    "description": "Specifikáció",
+    "url": "https://github.com/vra6a/Multitenant-otletkezelo-alkalmazas/blob/main/documentation/specification.md"
+  },
+  "tags": [
+    {
+      "name": "Comment",
+      "description": "Operations about Comments"
+    },
+    {
+      "name": "IdeaBox",
+      "description": "Operations about Idea Boxes"
+    },
+    {
+      "name": "Idea",
+      "description": "Operations about Ideas"
+    },
+    {
+      "name": "Score",
+      "description": "Operations about Scores"
+    },
+    {
+      "name": "Tag",
+      "description": "Operations about Tags"
+    },
+    {
+      "name": "User",
+      "description": "Operations about Users"
+    },
+    {
+      "name": "Utility",
+      "description": "Helper operations"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get all users with params",
+        "description": "Returns Users from the database. Can search for specific names, and can sort the users.",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Can filter the users. if the username has this substring then it returns.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the returning array in descending or ascending order.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Requested page of all users.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "items",
+            "in": "query",
+            "description": "Requested items in one page of Users",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSlimDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create new user",
+        "description": "Create new user in the database. Throws error if the user already exists.",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Create new User using UserDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User with this id already exists."
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get specific user",
+        "description": "Returns a specific user by its id",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User with this id cannot be found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update a specific user",
+        "description": "Overwrite an users data in the database.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update existing user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User found by provided the id and has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User with this id cannot be found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Deletes specific user",
+        "description": "Finds and deletes a specific user from the database",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found by the provided id and has been deleted"
+          },
+          "404": {
+            "description": "User with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea-box": {
+      "get": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "Get all idea boxes with params",
+        "description": "Returns Idea boxes from the database. Can search for specific names, and can sort the idea boxes.",
+        "operationId": "getIdeaBoxes",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Can filter the idea boxes. if the title has this substring then it returns.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the returning array in descending or ascending order.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Requested page of all idea boxes.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "items",
+            "in": "query",
+            "description": "Requested items in one page of idea boxes",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IdeaBoxSlimDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "Create new idea box",
+        "description": "Create new idea box in the database. Throws error if the idea box already exists.",
+        "operationId": "createIdeaBox",
+        "requestBody": {
+          "description": "Create new idea box using IdeaBoxDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaBoxDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Box Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaBoxDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea box with this id already exists."
+          }
+        }
+      }
+    },
+    "/idea-box/{id}": {
+      "get": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "Get specific idea box",
+        "description": "Returns a specific idea box by its id",
+        "operationId": "getIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea Box found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaBoxDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "Update a specific idea box",
+        "description": "Overwrite an idea box data in the database.",
+        "operationId": "updateIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea Box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update existing idea box",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaBoxDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Box found by provided the id and has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaBoxDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "Deletes specific idea box",
+        "description": "Finds and deletes a specific idea box from the database",
+        "operationId": "deleteIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea Box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea Box found by the provided id and has been deleted"
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea-box-count": {
+      "get": {
+        "tags": [
+          "IdeaBox"
+        ],
+        "summary": "get idea box count",
+        "description": "Returns how many idea boxes are saved in the database",
+        "operationId": "getIdeaBoxCount",
+        "responses": {
+          "200": {
+            "description": "Idea Box found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/idea": {
+      "get": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Get all Ideas with params",
+        "description": "Returns Ideas from the database. Can search for specific names, and can sort the Ideas.",
+        "operationId": "getIdeas",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Can filter the Ideas. if the title has this substring then it returns.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the returning array in descending or ascending order.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Requested page of all Ideas.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "items",
+            "in": "query",
+            "description": "Requested items in one page of Ideas",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IdeaSlimDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Create new Idea",
+        "description": "Create new Idea in the database. Throws error if the Idea already exists.",
+        "operationId": "createIdea",
+        "requestBody": {
+          "description": "Create new Idea using IdeaDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea with this id already exists."
+          }
+        }
+      }
+    },
+    "/idea/{id}": {
+      "get": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Get specific Idea",
+        "description": "Returns a specific Idea by its id",
+        "operationId": "getIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Update a specific Idea",
+        "description": "Overwrite an Idea data in the database.",
+        "operationId": "updateIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update existing Idea",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea found by provided the id and has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdeaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Deletes specific Idea",
+        "description": "Finds and deletes a specific Idea from the database",
+        "operationId": "deleteIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea found by the provided id and has been deleted"
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CommentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "text": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserSlimDto"
+          },
+          "idea": {
+            "$ref": "#/components/schemas/IdeaSlimDto"
+          },
+          "likes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSlimDto"
+            }
+          }
+        }
+      },
+      "CommentSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "text": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserSlimDto"
+          }
+        }
+      },
+      "IdeaBoxDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/UserSlimDto"
+          },
+          "ideas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaSlimDto"
+            }
+          }
+        }
+      },
+      "IdeaBoxSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "IdeaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "score": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreSlimDto"
+            }
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserSlimDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUBMITTED",
+              "REVIEWED",
+              "APPROVED",
+              "DENIED"
+            ]
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagSlimDto"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentSlimDto"
+            }
+          },
+          "ideaBox": {
+            "$ref": "#/components/schemas/IdeaBoxSlimDto"
+          },
+          "likes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSlimDto"
+            }
+          }
+        }
+      },
+      "IdeaSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUBMITTED",
+              "REVIEWED",
+              "APPROVED",
+              "DENIED"
+            ]
+          }
+        }
+      },
+      "ScoreDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "score": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STAR",
+              "SLIDER",
+              "OTHER"
+            ]
+          },
+          "idea": {
+            "$ref": "#/components/schemas/IdeaSlimDto"
+          }
+        }
+      },
+      "ScoreSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "score": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STAR",
+              "SLIDER",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "TagDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "taggedIdeas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaSlimDto"
+            }
+          }
+        }
+      },
+      "TagSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "VISITOR",
+              "JURY",
+              "ADMIN"
+            ]
+          },
+          "likesIdeas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaSlimDto"
+            }
+          },
+          "likedComments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentSlimDto"
+            }
+          },
+          "ideas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaSlimDto"
+            }
+          },
+          "ideaBoxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaBoxSlimDto"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentSlimDto"
+            }
+          }
+        }
+      },
+      "UserSlimDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
