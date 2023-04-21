@@ -43,7 +43,7 @@ export class LoginMainComponent implements OnInit {
   }
 
   login() {
-    this.auth.setCurrentUser(this.loginForm.value);
+    this.auth.setCurrentUser(this.loginForm.value.user);
     this.router.navigate(['/idea-boxes']);
   }
 }
