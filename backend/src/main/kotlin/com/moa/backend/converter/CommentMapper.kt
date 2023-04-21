@@ -1,7 +1,9 @@
 package com.moa.backend.converter
 
 import com.moa.backend.model.Comment
+import com.moa.backend.model.Idea
 import com.moa.backend.model.IdeaBox
+import com.moa.backend.model.User
 import com.moa.backend.model.dto.CommentDto
 import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.repository.CommentRepository
@@ -13,6 +15,8 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
 
     @Autowired
     lateinit var userMapper: UserMapper
+    @Autowired
+    lateinit var ideaMapper: IdeaMapper
     @Autowired
     lateinit var commentRepository: CommentRepository
 
@@ -31,6 +35,16 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
     }
 
     override fun dtoToModel(domain: CommentDto): Comment {
+        if(domain.id == 0L) {
+            return Comment(
+                    id = domain.id,
+                    creationDate = domain.creationDate,
+                    text = domain.text,
+                    owner = userMapper.slimDtoToModel(domain.owner),
+                    idea = ideaMapper.slimDtoToModel(domain.idea),
+                    likes = emptyList<User>().toMutableList(),
+            )
+        }
         return idToModel(domain.id)
     }
 

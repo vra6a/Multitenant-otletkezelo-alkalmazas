@@ -39,11 +39,6 @@ class UserService {
     }
 
     fun createUser(user: UserDto): ResponseEntity<*> {
-        if(user.id != 0L) {
-            return ResponseEntity("User with this id ${user.id} already exists!", HttpStatus.NOT_FOUND)
-
-        }
-
         return ResponseEntity.ok(
             userMapper.modelToDto(
                 userRepository.saveAndFlush(

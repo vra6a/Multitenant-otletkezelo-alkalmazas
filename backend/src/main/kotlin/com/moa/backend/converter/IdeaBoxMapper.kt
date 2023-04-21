@@ -49,6 +49,17 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
     }
 
     override fun dtoToModel(domain: IdeaBoxDto): IdeaBox {
+        if(domain.id == 0L) {
+            return IdeaBox(
+                    id = domain.id,
+                    name = domain.name,
+                    description = domain.description,
+                    startDate = domain.startDate,
+                    endDate = domain.endDate,
+                    creator = userMapper.slimDtoToModel(domain.creator),
+                    ideas = emptyList<Idea>().toMutableList()
+            )
+        }
         return idToModel(domain.id)
     }
 

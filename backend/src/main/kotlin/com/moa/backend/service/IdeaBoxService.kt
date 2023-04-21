@@ -43,10 +43,6 @@ class IdeaBoxService {
     }
 
     fun createIdeaBox(box: IdeaBoxDto): ResponseEntity<*> {
-        if(box.id != 0L) {
-            return ResponseEntity("IdeaBox with this id ${box.id} already exists!", HttpStatus.NOT_FOUND)
-        }
-
         return ResponseEntity.ok(
             ideaBoxMapper.modelToDto(
                 ideaBoxRepository.saveAndFlush(

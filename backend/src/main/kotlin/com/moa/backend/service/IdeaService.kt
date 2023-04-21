@@ -38,10 +38,6 @@ class IdeaService {
     }
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
-        if(idea.id != 0L) {
-            return ResponseEntity("Idea with this id ${idea.id} already exists!", HttpStatus.NOT_FOUND)
-        }
-
         return ResponseEntity.ok(
             ideaMapper.modelToDto(
                 ideaRepository.saveAndFlush(

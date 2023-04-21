@@ -1,9 +1,6 @@
 package com.moa.backend.converter
 
-import com.moa.backend.model.Comment
-import com.moa.backend.model.Idea
-import com.moa.backend.model.IdeaBox
-import com.moa.backend.model.User
+import com.moa.backend.model.*
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
@@ -54,7 +51,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
 
 
         return UserDto(
-            id = entity.id,
+            id = entity.id!!,
             firstName = entity.firstName,
             lastName = entity.lastName,
             email = entity.email,
@@ -69,7 +66,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
 
     override fun modelToSlimDto(entity: User): UserSlimDto {
         return UserSlimDto(
-            id = entity.id,
+            id = entity.id!!,
             firstName = entity.firstName,
             lastName = entity.lastName,
             email = entity.email
@@ -77,6 +74,20 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
     }
 
     override fun dtoToModel(domain: UserDto): User {
+        if(domain.id == 0L) {
+            return User(
+                    id = domain.id,
+                    firstName = domain.firstName,
+                    lastName = domain.lastName,
+                    email = domain.email,
+                    role = Role.ADMIN,
+                    likedIdeas = emptyList<Idea>().toMutableList(),
+                    likedComments = emptyList<Comment>().toMutableList(),
+                    ideas = emptyList<Idea>().toMutableList(),
+                    ideaBoxes = emptyList<IdeaBox>().toMutableList(),
+                    comments = emptyList<Comment>().toMutableList(),
+            )
+        }
         return idToModel(domain.id)
     }
 

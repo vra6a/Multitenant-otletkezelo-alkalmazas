@@ -35,6 +35,14 @@ class ScoreMapper: Mapper<ScoreDto, ScoreSlimDto, Score> {
     }
 
     override fun dtoToModel(domain: ScoreDto): Score {
+        if(domain.id == 0L) {
+            return Score(
+                    id = domain.id,
+                    score = domain.score,
+                    type = domain.type,
+                    idea = ideaMapper.slimDtoToModel(domain.idea)
+            )
+        }
         return idToModel(domain.id)
     }
 
