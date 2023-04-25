@@ -15,6 +15,10 @@ Frontend készítésére Angular keretrendszer ajánlott. Az üzemeltetés teszt
 
 A téma diplomatervként végigvihető.
 
+## Haladási napló
+
+[Napló](./documentation/haladasi_naplo.md)
+
 ## Figma
 
 https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX3aE09MxQf-1
