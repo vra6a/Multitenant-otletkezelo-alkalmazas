@@ -1,6 +1,7 @@
 package com.moa.backend.service
 
-import com.moa.backend.converter.UserMapper
+import com.moa.backend.mapper.UserMapper
+import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.UserRepository
@@ -24,6 +25,11 @@ class UserService {
             ?: return ResponseEntity("Cannot find User with id $id!", HttpStatus.NOT_FOUND)
 
         return ResponseEntity.ok(userMapper.modelToDto(user))
+    }
+
+    fun getUserByEmail(email: String): User {
+        return userRepository.findByEmail(email).get()
+
     }
 
     fun getUsers(): ResponseEntity<MutableList<UserSlimDto>> {
@@ -64,9 +70,6 @@ class UserService {
             originalUser.email = user.email
         }
 
-        if( originalUser.role != user.role) {
-            originalUser.role = user.role
-        }
         return ResponseEntity.ok(
             userMapper.modelToDto(
                 userRepository.saveAndFlush(originalUser)

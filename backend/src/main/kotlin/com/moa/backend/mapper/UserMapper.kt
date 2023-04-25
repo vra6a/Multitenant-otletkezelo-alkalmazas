@@ -1,4 +1,4 @@
-package com.moa.backend.converter
+package com.moa.backend.mapper
 
 import com.moa.backend.model.*
 import com.moa.backend.model.dto.UserDto
@@ -50,11 +50,13 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
         }
 
 
+
         return UserDto(
-            id = entity.id!!,
+            id = entity.id,
             firstName = entity.firstName,
             lastName = entity.lastName,
             email = entity.email,
+            password = entity.password,
             role = entity.role,
             likedComments = likedComments,
             comments = comments,
@@ -66,7 +68,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
 
     override fun modelToSlimDto(entity: User): UserSlimDto {
         return UserSlimDto(
-            id = entity.id!!,
+            id = entity.id,
             firstName = entity.firstName,
             lastName = entity.lastName,
             email = entity.email
@@ -80,7 +82,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
                     firstName = domain.firstName,
                     lastName = domain.lastName,
                     email = domain.email,
-                    role = Role.ADMIN,
+                    password = domain.password,
+                    role = domain.role,
                     likedIdeas = emptyList<Idea>().toMutableList(),
                     likedComments = emptyList<Comment>().toMutableList(),
                     ideas = emptyList<Idea>().toMutableList(),
@@ -103,6 +106,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
+            password = user.password,
             role = user.role,
             likedIdeas = user.likedIdeas,
             likedComments = user.likedComments,

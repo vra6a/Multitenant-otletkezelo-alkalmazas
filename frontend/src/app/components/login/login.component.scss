@@ -1,3 +1,12 @@
+form {
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    margin-top: 10px;
+  }
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -7,7 +16,7 @@
 
 mat-card {
   margin: auto 0;
-  max-width: 800px;
+  width: 800px;
   min-width: 400px;
 }
 
@@ -33,7 +42,7 @@ button {
   cursor: pointer;
 }
 
-.register {
+.cancel {
   background-color: #ffffff;
   color: #262626;
   border: 1px solid #262626;

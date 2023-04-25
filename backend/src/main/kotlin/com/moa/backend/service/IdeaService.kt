@@ -1,6 +1,6 @@
 package com.moa.backend.service
 
-import com.moa.backend.converter.IdeaMapper
+import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.repository.IdeaRepository

@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
-import { User } from 'src/app/models/user';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserService } from 'src/app/services/user/user.service';
 import { Router } from '@angular/router';
-import { UserListView } from 'src/app/models/userListView';
+import { WebResponse } from 'src/app/models/webResponse';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @UntilDestroy()
 @Component({
@@ -23,27 +18,33 @@ export class LoginMainComponent implements OnInit {
     private auth: AuthService,
     private userService: UserService,
     private fb: UntypedFormBuilder,
+    private snackBar: MatSnackBar,
     private router: Router
   ) {}
 
-  users: UserListView[] = [];
-
   loginForm = this.fb.group({
-    user: ['', Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
   });
 
-  ngOnInit(): void {
-    this.userService
-      .getUsers$()
-      .pipe(untilDestroyed(this))
-      .subscribe((data: UserListView[]): void => {
-        this.users = data;
-        console.log(this.users);
-      });
-  }
+  ngOnInit(): void {}
 
   login() {
-    this.auth.setCurrentUser(this.loginForm.value.user);
-    this.router.navigate(['/idea-boxes']);
+    this.userService
+      .loginUser$(this.loginForm.value)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        (res: WebResponse) => {
+          this.snackBar.open(res.message);
+          if (res.code == 200) {
+            this.auth.setCurrentUser(res.data);
+            this.router.navigateByUrl('/idea-boxes');
+            console.log(res);
+          }
+        },
+        (res: any) => {
+          this.snackBar.open(res.error.message);
+        }
+      );
   }
 }

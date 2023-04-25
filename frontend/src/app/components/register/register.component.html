@@ -25,17 +25,14 @@
           <mat-label>Email: </mat-label>
           <input matInput id="email" type="text" formControlName="email" />
         </mat-form-field>
-        <mat-form-field>
-          <mat-select
-            id="role"
-            name="role"
-            formControlName="role"
-            placeholder="Role"
-          >
-            <mat-option *ngFor="let role of roles" [value]="role">
-              {{ role }}
-            </mat-option>
-          </mat-select>
+        <mat-form-field appearance="fill">
+          <mat-label>Password: </mat-label>
+          <input
+            matInput
+            id="password"
+            type="text"
+            formControlName="password"
+          />
         </mat-form-field>
         <div class="actions">
           <button [disabled]="!userForm.valid" (click)="create()">

@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { Role } from 'src/app/models/Role';
 import { environment } from 'src/environments/environment';
 import { User } from '../../models/user';
-import { UserListView } from 'src/app/models/userListView';
+import { RegisterModel } from 'src/app/models/registerModel';
+import { LoginModel } from 'src/app/models/loginModel';
+import { WebResponse } from 'src/app/models/webResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -15,21 +17,22 @@ export class UserService {
   apiUrl = `${environment.apiUrl}`;
 
   getUsers$(): Observable<User[]> {
-    return this.http.get<UserListView[]>(`${this.apiUrl}/users`);
+    return this.http.get<User[]>(`${this.apiUrl}/user`);
   }
 
   getUser$(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/user/` + id);
   }
 
-  createUser$(user: User) {
-    console.log(user);
-    return this.http.post<User>(`${this.apiUrl}/user`, user);
+  registerUser$(user: RegisterModel) {
+    return this.http.post<WebResponse>(`${this.apiUrl}/auth/register`, user);
+  }
+
+  loginUser$(user: LoginModel) {
+    return this.http.post<WebResponse>(`${this.apiUrl}/auth/login`, user);
   }
 
   getRoles$(): Observable<Role[]> {
     return this.http.get<Role[]>(`${this.apiUrl}/roles`);
   }
-
-  loginUser(user: User) {}
 }
