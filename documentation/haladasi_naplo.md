@@ -80,6 +80,8 @@ Spring security elkezdve
 ## 9. hét
 Április 24. - Április 30.
 
+Spring security működik, a felhasználók tudnak regisztrálni, a jelszavuk titkosítva elmentésre kerül az adatbázisban. Regisztrációnál és bejelentkezésnél access tokentkapnak, amivel elérhetik a védett belső endpoint-okat. Egyes endpointok jogosultságokhoz vannak kötve, ha a felhasznló rendelkezik a jogosultsággal akkor elérheti, ha nem akkor Forbidden errorrar visszatér a hívás.
+
 <hr>
 
 ## 10. hét
