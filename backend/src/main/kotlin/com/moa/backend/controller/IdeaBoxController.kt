@@ -8,17 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"])
 @RequestMapping("/api")
+@EnableMethodSecurity
 class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
 
     @Autowired
     lateinit var ideaBoxService: IdeaBoxService
 
     @GetMapping("/idea-box")
+    @Secured("ADMIN")
     fun getIdeaBoxes(
         @RequestParam("s", defaultValue = "") s: String,
         @RequestParam("sort", defaultValue = "") sort: String,

@@ -1,7 +1,7 @@
 package com.moa.backend.model
 
 enum class Role {
-    VISITOR,
+    USER,
     JURY,
     ADMIN
 }

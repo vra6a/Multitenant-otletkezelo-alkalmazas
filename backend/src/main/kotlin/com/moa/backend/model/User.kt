@@ -1,9 +1,12 @@
 package com.moa.backend.model
 
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-data class User (
+open class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +17,8 @@ data class User (
     var lastName: String,
 
     var email: String,
+
+    private var password: String,
 
     @Enumerated(EnumType.STRING)
     var role: Role,
@@ -32,4 +37,35 @@ data class User (
 
     @OneToMany(mappedBy = "owner")
     var comments: MutableList<Comment>?
-)
+): UserDetails {
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        val authorities = ArrayList<SimpleGrantedAuthority>()
+        authorities.add(SimpleGrantedAuthority(role.name))
+        return authorities
+    }
+
+    override fun getPassword(): String {
+        return password
+    }
+
+    override fun getUsername(): String {
+        return email
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
+    }
+
+}

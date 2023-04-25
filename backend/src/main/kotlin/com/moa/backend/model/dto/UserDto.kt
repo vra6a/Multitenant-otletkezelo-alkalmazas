@@ -14,6 +14,8 @@ data class UserDto(
 
      var email: String,
 
+     var password: String,
+
      var role: Role,
 
      var likedIdeas: MutableList<IdeaSlimDto>?,
