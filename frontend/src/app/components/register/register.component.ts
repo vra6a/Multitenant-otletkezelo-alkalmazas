@@ -3,8 +3,8 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Role } from 'src/app/models/Role';
-import { User } from 'src/app/models/user';
+import { WebResponse } from 'src/app/models/webResponse';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @UntilDestroy()
@@ -18,39 +18,29 @@ export class RegisterComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private userService: UserService,
     private snackBar: MatSnackBar,
+    private auth: AuthService,
     private router: Router
   ) {}
 
-  roles: Role[] = [];
   userForm = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', Validators.required],
-    role: ['', Validators.required],
+    password: ['', Validators.required],
   });
 
-  ngOnInit(): void {
-    this.userService
-      .getRoles$()
-      .pipe(untilDestroyed(this))
-      .subscribe((roles: Role[]): void => {
-        this.roles = roles;
-        console.log(this.roles);
-      });
-  }
+  ngOnInit(): void {}
 
   create() {
     this.userService
-      .createUser$(this.userForm.value)
+      .registerUser$(this.userForm.value)
       .pipe(untilDestroyed(this))
-      .subscribe(
-        () => {
-          this.snackBar.open('User created!', 'OK!');
-          this.router.navigate(['/login']);
-        },
-        () => {
-          this.snackBar.open('User creation failed!', 'OK!');
+      .subscribe((res: WebResponse) => {
+        this.snackBar.open(res.message);
+        if (res.code == 200) {
+          this.auth.setCurrentUser(res.data);
+          this.router.navigateByUrl('/idea-boxes');
         }
-      );
+      });
   }
 }

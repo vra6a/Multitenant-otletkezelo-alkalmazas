@@ -3,6 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { IdeaBox } from 'src/app/models/ideaBox';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox/ideaBox.service';
 
@@ -34,8 +35,10 @@ export class IdeaBoxCreateComponent implements OnInit {
     console.log(this.IdeaBoxForm.value);
     this.ideaBoxService
       .createIdeaBox(this.IdeaBoxForm.value)
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe((res: IdeaBox) => {
+        if (res.id) {
+          this.router.navigate(['/idea-boxes']);
+        }
       });
   }
 }

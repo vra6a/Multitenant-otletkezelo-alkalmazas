@@ -41,7 +41,12 @@ class AuthenticationService {
         userRepository.saveAndFlush(user)
         val jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(
-            token = jwtToken
+            token = jwtToken,
+            id = user.id,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            role = user.role
         )
     }
 
@@ -52,10 +57,15 @@ class AuthenticationService {
                 request.password
             )
         )
-        val user = userRepository.findByEmail(request.email)
+        val user = userRepository.findByEmail(request.email).get()
         val jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(
-            token = jwtToken
+            token = jwtToken,
+            id = user.id,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            role = user.role
         )
     }
 

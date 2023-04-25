@@ -1,4 +1,4 @@
-package com.moa.backend.converter
+package com.moa.backend.mapper
 
 import com.moa.backend.model.Idea
 import com.moa.backend.model.IdeaBox

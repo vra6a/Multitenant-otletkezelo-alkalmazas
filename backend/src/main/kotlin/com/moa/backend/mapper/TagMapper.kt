@@ -1,8 +1,7 @@
-package com.moa.backend.converter
+package com.moa.backend.mapper
 
 import com.moa.backend.model.Idea
 import com.moa.backend.model.Tag
-import com.moa.backend.model.User
 import com.moa.backend.model.dto.TagDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto

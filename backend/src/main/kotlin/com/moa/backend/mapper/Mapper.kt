@@ -1,4 +1,4 @@
-package com.moa.backend.converter
+package com.moa.backend.mapper
 
 interface Mapper<D, SD, E> {
     fun modelToDto(entity: E): D

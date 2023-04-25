@@ -1,6 +1,6 @@
 package com.moa.backend.service
 
-import com.moa.backend.converter.UserMapper
+import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserService {
@@ -29,7 +28,7 @@ class UserService {
     }
 
     fun getUserByEmail(email: String): User {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmail(email).get()
 
     }
 

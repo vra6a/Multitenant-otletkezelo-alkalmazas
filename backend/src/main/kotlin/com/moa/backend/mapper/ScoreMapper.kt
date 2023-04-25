@@ -1,7 +1,6 @@
-package com.moa.backend.converter
+package com.moa.backend.mapper
 
 import com.moa.backend.model.Score
-import com.moa.backend.model.Tag
 import com.moa.backend.model.dto.ScoreDto
 import com.moa.backend.model.slim.ScoreSlimDto
 import com.moa.backend.repository.ScoreRepository

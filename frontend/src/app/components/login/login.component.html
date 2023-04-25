@@ -4,19 +4,16 @@
     <mat-card-content>
       <form [formGroup]="loginForm">
         <mat-form-field appearance="fill">
-          <mat-label>Users</mat-label>
-          <mat-select id="user" name="user" formControlName="user">
-            <mat-option *ngFor="let user of users" [value]="user">
-              {{ user?.firstName + " " + user?.lastName }}
-            </mat-option>
-          </mat-select>
+          <mat-label>Email: </mat-label>
+          <input matInput type="email" formControlName="email" />
         </mat-form-field>
-
-        <div class="form-body">
+        <mat-form-field appearance="fill">
+          <mat-label>Password: </mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+        <div class="actions">
           <button [disabled]="!loginForm.valid" (click)="login()">Login</button>
-          <button class="register" routerLink="/register">
-            Create new User
-          </button>
+          <button class="cancel" routerLink="/register">Register</button>
         </div>
       </form>
     </mat-card-content>
