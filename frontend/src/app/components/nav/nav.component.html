@@ -5,7 +5,11 @@
     </div>
     <div class="links">
       <a routerLink="/idea-boxes" routerLinkActive="active">Idea Boxes</a>
-      <a routerLink="/user" routerLinkActive="active">User</a>
+      <a routerLink="/user" routerLinkActive="active">{{
+        currentUser?.firstName
+          ? currentUser?.firstName + " " + currentUser?.lastName
+          : "User"
+      }}</a>
       <a (click)="logout()">Log Out</a>
     </div>
   </div>

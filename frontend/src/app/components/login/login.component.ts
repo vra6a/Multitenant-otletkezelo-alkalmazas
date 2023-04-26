@@ -27,7 +27,9 @@ export class LoginMainComponent implements OnInit {
     password: ['', Validators.required],
   });
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.auth.tryLogin();
+  }
 
   login() {
     this.userService
