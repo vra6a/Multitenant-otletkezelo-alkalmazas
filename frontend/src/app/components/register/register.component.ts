@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
+import { UserService } from 'src/app/services/user.service';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +18,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private userService: UserService,
-    private snackBar: MatSnackBar,
+    private snackBar: SnackBarService,
     private auth: AuthService,
     private router: Router
   ) {}
@@ -36,7 +37,7 @@ export class RegisterComponent implements OnInit {
       .registerUser$(this.userForm.value)
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse) => {
-        this.snackBar.open(res.message);
+        this.snackBar.ok(res.message);
         if (res.code == 200) {
           this.auth.setCurrentUser(res.data);
           this.router.navigateByUrl('/idea-boxes');

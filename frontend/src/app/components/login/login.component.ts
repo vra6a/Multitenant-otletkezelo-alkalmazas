@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { WebResponse } from 'src/app/models/webResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @UntilDestroy()
 @Component({
@@ -18,7 +19,7 @@ export class LoginMainComponent implements OnInit {
     private auth: AuthService,
     private userService: UserService,
     private fb: UntypedFormBuilder,
-    private snackBar: MatSnackBar,
+    private snackBar: SnackBarService,
     private router: Router
   ) {}
 
@@ -35,18 +36,12 @@ export class LoginMainComponent implements OnInit {
     this.userService
       .loginUser$(this.loginForm.value)
       .pipe(untilDestroyed(this))
-      .subscribe(
-        (res: WebResponse) => {
-          this.snackBar.open(res.message);
-          if (res.code == 200) {
-            this.auth.setCurrentUser(res.data);
-            this.router.navigateByUrl('/idea-boxes');
-            console.log(res);
-          }
-        },
-        (res: any) => {
-          this.snackBar.open(res.error.message);
+      .subscribe((res: WebResponse) => {
+        this.snackBar.ok(res.message);
+        if (res.code == 200) {
+          this.auth.setCurrentUser(res.data);
+          this.router.navigateByUrl('/idea-boxes');
         }
-      );
+      });
   }
 }

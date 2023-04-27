@@ -34,6 +34,7 @@ class JwtService {
         if(userRepository.findByEmail(userDetails.username).isPresent) {
             val user = userRepository.findByEmail(userDetails.username).get()
             claims["role"] = user.role.toString()
+            claims["id"] = user.id
         }
         return generateToken(claims, userDetails)
     }

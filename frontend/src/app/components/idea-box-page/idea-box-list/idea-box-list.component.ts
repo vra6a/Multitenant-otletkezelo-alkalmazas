@@ -3,7 +3,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
-import { IdeaBoxService } from 'src/app/services/ideaBox/ideaBox.service';
+import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 
 @UntilDestroy()
 @Component({

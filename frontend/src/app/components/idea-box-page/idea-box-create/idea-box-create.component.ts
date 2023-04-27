@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBox } from 'src/app/models/ideaBox';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { IdeaBoxService } from 'src/app/services/ideaBox/ideaBox.service';
+import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 
 @UntilDestroy()
 @Component({

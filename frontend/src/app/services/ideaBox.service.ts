@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { IdeaBox } from 'src/app/models/ideaBox';
 import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root',

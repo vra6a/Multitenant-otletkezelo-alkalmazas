@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Role } from 'src/app/models/Role';
 import { environment } from 'src/environments/environment';
-import { User } from '../../models/user';
+import { User } from '../models/user';
 import { RegisterModel } from 'src/app/models/registerModel';
 import { LoginModel } from 'src/app/models/loginModel';
 import { WebResponse } from 'src/app/models/webResponse';
@@ -28,7 +28,7 @@ export class UserService {
     return this.http.post<WebResponse>(`${this.apiUrl}/auth/register`, user);
   }
 
-  loginUser$(user: LoginModel) {
+  loginUser$(user: LoginModel): Observable<WebResponse> {
     return this.http.post<WebResponse>(`${this.apiUrl}/auth/login`, user);
   }
 

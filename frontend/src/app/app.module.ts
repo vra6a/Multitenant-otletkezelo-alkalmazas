@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -32,6 +32,8 @@ import { IdeaListViewComponent } from './components/idea-box-page/idea/idea-list
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 import { IdeaBoxListViewComponent } from './components/idea-box-page/idea-box-list/idea-box-list-view/idea-box-list-view.component';
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
+import { HeaderInterceptor } from './interceptors/headerHandler';
+import { HttpErrorInterceptor } from './interceptors/errorHandler';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,18 @@ import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.c
     MatPaginatorModule,
     MatExpansionModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeaderInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
