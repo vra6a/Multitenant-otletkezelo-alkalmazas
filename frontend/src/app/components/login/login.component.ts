@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { WebResponse } from 'src/app/models/webResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarService } from 'src/app/services/snackBar.service';
+import { WebData } from 'src/app/models/webData';
 
 @UntilDestroy()
 @Component({
@@ -36,11 +37,13 @@ export class LoginMainComponent implements OnInit {
     this.userService
       .loginUser$(this.loginForm.value)
       .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse) => {
-        this.snackBar.ok(res.message);
+      .subscribe((res: WebResponse<WebData>) => {
         if (res.code == 200) {
+          this.snackBar.ok(res.message);
           this.auth.setCurrentUser(res.data);
           this.router.navigateByUrl('/idea-boxes');
+        } else {
+          this.snackBar.error(res.message);
         }
       });
   }

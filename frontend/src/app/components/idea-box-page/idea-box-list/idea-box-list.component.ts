@@ -3,6 +3,9 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
+import { User } from 'src/app/models/user';
+import { WebResponse } from 'src/app/models/webResponse';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 
 @UntilDestroy()
@@ -14,22 +17,31 @@ import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 export class IdeaBoxListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
-  constructor(private ideaBoxService: IdeaBoxService, private router: Router) {}
+  constructor(
+    private ideaBoxService: IdeaBoxService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ideaBoxes: IdeaBoxListView[] = [];
   ideaBoxCount: number = 0;
   pageSize: number = 4;
   sort: string = '';
   search: string = '';
+  currentUser: User = null;
 
   ngOnInit(): void {
     this.getIdeaBoxList(this.search, this.sort, 1, this.pageSize);
+    this.currentUser = this.authService.getCurrentUser();
 
     this.ideaBoxService
       .getIdeaBoxListCount$()
       .pipe(untilDestroyed(this))
-      .subscribe((count: number): void => {
-        this.ideaBoxCount = count;
+      .subscribe((res: WebResponse<number>) => {
+        if (res.code == 200) {
+          this.ideaBoxCount = res.data;
+        } else {
+        }
       });
   }
 
@@ -49,10 +61,10 @@ export class IdeaBoxListComponent implements OnInit {
     items: number
   ) {
     this.ideaBoxService
-      .getIdeaBoxListView$(search, sort, page, items)
+      .getIdeaBoxes$(search, sort, page, items)
       .pipe(untilDestroyed(this))
-      .subscribe((boxes: IdeaBoxListView[]): void => {
-        this.ideaBoxes = boxes;
+      .subscribe((res: WebResponse<IdeaBoxListView[]>): void => {
+        this.ideaBoxes = res.data;
       });
   }
 

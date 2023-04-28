@@ -7,6 +7,7 @@ import { User } from '../models/user';
 import { RegisterModel } from 'src/app/models/registerModel';
 import { LoginModel } from 'src/app/models/loginModel';
 import { WebResponse } from 'src/app/models/webResponse';
+import { WebData } from '../models/webData';
 
 @Injectable({
   providedIn: 'root',
@@ -20,16 +21,22 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/user`);
   }
 
-  getUser$(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/user/` + id);
+  getUser$(id: number): Observable<WebResponse<User>> {
+    return this.http.get<WebResponse<User>>(`${this.apiUrl}/user/` + id);
   }
 
-  registerUser$(user: RegisterModel) {
-    return this.http.post<WebResponse>(`${this.apiUrl}/auth/register`, user);
+  registerUser$(user: RegisterModel): Observable<WebResponse<WebData>> {
+    return this.http.post<WebResponse<WebData>>(
+      `${this.apiUrl}/auth/register`,
+      user
+    );
   }
 
-  loginUser$(user: LoginModel): Observable<WebResponse> {
-    return this.http.post<WebResponse>(`${this.apiUrl}/auth/login`, user);
+  loginUser$(user: LoginModel): Observable<WebResponse<WebData>> {
+    return this.http.post<WebResponse<WebData>>(
+      `${this.apiUrl}/auth/login`,
+      user
+    );
   }
 
   getRoles$(): Observable<Role[]> {

@@ -2,6 +2,7 @@ package com.moa.backend.controller
 
 import com.moa.backend.utility.ErrorException
 import com.moa.backend.utility.WebResponse
+import io.jsonwebtoken.JwtException
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -46,6 +47,15 @@ class ErrorController {
         return WebResponse(
             code = HttpStatus.UNAUTHORIZED.value(),
             message = authenticationException.message.orEmpty()
+        )
+    }
+
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = [JwtException::class])
+    fun jwtExceptionHandler (jwtException: JwtException): WebResponse<Nothing> {
+        return WebResponse(
+            code = HttpStatus.UNAUTHORIZED.value(),
+            message = jwtException.message.orEmpty()
         )
     }
 }

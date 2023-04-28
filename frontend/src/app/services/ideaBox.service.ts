@@ -5,6 +5,7 @@ import { IdeaBox } from 'src/app/models/ideaBox';
 import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
+import { WebResponse } from '../models/webResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -14,30 +15,33 @@ export class IdeaBoxService {
 
   apiUrl = `${environment.apiUrl}`;
 
-  getIdeaBoxListView$(
+  getIdeaBoxes$(
     s: string,
     sort: string,
     page: number,
     items: number
-  ): Observable<IdeaBoxListView[]> {
-    return this.http.get<IdeaBoxListView[]>(`${this.apiUrl}/idea-box`, {
-      params: {
-        s: s,
-        sort: sort,
-        page: page,
-        items: items,
-      },
-    });
+  ): Observable<WebResponse<IdeaBoxListView[]>> {
+    return this.http.get<WebResponse<IdeaBoxListView[]>>(
+      `${this.apiUrl}/idea-box`,
+      {
+        params: {
+          s: s,
+          sort: sort,
+          page: page,
+          items: items,
+        },
+      }
+    );
   }
 
-  getIdeaBoxListCount$(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/idea-box-count`);
+  getIdeaBoxListCount$(): Observable<WebResponse<number>> {
+    return this.http.get<WebResponse<number>>(`${this.apiUrl}/idea-box-count`);
   }
 
-  createIdeaBox(ideaBox: IdeaBox) {
+  createIdeaBox$(ideaBox: IdeaBox): Observable<WebResponse<IdeaBox>> {
     let ib = ideaBox;
     let currentUser = this.auth.currentUser;
     ib = { ...ib, creator: currentUser };
-    return this.http.post(`${this.apiUrl}/idea-box`, ib);
+    return this.http.post<WebResponse<IdeaBox>>(`${this.apiUrl}/idea-box`, ib);
   }
 }

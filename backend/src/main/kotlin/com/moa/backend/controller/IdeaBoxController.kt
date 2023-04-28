@@ -4,9 +4,11 @@ import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.service.IdeaBoxService
+import com.moa.backend.utility.WebResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
@@ -23,25 +25,23 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     lateinit var ideaBoxService: IdeaBoxService
 
     @GetMapping("/idea-box")
-    @Secured("ADMIN")
     fun getIdeaBoxes(
         @RequestParam("s", defaultValue = "") s: String,
         @RequestParam("sort", defaultValue = "") sort: String,
         @RequestParam("page", defaultValue = "1") page: Int,
         @RequestParam("items", defaultValue = "12") items: Int
-    ): ResponseEntity<MutableList<IdeaBoxSlimDto>> {
+    ): ResponseEntity<*> {
         var direction = Sort.unsorted()
         when(sort) {
             "newest" -> direction = Sort.by(Sort.Direction.DESC, "startDate")
             "oldest" -> direction = Sort.by(Sort.Direction.ASC, "startDate")
             "closing" -> direction = Sort.by(Sort.Direction.ASC, "endDate")
         }
-
         return ideaBoxService.getIdeaBoxes(s, PageRequest.of(page-1, items, direction))
     }
 
     @GetMapping("/idea-box-count")
-    fun getIdeaBoxCount(): Int {
+    fun getIdeaBoxCount(): ResponseEntity<*> {
         return ideaBoxService.getIdeaBoxCount()
     }
 
@@ -61,7 +61,7 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     }
 
     @DeleteMapping("/idea-box/{id}")
-    fun deleteIdeaBox(@PathVariable id: Long): Any {
+    fun deleteIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
         return ideaBoxService.deleteIdeaBox(id)
     }
 }

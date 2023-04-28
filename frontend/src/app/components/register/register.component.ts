@@ -3,6 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { WebData } from 'src/app/models/webData';
 import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
@@ -36,11 +37,13 @@ export class RegisterComponent implements OnInit {
     this.userService
       .registerUser$(this.userForm.value)
       .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse) => {
-        this.snackBar.ok(res.message);
+      .subscribe((res: WebResponse<WebData>) => {
         if (res.code == 200) {
+          this.snackBar.ok(res.message);
           this.auth.setCurrentUser(res.data);
           this.router.navigateByUrl('/idea-boxes');
+        } else {
+          this.snackBar.error(res.message);
         }
       });
   }

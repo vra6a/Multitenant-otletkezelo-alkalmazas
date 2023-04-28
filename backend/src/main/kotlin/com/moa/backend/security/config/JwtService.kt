@@ -33,8 +33,11 @@ class JwtService {
         val claims = mutableMapOf<String, Any>()
         if(userRepository.findByEmail(userDetails.username).isPresent) {
             val user = userRepository.findByEmail(userDetails.username).get()
-            claims["role"] = user.role.toString()
             claims["id"] = user.id
+            claims["firstName"] = user.firstName
+            claims["lastName"] = user.lastName
+            claims["email"] = user.email
+            claims["role"] = user.role.toString()
         }
         return generateToken(claims, userDetails)
     }
@@ -45,7 +48,7 @@ class JwtService {
             .setClaims(extraClaims)
             .setSubject(userDetails.username)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 24 ))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact()
     }

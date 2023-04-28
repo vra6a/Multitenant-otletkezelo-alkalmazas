@@ -39,14 +39,13 @@ class UserController(private val userRepository: UserRepository) {
 
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('ADMIN')")
-    fun getUsers(): ResponseEntity<MutableList<UserSlimDto>> {
+    fun getUsers(): ResponseEntity<*> {
         return userService.getUsers()
     }
 
     @GetMapping("/user/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<*> {
-        return  userService.getUser(id)
+        return userService.getUser(id)
     }
 
 
@@ -56,7 +55,7 @@ class UserController(private val userRepository: UserRepository) {
     }
 
     @DeleteMapping("/user/{id}")
-    fun deleteUser(@PathVariable id: Long): Any {
+    fun deleteUser(@PathVariable id: Long): ResponseEntity<*> {
         return userService.deleteUser(id)
     }
 
@@ -73,7 +72,7 @@ class UserController(private val userRepository: UserRepository) {
     }
 
     @PostMapping("/auth/login")
-    fun register(@RequestBody request: AuthenticationRequest): WebResponse<AuthenticationResponse> {
+    fun login(@RequestBody request: AuthenticationRequest): WebResponse<AuthenticationResponse> {
         if(!userRepository.findByEmail(request.email).isPresent) {
             throw ErrorException("Email address is not found!")
         }

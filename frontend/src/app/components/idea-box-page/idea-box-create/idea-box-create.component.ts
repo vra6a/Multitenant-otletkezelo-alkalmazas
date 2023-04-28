@@ -4,8 +4,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBox } from 'src/app/models/ideaBox';
+import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +19,7 @@ export class IdeaBoxCreateComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private auth: AuthService,
-    private snackBar: MatSnackBar,
+    private snackBar: SnackBarService,
     private router: Router,
     private ideaBoxService: IdeaBoxService
   ) {}
@@ -32,12 +34,16 @@ export class IdeaBoxCreateComponent implements OnInit {
   ngOnInit(): void {}
 
   create() {
-    console.log(this.IdeaBoxForm.value);
     this.ideaBoxService
-      .createIdeaBox(this.IdeaBoxForm.value)
-      .subscribe((res: IdeaBox) => {
-        if (res.id) {
-          this.router.navigate(['/idea-boxes']);
+      .createIdeaBox$(this.IdeaBoxForm.value)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<IdeaBox>) => {
+        console.log(res);
+        if (res.code == 200) {
+          this.snackBar.ok(res.message);
+          this.router.navigateByUrl('/idea-boxes');
+        } else {
+          this.snackBar.error(res.message);
         }
       });
   }

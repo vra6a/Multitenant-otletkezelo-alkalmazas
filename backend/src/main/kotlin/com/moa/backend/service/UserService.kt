@@ -5,10 +5,13 @@ import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.UserRepository
+import com.moa.backend.utility.WebResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UserService {
@@ -22,17 +25,25 @@ class UserService {
 
     fun getUser(id: Long): ResponseEntity<*> {
         val user = userRepository.findById(id).orElse(null)
-            ?: return ResponseEntity("Cannot find User with id $id!", HttpStatus.NOT_FOUND)
+            ?: return ResponseEntity(
+                    WebResponse(
+                        code = HttpStatus.NOT_FOUND.value(),
+                        message = "Cannot find User with this id $id!",
+                        data = null
+                    ),
+                    HttpStatus.NOT_FOUND
+                )
 
-        return ResponseEntity.ok(userMapper.modelToDto(user))
+        return ResponseEntity.ok(
+            WebResponse<UserDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = userMapper.modelToDto(user)
+            )
+        )
     }
 
-    fun getUserByEmail(email: String): User {
-        return userRepository.findByEmail(email).get()
-
-    }
-
-    fun getUsers(): ResponseEntity<MutableList<UserSlimDto>> {
+    fun getUsers(): ResponseEntity<*> {
         val users = userRepository.findAll()
         val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
 
@@ -41,22 +52,26 @@ class UserService {
                 response.add(userMapper.modelToSlimDto(user))
             }
         }
-        return ResponseEntity.ok(response)
-    }
 
-    fun createUser(user: UserDto): ResponseEntity<*> {
         return ResponseEntity.ok(
-            userMapper.modelToDto(
-                userRepository.saveAndFlush(
-                    userMapper.dtoToModel(user)
-                )
+            WebResponse<MutableList<UserSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
             )
         )
     }
 
     fun updateUser(id: Long, user: UserDto): ResponseEntity<*> {
         val originalUser = userRepository.findById(id).orElse(null)
-            ?: return ResponseEntity("Cannot find User with id $id!", HttpStatus.NOT_FOUND)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find User with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
 
         if(!originalUser.firstName.isNullOrEmpty() && originalUser.firstName != user.firstName) {
             originalUser.firstName = user.firstName
@@ -71,20 +86,33 @@ class UserService {
         }
 
         return ResponseEntity.ok(
-            userMapper.modelToDto(
-                userRepository.saveAndFlush(originalUser)
+            WebResponse<UserDto>(
+                code = HttpStatus.OK.value(),
+                message = "User SuccessFully updated!",
+                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
             )
         )
     }
 
-    fun deleteUser(id: Long): Any {
+    fun deleteUser(id: Long): ResponseEntity<*> {
         kotlin.runCatching {
             userRepository.deleteById(id)
         }.onFailure {
-            return ResponseEntity("Nothing to delete! No User exists with the id $id!", HttpStatus.NOT_FOUND)
+            return ResponseEntity(
+                WebResponse<String>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Nothing to delete! No User exists with the id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND)
         }
-
-        return ResponseEntity.ok()
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "User Successfully Deleted!",
+                data = "User Successfully Deleted!"
+            )
+        )
     }
 
 }

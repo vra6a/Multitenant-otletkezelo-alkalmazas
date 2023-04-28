@@ -8,10 +8,12 @@ export class SnackBarService {
   constructor(private snackBar: MatSnackBar) {}
 
   ok(msg: string) {
-    this.snackBar.open(msg, '', {
-      duration: 2000,
-      panelClass: ['ok-snackbar'],
-    });
+    if (msg != '') {
+      this.snackBar.open(msg, '', {
+        duration: 2000,
+        panelClass: ['ok-snackbar'],
+      });
+    }
   }
 
   error(msg: string) {

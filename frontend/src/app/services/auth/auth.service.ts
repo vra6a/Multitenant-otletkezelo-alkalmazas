@@ -37,7 +37,9 @@ export class AuthService {
         email: data.email,
         role: data.role as unknown as Role,
       };
-      this.setAccessToken(data.token);
+      if (data.token != '') {
+        this.setAccessToken(data.token);
+      }
       this.login.next(this.currentUser);
     }
   }
@@ -46,18 +48,18 @@ export class AuthService {
     let jwt = window.sessionStorage.getItem('token');
     if (jwt != undefined) {
       let tokenInfo = this.getDecodedAccessToken(jwt);
-      let id = tokenInfo.id;
-      this.userService
-        .getUser$(id)
-        .pipe(untilDestroyed(this))
-        .subscribe((res: User) => {
-          console.log(res);
-          this.setCurrentUser(res as unknown as WebData);
-          this.snackBar.ok(
-            'User was logged is as ' + res.firstName + ' ' + res.lastName
-          );
-          this.router.navigateByUrl('/idea-boxes');
-        });
+      let user: WebData = {
+        id: tokenInfo.id,
+        firstName: tokenInfo.firstName,
+        lastName: tokenInfo.lastName,
+        email: tokenInfo.email,
+        role: tokenInfo.role,
+      };
+      this.setCurrentUser(user);
+      this.snackBar.ok(
+        'User was logged is as ' + user.firstName + ' ' + user.lastName
+      );
+      this.router.navigateByUrl('/idea-boxes');
     }
   }
 

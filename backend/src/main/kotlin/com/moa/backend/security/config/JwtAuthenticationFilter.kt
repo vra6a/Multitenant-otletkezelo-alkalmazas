@@ -1,5 +1,6 @@
 package com.moa.backend.security.config
 
+import com.moa.backend.utility.ErrorException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -47,8 +48,13 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
                 )
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken
+            } else {
+                throw ErrorException("Access token is invalid!")
             }
+        } else {
+            throw ErrorException("Access token is invalid!")
         }
+
         filterChain.doFilter(request, response)
     }
 }
