@@ -56,7 +56,6 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             firstName = entity.firstName,
             lastName = entity.lastName,
             email = entity.email,
-            password = entity.password,
             role = entity.role,
             likedComments = likedComments,
             comments = comments,
@@ -71,7 +70,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             id = entity.id,
             firstName = entity.firstName,
             lastName = entity.lastName,
-            email = entity.email
+            email = entity.email,
+            role = entity.role
         )
     }
 
@@ -82,8 +82,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
                     firstName = domain.firstName,
                     lastName = domain.lastName,
                     email = domain.email,
-                    password = domain.password,
                     role = domain.role,
+                    password = "",
                     likedIdeas = emptyList<Idea>().toMutableList(),
                     likedComments = emptyList<Comment>().toMutableList(),
                     ideas = emptyList<Idea>().toMutableList(),

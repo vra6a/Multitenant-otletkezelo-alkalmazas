@@ -1,5 +1,8 @@
 package com.moa.backend.model.slim
 
+import com.moa.backend.model.Role
+
+
 data class UserSlimDto (
     var id: Long = 0,
 
@@ -9,4 +12,6 @@ data class UserSlimDto (
 
     var email: String,
 
-)
+    var role: Role,
+
+    )
