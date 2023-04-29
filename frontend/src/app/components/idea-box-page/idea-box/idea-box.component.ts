@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Idea } from 'src/app/models/idea';
-import { IdeaBox } from 'src/app/models/ideaBox';
+import { IdeaBoxDto } from 'src/app/models/dto/ideaBoxDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
@@ -20,15 +19,15 @@ export class IdeaBoxComponent implements OnInit {
     private snackBar: SnackBarService
   ) {}
 
-  ideaBox: IdeaBox = null;
+  ideaBox: IdeaBoxDto = null;
   id: string = '';
-  submitted: Idea[] = [];
-  reviewed: Idea[] = [];
-  approved: Idea[] = [];
-  denied: Idea[] = [];
+  submitted: IdeaBoxDto[] = [];
+  reviewed: IdeaBoxDto[] = [];
+  approved: IdeaBoxDto[] = [];
+  denied: IdeaBoxDto[] = [];
 
   ngOnInit(): void {
-    let idea: Idea;
+    let idea: IdeaBoxDto;
     this.submitted.push(idea);
     this.submitted.push(idea);
     this.submitted.push(idea);
@@ -43,7 +42,7 @@ export class IdeaBoxComponent implements OnInit {
     this.ideaBoxService
       .getIdeaBox$(this.id)
       .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse<IdeaBox>) => {
+      .subscribe((res: WebResponse<IdeaBoxDto>) => {
         if (res.code == 200) {
           this.ideaBox = res.data;
         } else {

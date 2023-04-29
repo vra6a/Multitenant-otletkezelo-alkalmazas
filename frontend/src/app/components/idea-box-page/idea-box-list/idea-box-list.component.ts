@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
-import { User } from 'src/app/models/user';
+import { User } from 'src/app/models/dto/userDto';
+import { IdeaBoxSlimDto } from 'src/app/models/slimDto/ideaBoxSlimDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
@@ -25,7 +25,7 @@ export class IdeaBoxListComponent implements OnInit {
     private snackBar: SnackBarService
   ) {}
 
-  ideaBoxes: IdeaBoxListView[] = [];
+  ideaBoxes: IdeaBoxSlimDto[] = [];
   ideaBoxCount: number = 0;
   pageSize: number = 4;
   sort: string = '';
@@ -66,7 +66,7 @@ export class IdeaBoxListComponent implements OnInit {
     this.ideaBoxService
       .getIdeaBoxes$(search, sort, page, items)
       .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse<IdeaBoxListView[]>): void => {
+      .subscribe((res: WebResponse<IdeaBoxSlimDto[]>): void => {
         this.ideaBoxes = res.data;
       });
   }

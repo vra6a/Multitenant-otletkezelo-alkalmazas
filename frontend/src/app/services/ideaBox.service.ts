@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IdeaBox } from 'src/app/models/ideaBox';
-import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
+import { IdeaBoxDto } from 'src/app/models/dto/ideaBoxDto';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
 import { WebResponse } from '../models/webResponse';
-import { Idea } from '../models/idea';
+import { IdeaBoxSlimDto } from '../models/slimDto/ideaBoxSlimDto';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +20,8 @@ export class IdeaBoxService {
     sort: string,
     page: number,
     items: number
-  ): Observable<WebResponse<IdeaBoxListView[]>> {
-    return this.http.get<WebResponse<IdeaBoxListView[]>>(
+  ): Observable<WebResponse<IdeaBoxSlimDto[]>> {
+    return this.http.get<WebResponse<IdeaBoxSlimDto[]>>(
       `${this.apiUrl}/idea-box`,
       {
         params: {
@@ -35,18 +34,23 @@ export class IdeaBoxService {
     );
   }
 
-  getIdeaBox$(id: string): Observable<WebResponse<IdeaBox>> {
-    return this.http.get<WebResponse<IdeaBox>>(`${this.apiUrl}/idea-box/` + id);
+  getIdeaBox$(id: string): Observable<WebResponse<IdeaBoxDto>> {
+    return this.http.get<WebResponse<IdeaBoxDto>>(
+      `${this.apiUrl}/idea-box/` + id
+    );
   }
 
   getIdeaBoxListCount$(): Observable<WebResponse<number>> {
     return this.http.get<WebResponse<number>>(`${this.apiUrl}/idea-box-count`);
   }
 
-  createIdeaBox$(ideaBox: IdeaBox): Observable<WebResponse<IdeaBox>> {
+  createIdeaBox$(ideaBox: IdeaBoxDto): Observable<WebResponse<IdeaBoxDto>> {
     let ib = ideaBox;
     let currentUser = this.auth.currentUser;
     ib = { ...ib, creator: currentUser };
-    return this.http.post<WebResponse<IdeaBox>>(`${this.apiUrl}/idea-box`, ib);
+    return this.http.post<WebResponse<IdeaBoxDto>>(
+      `${this.apiUrl}/idea-box`,
+      ib
+    );
   }
 }

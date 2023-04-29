@@ -1,16 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../../models/user';
+import { User } from '../../models/dto/userDto';
 import { Subject } from 'rxjs';
 import { WebData } from 'src/app/models/webData';
-import { Role } from 'src/app/models/Role';
 import jwt_decode from 'jwt-decode';
 import { UserService } from '../user.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { WebResponse } from 'src/app/models/webResponse';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarService } from '../snackBar.service';
+import { UserSlimDto } from 'src/app/models/slimDto/userSlimDto';
 
 @UntilDestroy()
 @Injectable({
@@ -23,19 +21,18 @@ export class AuthService {
     private snackBar: SnackBarService
   ) {}
 
-  currentUser: User = null;
-  login = new Subject<User>();
+  currentUser: UserSlimDto = null;
+  login = new Subject<UserSlimDto>();
   accessToken: string = '';
 
   setCurrentUser(data: WebData) {
-    console.log(data);
     if (this.currentUser == null) {
       this.currentUser = {
         id: data.id,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        role: data.role as unknown as Role,
+        role: data.role,
       };
       if (data.token != '') {
         this.setAccessToken(data.token);
@@ -48,7 +45,7 @@ export class AuthService {
     let jwt = window.sessionStorage.getItem('token');
     if (jwt != undefined) {
       let tokenInfo = this.getDecodedAccessToken(jwt);
-      let user: WebData = {
+      let user: UserSlimDto = {
         id: tokenInfo.id,
         firstName: tokenInfo.firstName,
         lastName: tokenInfo.lastName,
@@ -76,7 +73,7 @@ export class AuthService {
     if (token != undefined) window.sessionStorage.setItem('token', token);
   }
 
-  getCurrentUser(): User {
+  getCurrentUser(): UserSlimDto {
     return this.currentUser;
   }
 

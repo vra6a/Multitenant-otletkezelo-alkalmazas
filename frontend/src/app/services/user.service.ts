@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Role } from 'src/app/models/Role';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/user';
+import { User } from '../models/dto/userDto';
 import { RegisterModel } from 'src/app/models/registerModel';
 import { LoginModel } from 'src/app/models/loginModel';
 import { WebResponse } from 'src/app/models/webResponse';

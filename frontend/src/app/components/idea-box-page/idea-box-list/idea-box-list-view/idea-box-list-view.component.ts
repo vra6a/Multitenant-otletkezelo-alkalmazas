@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
+import { IdeaBoxSlimDto } from 'src/app/models/slimDto/ideaBoxSlimDto';
 
 @Component({
   selector: 'app-idea-box-list-view',
@@ -9,7 +9,7 @@ import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
 export class IdeaBoxListViewComponent implements OnInit {
   constructor() {}
 
-  @Input() ideaBox: IdeaBoxListView;
+  @Input() ideaBox: IdeaBoxSlimDto;
 
   ngOnInit(): void {}
 }
