@@ -21,13 +21,13 @@ export class IdeaBoxComponent implements OnInit {
 
   ideaBox: IdeaBoxDto = null;
   id: string = '';
+
   submitted: IdeaBoxDto[] = [];
   reviewed: IdeaBoxDto[] = [];
   approved: IdeaBoxDto[] = [];
   denied: IdeaBoxDto[] = [];
 
   ngOnInit(): void {
-    let idea: IdeaBoxDto;
     this.id = this.route.snapshot.paramMap.get('id');
     this.ideaBoxService
       .getIdeaBox$(this.id)

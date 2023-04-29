@@ -52,13 +52,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'idea',
-    component: IdeaComponent,
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'idea/:id',
-    component: IdeaEditComponent,
+    component: IdeaComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -14,6 +14,10 @@ export class IdeaService {
 
   apiUrl = `${environment.apiUrl}`;
 
+  getIdea$(id: string): Observable<WebResponse<IdeaDto>> {
+    return this.http.get<WebResponse<IdeaDto>>(`${this.apiUrl}/idea/${id}`);
+  }
+
   createIdea$(idea: IdeaDto): Observable<WebResponse<IdeaDto>> {
     return this.http.post<WebResponse<IdeaDto>>(`${this.apiUrl}/idea`, idea);
   }

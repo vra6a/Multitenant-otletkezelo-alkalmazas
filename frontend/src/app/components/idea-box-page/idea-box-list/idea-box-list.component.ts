@@ -73,6 +73,5 @@ export class IdeaBoxListComponent implements OnInit {
 
   openIdeaBox(id: number) {
     this.router.navigate(['idea-boxes/' + id]);
-    console.log(id);
   }
 }

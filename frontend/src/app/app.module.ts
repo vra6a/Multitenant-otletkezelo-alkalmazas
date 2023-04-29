@@ -35,6 +35,10 @@ import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.c
 import { HeaderInterceptor } from './interceptors/headerHandler';
 import { HttpErrorInterceptor } from './interceptors/errorHandler';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { IdeaTabComponent } from './components/idea/idea-tab/idea-tab.component';
+import { DetailsTabComponent } from './components/idea/details-tab/details-tab.component';
+import { CommentsTabComponent } from './components/idea/comments-tab/comments-tab.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +58,9 @@ import { MatButtonModule } from '@angular/material/button';
     IdeaListViewComponent,
     IdeaBoxListViewComponent,
     IdeaBoxComponent,
+    IdeaTabComponent,
+    DetailsTabComponent,
+    CommentsTabComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,6 +80,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatPaginatorModule,
     MatExpansionModule,
     MatButtonModule,
+    MatTabsModule,
   ],
   providers: [
     {

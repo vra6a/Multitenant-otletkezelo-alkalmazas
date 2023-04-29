@@ -33,7 +33,10 @@
         <p class="vertical-container-title">Submitted</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of submitted">
-            <app-idea-list-view [idea]="idea"></app-idea-list-view>
+            <app-idea-list-view
+              [idea]="idea"
+              [routerLink]="'/idea/' + idea?.id"
+            ></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -41,7 +44,10 @@
         <p class="vertical-container-title">Reviewed</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of reviewed">
-            <app-idea-list-view [idea]="idea"></app-idea-list-view>
+            <app-idea-list-view
+              [idea]="idea"
+              [routerLink]="'/idea/' + idea?.id"
+            ></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -49,7 +55,10 @@
         <p class="vertical-container-title">Approved</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of approved">
-            <app-idea-list-view [idea]="idea"></app-idea-list-view>
+            <app-idea-list-view
+              [idea]="idea"
+              [routerLink]="'/idea/' + idea?.id"
+            ></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -57,7 +66,10 @@
         <p class="vertical-container-title">Denied</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of denied">
-            <app-idea-list-view [idea]="idea"></app-idea-list-view>
+            <app-idea-list-view
+              [routerLink]="'/idea/' + idea?.id"
+              [idea]="idea"
+            ></app-idea-list-view>
           </div>
         </div>
       </div>
