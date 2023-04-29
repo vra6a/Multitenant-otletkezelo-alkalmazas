@@ -40,6 +40,25 @@ class IdeaBoxService {
         )
     }
 
+    fun getIdeaBoxSlim(id: Long): ResponseEntity<*> {
+        val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea Box with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        return ResponseEntity.ok(
+            WebResponse<IdeaBoxSlimDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = ideaBoxMapper.modelToSlimDto(ideaBox)
+            )
+        )
+    }
+
     fun getIdeaBoxes(s: String, pageable: Pageable): ResponseEntity<*> {
         val ideaBoxes = ideaBoxRepository.search(s, pageable)
         val response: MutableList<IdeaBoxSlimDto> = emptyList<IdeaBoxSlimDto>().toMutableList()

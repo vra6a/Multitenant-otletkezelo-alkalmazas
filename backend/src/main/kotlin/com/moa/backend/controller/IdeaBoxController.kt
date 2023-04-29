@@ -50,6 +50,11 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
         return  ideaBoxService.getIdeaBox(id)
     }
 
+    @GetMapping("/idea-box/slim/{id}")
+    fun getIdeaBoxSlim(@PathVariable id: Long): ResponseEntity<*> {
+        return  ideaBoxService.getIdeaBoxSlim(id)
+    }
+
     @PostMapping("/idea-box")
     fun createIdeaBox(@RequestBody box: IdeaBoxDto): ResponseEntity<*> {
         return ideaBoxService.createIdeaBox(box)
