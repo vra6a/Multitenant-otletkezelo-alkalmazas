@@ -6,6 +6,7 @@ import com.moa.backend.model.slim.*
 import com.moa.backend.repository.IdeaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
@@ -74,8 +75,8 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     description = domain.description,
                     score = emptyList<Score>().toMutableList(),
                     owner = userMapper.slimDtoToModel(domain.owner),
-                    status = domain .status,
-                    creationDate = domain.creationDate,
+                    status = Status.SUBMITTED,
+                    creationDate = Date(),
                     tags = emptyList<Tag>().toMutableList(),
                     comments = emptyList<Comment>().toMutableList(),
                     ideaBox = ideaBoxMapper.slimDtoToModel(domain.ideaBox),

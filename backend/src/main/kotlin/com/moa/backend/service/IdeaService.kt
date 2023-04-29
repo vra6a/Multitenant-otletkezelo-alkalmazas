@@ -4,6 +4,7 @@ import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.repository.IdeaRepository
+import com.moa.backend.utility.WebResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,12 +21,43 @@ class IdeaService {
 
     fun getIdea(id: Long): ResponseEntity<*> {
         val idea = ideaRepository.findById(id).orElse(null)
-            ?: return ResponseEntity("Cannot find Idea with id $id!", HttpStatus.NOT_FOUND)
-
-        return ResponseEntity.ok(ideaMapper.modelToDto(idea))
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        return ResponseEntity.ok(
+            WebResponse<IdeaDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = ideaMapper.modelToDto(idea)
+            )
+        )
     }
 
-    fun getIdeas(): ResponseEntity<MutableList<IdeaSlimDto>> {
+    fun getIdeaSlim(id: Long): ResponseEntity<*> {
+        val idea = ideaRepository.findById(id).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        return ResponseEntity.ok(
+            WebResponse<IdeaSlimDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = ideaMapper.modelToSlimDto(idea)
+            )
+        )
+    }
+
+    fun getIdeas(): ResponseEntity<*> {
         val ideas = ideaRepository.findAll()
         val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
 
@@ -34,22 +66,39 @@ class IdeaService {
                 response.add(ideaMapper.modelToSlimDto(idea))
             }
         }
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
     }
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
         return ResponseEntity.ok(
-            ideaMapper.modelToDto(
-                ideaRepository.saveAndFlush(
-                    ideaMapper.dtoToModel(idea)
-                )
+            WebResponse<IdeaDto>(
+                code = HttpStatus.OK.value(),
+                message = "Idea successfully created!",
+                data = ideaMapper.modelToDto(
+                            ideaRepository.saveAndFlush(
+                                ideaMapper.dtoToModel(idea)
+                            )
+                        )
             )
         )
     }
 
     fun updateIdea(id: Long, idea: IdeaDto): ResponseEntity<*> {
         val originalIdea = ideaRepository.findById(id).orElse(null)
-            ?: return ResponseEntity("Cannot find Idea with id $id!", HttpStatus.NOT_FOUND)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
 
         if(!originalIdea.title.isNullOrEmpty() && originalIdea.title != idea.title) {
             originalIdea.title = idea.title
@@ -63,19 +112,33 @@ class IdeaService {
             originalIdea.status = idea.status
         }
         return ResponseEntity.ok(
-            ideaMapper.modelToDto(
-                ideaRepository.saveAndFlush(originalIdea)
+            WebResponse<IdeaDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(originalIdea))
             )
         )
     }
 
-    fun deleteIdea(id: Long): Any {
+    fun deleteIdea(id: Long): ResponseEntity<*> {
         kotlin.runCatching {
             ideaRepository.deleteById(id)
         }.onFailure {
-            return ResponseEntity("Nothing to delete! No Idea exists with the id $id!", HttpStatus.NOT_FOUND)
+            return ResponseEntity(
+                WebResponse<String>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Nothing to delete! No Idea exists with the id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND)
         }
 
-        return ResponseEntity.ok()
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "Idea successfully deleted!",
+                data = "Idea successfully deleted!"
+            )
+        )
     }
 }

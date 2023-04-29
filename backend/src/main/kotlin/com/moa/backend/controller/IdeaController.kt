@@ -17,7 +17,7 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     lateinit var ideaService: IdeaService
 
     @GetMapping("/ideas")
-    fun getIdeas(): ResponseEntity<MutableList<IdeaSlimDto>> {
+    fun getIdeas(): ResponseEntity<*> {
         return ideaService.getIdeas()
     }
 
@@ -37,7 +37,7 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     }
 
     @DeleteMapping("/idea/{id}")
-    fun deleteIdea(@PathVariable id: Long): Any {
+    fun deleteIdea(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.deleteIdea(id)
     }
 }

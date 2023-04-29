@@ -12,13 +12,13 @@ data class IdeaDto (
 
     var description: String,
 
-    var score: MutableList<ScoreSlimDto>,
+    var score: MutableList<ScoreSlimDto>?,
 
     var owner: UserSlimDto,
 
     var status: Status,
 
-    var creationDate: Date,
+    var creationDate: Date?,
 
     var tags: MutableList<TagSlimDto>?,
 
