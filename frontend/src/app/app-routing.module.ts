@@ -26,7 +26,6 @@ const routes: Routes = [
     component: IdeaBoxPageComponent,
     canActivate: [AuthGuard],
   },
-
   {
     path: 'idea-boxes/list',
     component: IdeaBoxListComponent,
@@ -38,28 +37,34 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'idea-boxes/edit',
+    path: 'idea-boxes/:id',
+    component: IdeaBoxComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea-boxes/:id/edit',
     component: IdeaBoxEditComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'idea-boxes/:id',
-    component: IdeaBoxComponent,
+    path: 'idea-boxes/:id/create',
+    component: IdeaCreateComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'idea',
     component: IdeaComponent,
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'create',
-        component: IdeaCreateComponent,
-      },
-      {
-        path: 'edit',
-        component: IdeaEditComponent,
-      },
-    ],
+  },
+  {
+    path: 'idea/:id',
+    component: IdeaEditComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea/:id/edit',
+    component: IdeaEditComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'login',

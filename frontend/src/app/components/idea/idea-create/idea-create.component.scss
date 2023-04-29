@@ -1,0 +1,55 @@
+form {
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    margin-top: 10px;
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+mat-card {
+  margin: auto 0;
+  width: 800px;
+  min-width: 400px;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-form-field {
+  width: 100%;
+  margin: 10px auto;
+}
+
+button {
+  background-color: #262626;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  width: 100%;
+  margin: 10px auto;
+  align-self: center;
+  cursor: pointer;
+}
+
+.disabled {
+  background-color: #949494;
+  color: #262626;
+  cursor: not-allowed;
+}
+
+.cancel {
+  background-color: #ffffff;
+  color: #262626;
+  border: 1px solid #262626;
+}

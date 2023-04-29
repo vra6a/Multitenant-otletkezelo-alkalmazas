@@ -1,38 +1,38 @@
 <div class="container">
   <div class="body">
     <h1>Welcome {{ currentUser?.firstName + " " + currentUser?.lastName }}!</h1>
-    <div class="indent">
-      <div class="line">
+    <div class="line-button">
+      <div>
         <h2>Create Idea Box or browse from live ones!</h2>
-        <button [routerLink]="'create'">Create</button>
-      </div>
-      <div class="line">
         <h2>Live Idea Boxes:</h2>
-        <button>Manage Idea Boxes</button>
       </div>
-      <div class="ideas">
-        <mat-grid-list cols="4" rowHeight="160px">
-          <mat-grid-tile
-            *ngFor="let box of ideaBoxes"
-            [colspan]="1"
-            [rowspan]="1"
-          >
-            <app-idea-box-list-view
-              [ideaBox]="box"
-              (click)="openIdeaBox(box.id)"
-            ></app-idea-box-list-view>
-          </mat-grid-tile>
-        </mat-grid-list>
-        <mat-paginator
-          #paginator
-          [length]="ideaBoxCount"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[4, 8, 12]"
-          aria-label="Select page"
-          (page)="getServerData($event)"
+      <div>
+        <button mat-raised-button [routerLink]="'create'">Create</button>
+        <button mat-stroked-button>Manage Idea Boxes</button>
+      </div>
+    </div>
+    <div class="ideas">
+      <mat-grid-list cols="4" rowHeight="160px">
+        <mat-grid-tile
+          *ngFor="let box of ideaBoxes"
+          [colspan]="1"
+          [rowspan]="1"
         >
-        </mat-paginator>
-      </div>
+          <app-idea-box-list-view
+            [ideaBox]="box"
+            (click)="openIdeaBox(box.id)"
+          ></app-idea-box-list-view>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-paginator
+        #paginator
+        [length]="ideaBoxCount"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        aria-label="Select page"
+        (page)="getServerData($event)"
+      >
+      </mat-paginator>
     </div>
   </div>
 </div>

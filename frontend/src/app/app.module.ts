@@ -34,6 +34,7 @@ import { IdeaBoxListViewComponent } from './components/idea-box-page/idea-box-li
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 import { HeaderInterceptor } from './interceptors/headerHandler';
 import { HttpErrorInterceptor } from './interceptors/errorHandler';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { HttpErrorInterceptor } from './interceptors/errorHandler';
     MatGridListModule,
     MatPaginatorModule,
     MatExpansionModule,
+    MatButtonModule,
   ],
   providers: [
     {

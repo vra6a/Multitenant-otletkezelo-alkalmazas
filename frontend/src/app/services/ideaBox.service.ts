@@ -40,6 +40,12 @@ export class IdeaBoxService {
     );
   }
 
+  getIdeaBoxSlim$(id: string): Observable<WebResponse<IdeaBoxSlimDto>> {
+    return this.http.get<WebResponse<IdeaBoxDto>>(
+      `${this.apiUrl}/idea-box/slim/` + id
+    );
+  }
+
   getIdeaBoxListCount$(): Observable<WebResponse<number>> {
     return this.http.get<WebResponse<number>>(`${this.apiUrl}/idea-box-count`);
   }

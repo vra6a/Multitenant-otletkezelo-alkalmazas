@@ -28,16 +28,6 @@ export class IdeaBoxComponent implements OnInit {
 
   ngOnInit(): void {
     let idea: IdeaBoxDto;
-    this.submitted.push(idea);
-    this.submitted.push(idea);
-    this.submitted.push(idea);
-    this.submitted.push(idea);
-    this.submitted.push(idea);
-
-    this.submitted.push(idea);
-    this.submitted.push(idea);
-    this.reviewed.push(idea);
-    this.reviewed.push(idea);
     this.id = this.route.snapshot.paramMap.get('id');
     this.ideaBoxService
       .getIdeaBox$(this.id)
@@ -45,9 +35,29 @@ export class IdeaBoxComponent implements OnInit {
       .subscribe((res: WebResponse<IdeaBoxDto>) => {
         if (res.code == 200) {
           this.ideaBox = res.data;
+          this.sortIdeas();
         } else {
           this.snackBar.error(res.message);
         }
       });
+  }
+
+  private sortIdeas() {
+    this.ideaBox.ideas.forEach((idea) => {
+      switch (idea.status) {
+        case 'SUBMITTED':
+          this.submitted.push(idea);
+          break;
+        case 'REVIEWED':
+          this.reviewed.push(idea);
+          break;
+        case 'APPROVED':
+          this.approved.push(idea);
+          break;
+        case 'DENIED':
+          this.denied.push(idea);
+          break;
+      }
+    });
   }
 }

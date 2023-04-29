@@ -2,15 +2,30 @@
   <div class="body">
     <h1>{{ ideaBox?.name }}</h1>
     <h2>{{ ideaBox?.startDate | date }} - {{ ideaBox?.endDate | date }}</h2>
-    <div class="line">
-      <p><b>created by: </b></p>
-      <p [routerLink]="'/user/' + ideaBox?.creator?.id" class="link">
-        {{ ideaBox?.creator?.firstName + " " + ideaBox?.creator?.lastName }}
-      </p>
-    </div>
-    <div class="line">
-      <p><b>Description:</b></p>
-      <p>{{ ideaBox?.description }}</p>
+    <div class="line-button">
+      <div>
+        <div class="line">
+          <p><b>created by: </b></p>
+          <p [routerLink]="'/user/' + ideaBox?.creator?.id" class="link">
+            {{ ideaBox?.creator?.firstName + " " + ideaBox?.creator?.lastName }}
+          </p>
+        </div>
+        <div class="line">
+          <p><b>Description:</b></p>
+          <p>{{ ideaBox?.description }}</p>
+        </div>
+      </div>
+      <div class="line">
+        <button
+          mat-raised-button
+          [routerLink]="'/idea-boxes/' + id + '/create'"
+        >
+          New Idea
+        </button>
+        <button mat-stroked-button [routerLink]="'/idea-boxes/' + id + '/edit'">
+          Edit idea box
+        </button>
+      </div>
     </div>
 
     <div class="idea-container">
@@ -18,7 +33,7 @@
         <p class="vertical-container-title">Submitted</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of submitted">
-            <app-idea-list-view></app-idea-list-view>
+            <app-idea-list-view [idea]="idea"></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -26,7 +41,7 @@
         <p class="vertical-container-title">Reviewed</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of reviewed">
-            <app-idea-list-view></app-idea-list-view>
+            <app-idea-list-view [idea]="idea"></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -34,7 +49,7 @@
         <p class="vertical-container-title">Approved</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of approved">
-            <app-idea-list-view></app-idea-list-view>
+            <app-idea-list-view [idea]="idea"></app-idea-list-view>
           </div>
         </div>
       </div>
@@ -42,7 +57,7 @@
         <p class="vertical-container-title">Denied</p>
         <div class="scroll-container">
           <div class="idea" *ngFor="let idea of denied">
-            <app-idea-list-view></app-idea-list-view>
+            <app-idea-list-view [idea]="idea"></app-idea-list-view>
           </div>
         </div>
       </div>
