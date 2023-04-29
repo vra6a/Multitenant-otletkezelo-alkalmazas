@@ -7,6 +7,7 @@ import { User } from 'src/app/models/user';
 import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @UntilDestroy()
 @Component({
@@ -20,7 +21,8 @@ export class IdeaBoxListComponent implements OnInit {
   constructor(
     private ideaBoxService: IdeaBoxService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: SnackBarService
   ) {}
 
   ideaBoxes: IdeaBoxListView[] = [];
@@ -41,6 +43,7 @@ export class IdeaBoxListComponent implements OnInit {
         if (res.code == 200) {
           this.ideaBoxCount = res.data;
         } else {
+          this.snackBar.error(res.message);
         }
       });
   }

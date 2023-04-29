@@ -7,9 +7,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { IdeaBoxPageComponent } from './components/idea-box-page/idea-box-page.component';
 import { IdeaBoxCreateComponent } from './components/idea-box-page/idea-box-create/idea-box-create.component';
 import { IdeaBoxEditComponent } from './components/idea-box-page/idea-box-edit/idea-box-edit.component';
-import { IdeaComponent } from './components/idea-box-page/idea/idea.component';
-import { IdeaCreateComponent } from './components/idea-box-page/idea/idea-create/idea-create.component';
-import { IdeaEditComponent } from './components/idea-box-page/idea/idea-edit/idea-edit.component';
+import { IdeaComponent } from './components/idea/idea.component';
+import { IdeaCreateComponent } from './components/idea/idea-create/idea-create.component';
+import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 

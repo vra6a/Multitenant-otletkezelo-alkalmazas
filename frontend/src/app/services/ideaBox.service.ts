@@ -6,6 +6,7 @@ import { IdeaBoxListView } from 'src/app/models/ideaBoxListView';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
 import { WebResponse } from '../models/webResponse';
+import { Idea } from '../models/idea';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +33,10 @@ export class IdeaBoxService {
         },
       }
     );
+  }
+
+  getIdeaBox$(id: string): Observable<WebResponse<IdeaBox>> {
+    return this.http.get<WebResponse<IdeaBox>>(`${this.apiUrl}/idea-box/` + id);
   }
 
   getIdeaBoxListCount$(): Observable<WebResponse<number>> {

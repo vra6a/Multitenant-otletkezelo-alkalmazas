@@ -1,1 +1,51 @@
-<p>idea-box works!</p>
+<div class="container">
+  <div class="body">
+    <h1>{{ ideaBox?.name }}</h1>
+    <h2>{{ ideaBox?.startDate | date }} - {{ ideaBox?.endDate | date }}</h2>
+    <div class="line">
+      <p><b>created by: </b></p>
+      <p [routerLink]="'/user/' + ideaBox?.creator?.id" class="link">
+        {{ ideaBox?.creator?.firstName + " " + ideaBox?.creator?.lastName }}
+      </p>
+    </div>
+    <div class="line">
+      <p><b>Description:</b></p>
+      <p>{{ ideaBox?.description }}</p>
+    </div>
+
+    <div class="idea-container">
+      <div class="vertical-container">
+        <p class="vertical-container-title">Submitted</p>
+        <div class="scroll-container">
+          <div class="idea" *ngFor="let idea of submitted">
+            <app-idea-list-view></app-idea-list-view>
+          </div>
+        </div>
+      </div>
+      <div class="vertical-container">
+        <p class="vertical-container-title">Reviewed</p>
+        <div class="scroll-container">
+          <div class="idea" *ngFor="let idea of reviewed">
+            <app-idea-list-view></app-idea-list-view>
+          </div>
+        </div>
+      </div>
+      <div class="vertical-container">
+        <p class="vertical-container-title">Approved</p>
+        <div class="scroll-container">
+          <div class="idea" *ngFor="let idea of approved">
+            <app-idea-list-view></app-idea-list-view>
+          </div>
+        </div>
+      </div>
+      <div class="vertical-container">
+        <p class="vertical-container-title">Denied</p>
+        <div class="scroll-container">
+          <div class="idea" *ngFor="let idea of denied">
+            <app-idea-list-view></app-idea-list-view>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
