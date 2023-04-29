@@ -7,8 +7,6 @@ Február 27. - Március 5.
 Ismerkedés az ötletkezelő alkalmazásokkal. <br>
 https://www.acceptmission.com webes ötletkezelő alkalmazáson regisztrálás, belső működés vizsgálata, ötletgyűjtés.
 
-<hr>
-
 ## 2. hét
 
 Márc 6. - Március 12.
@@ -19,15 +17,11 @@ A kinézetet figmában kezdtem el megtervezni wireframezéssel.
 
 Az adatmodellt a draw.io oldalon kezdtem el rajzolni.
 
-<hr>
-
 ## 3. hét
 
 Március 13. - Március 19.
 
 Tervek finomítása, új feature-ök bevezetése mind a modell tervébe, mind a UI tervbe.
-
-<hr>
 
 ## 4. hét
 
@@ -39,8 +33,6 @@ A fron-end inicializáló angular project-be behúztam az Angular Materialt UI k
 
 A back-end inicializáló projektet a Spring Initializr (https://start.spring.io/) segítségével készítettem. Ebben készítettem egy alap endpointot, amivel a fron-end elérheti a backendet, illetve összekötöttem egy MySQL adatbázissal, hogy az adatok menthetővé váljanak.
 
-<hr>
-
 ## 5. hét
 
 Március 27. - Április 2.
@@ -48,8 +40,6 @@ Március 27. - Április 2.
 Ezen a héten főleg a back-enddel foglalkoztam. Létrehoztam a már megtervezett modellt a Spring JPA segítségével. Továbbá kialakítottam itt is egy rendezett mappaszerkezetet, ahol a felelősségek jól el vannak határolva.
 
 A modellnek létrehoztam egy alap CRUD műveleteket ellátó controllert és service-t is.
-
-<hr>
 
 ## 6. hét
 
@@ -61,8 +51,6 @@ Létrehoztam egy alap megszemélyesítő felületet, ami az alkalmazás authenti
 
 backenden CORS
 
-<hr>
-
 ## 7. hét
 
 Április 10. - Április 16.
@@ -70,8 +58,6 @@ backenden CORS
 Ezen a héten a listázás és szúrést készítettem el. Kész lett a paginálás is, mind front-enden mind backenden. Ideabox liszázó oldal lényei része elkészült.
 
 Adatmodell megváltoztatása, hogy DTO-kat és SlimDTO-kat tudjon kezelni. Már nem fordul elő, hogy listázásnál top level objektumok esetében akár az egész adatbázis elküldésre kerül.
-
-<hr>
 
 ## 8. hét
 
@@ -83,8 +69,6 @@ Mapperek megjavítása. Ezen a ponton már teljes egészében működik az új D
 
 Spring security elkezdve
 
-<hr>
-
 ## 9. hét
 
 Április 24. - Április 30.
@@ -95,37 +79,25 @@ WebResponse bevezetése, hogy egységesen lehessen kezelni a http üzeneteket, m
 
 IdeaBox page haladás: Felület nagyjából kész, lehet új Idea-t létrehozni, azok megjelennek a felületen.
 
-<hr>
-
 ## 10. hét
 
 Május 1. - Május 7.
-
-<hr>
 
 ## 11. hét
 
 Május 8. - Május 14.
 
-<hr>
-
 ## 12. hét
 
 Május 15. - Mákus 21.
-
-<hr>
 
 ## 13. hét
 
 Május 22. - Májua 28.
 
-<hr>
-
 ## 14. hét
 
 Május 29. - Június 4.
-
-<hr>
 
 ## póthét
 
