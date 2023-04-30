@@ -27,7 +27,7 @@ export class IdeaBoxListComponent implements OnInit {
 
   ideaBoxes: IdeaBoxSlimDto[] = [];
   ideaBoxCount: number = 0;
-  pageSize: number = 4;
+  pageSize: number = 8;
   sort: string = '';
   search: string = '';
   currentUser: User = null;
@@ -73,5 +73,9 @@ export class IdeaBoxListComponent implements OnInit {
 
   openIdeaBox(id: number) {
     this.router.navigate(['idea-boxes/' + id]);
+  }
+
+  filter() {
+    this.getIdeaBoxList(this.search, this.sort, 1, this.pageSize);
   }
 }

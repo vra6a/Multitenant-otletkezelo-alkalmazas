@@ -1,10 +1,9 @@
 <div class="container">
   <div class="body">
     <h1>Welcome {{ currentUser?.firstName + " " + currentUser?.lastName }}!</h1>
-    <div class="line-button">
+    <div class="line">
       <div>
         <h2>Create Idea Box or browse from live ones!</h2>
-        <h2>Live Idea Boxes:</h2>
       </div>
       <div>
         <button mat-raised-button [routerLink]="'create'">Create</button>
@@ -12,6 +11,20 @@
       </div>
     </div>
     <div class="ideas">
+      <div class="line">
+        <h2 class="title">Live Idea Boxes:</h2>
+        <div class="search">
+          <input
+            (keyup)="filter()"
+            class="searchField"
+            type="text"
+            [(ngModel)]="search"
+          />
+          <mat-icon
+            ><span class="material-symbols-outlined"> search </span></mat-icon
+          >
+        </div>
+      </div>
       <mat-grid-list cols="4" rowHeight="160px">
         <mat-grid-tile
           *ngFor="let box of ideaBoxes"
