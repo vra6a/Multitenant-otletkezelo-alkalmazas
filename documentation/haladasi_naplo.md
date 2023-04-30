@@ -79,6 +79,8 @@ WebResponse bevezetése, hogy egységesen lehessen kezelni a http üzeneteket, m
 
 IdeaBox page haladás: Felület nagyjából kész, lehet új Idea-t létrehozni, azok megjelennek a felületen.
 
+Idea page nagyjából kész, lehet commentelni.
+
 ## 10. hét
 
 Május 1. - Május 7.
