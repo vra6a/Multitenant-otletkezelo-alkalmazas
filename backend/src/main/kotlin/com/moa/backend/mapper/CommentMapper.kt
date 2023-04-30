@@ -36,7 +36,8 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
             creationDate = entity.creationDate,
             owner = userMapper.modelToSlimDto(entity.owner),
             idea = ideaMapper.modelToSlimDto(entity.idea),
-            likes = likes
+            likes = likes,
+            isEdited = entity.isEdited
         )
     }
 
@@ -58,6 +59,7 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
                     owner = userMapper.slimDtoToModel(domain.owner),
                     idea = ideaMapper.slimDtoToModel(domain.idea),
                     likes = emptyList<User>().toMutableList(),
+                    isEdited = false
             )
         }
         return idToModel(domain.id)
@@ -76,7 +78,8 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
             text = comment.text,
             owner = comment.owner,
             idea = comment.idea,
-            likes = comment.likes
+            likes = comment.likes,
+            isEdited = comment.isEdited
         )
     }
 }

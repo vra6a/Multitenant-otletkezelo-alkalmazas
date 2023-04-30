@@ -33,6 +33,13 @@ export class CommentService {
     );
   }
 
+  editComent$(comment: CommentDto): Observable<WebResponse<CommentDto>> {
+    return this.http.post<WebResponse<CommentDto>>(
+      `${this.apiUrl}/comment/${comment.id}`,
+      comment
+    );
+  }
+
   likeComment$(id: string): Observable<WebResponse<string>> {
     return this.http.post<WebResponse<string>>(
       `${this.apiUrl}/comment/${id}/like`,

@@ -27,6 +27,8 @@ export class CommentComponent implements OnInit {
   comment: CommentDto = null;
   isLiked: boolean = false;
   canEdit: boolean = false;
+  isEditing: boolean = false;
+  EditedText: string = '';
 
   ngOnInit(): void {
     this.user = this.auth.getCurrentUser();
@@ -61,6 +63,26 @@ export class CommentComponent implements OnInit {
     }
   }
 
+  edit() {
+    this.isEditing = !this.isEditing;
+  }
+
+  save() {
+    this.comment.text = this.EditedText;
+    this.commentService
+      .editComent$(this.comment)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<CommentDto>) => {
+        if (res.code == 200) {
+          this.snackBar.ok(res.message);
+          this.getComment();
+          this.isEditing = false;
+        } else {
+          this.snackBar.error(res.message);
+        }
+      });
+  }
+
   private createLikeText() {
     this.likeText = Utils.createLikeText(this.comment.likes, this.user.id);
   }
@@ -82,6 +104,7 @@ export class CommentComponent implements OnInit {
   }
 
   private checkIfLiked() {
+    this.isLiked = false;
     this.comment.likes.forEach((user) => {
       if (user.id == this.user.id) {
         this.isLiked = true;

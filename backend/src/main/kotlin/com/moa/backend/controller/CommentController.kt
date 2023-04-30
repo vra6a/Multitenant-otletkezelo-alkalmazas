@@ -38,7 +38,12 @@ class CommentController {
 
     @PostMapping("/comment")
     fun createComment(@RequestBody comment: CommentDto): ResponseEntity<*> {
-        return  commentService.createComment(comment)
+        return commentService.createComment(comment)
+    }
+
+    @PostMapping("/comment/{id}")
+    fun editComment(@RequestBody comment: CommentSlimDto): ResponseEntity<*> {
+        return commentService.editComment(comment)
     }
 
     @PostMapping("/comment/{id}/like")

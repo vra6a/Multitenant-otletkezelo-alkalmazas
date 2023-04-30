@@ -17,4 +17,6 @@ data class CommentDto (
     var idea: IdeaSlimDto,
 
     var likes: MutableList<UserSlimDto>?,
+
+    var isEdited: Boolean?,
 )

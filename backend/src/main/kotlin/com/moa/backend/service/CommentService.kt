@@ -102,16 +102,50 @@ class CommentService {
         )
     }
 
+    fun editComment(comment: CommentSlimDto): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if(comment.owner.email != authentication.name) {
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+        val originalComment = commentRepository.findById(comment.id).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Comment with this id $comment.id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+        originalComment.isEdited = true
+        originalComment.text = comment.text
+
+        return ResponseEntity.ok(
+            WebResponse<CommentDto>(
+                code = HttpStatus.OK.value(),
+                message = "Comment successfully edited!",
+                data = commentMapper.modelToDto(commentRepository.saveAndFlush(originalComment))
+            )
+        )
+    }
+
     fun likeComment(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
             return ResponseEntity(
                 WebResponse(
-                    code = HttpStatus.NOT_FOUND.value(),
+                    code = HttpStatus.UNAUTHORIZED.value(),
                     message = "Authentication error!",
                     data = null
                 ),
-                HttpStatus.NOT_FOUND
+                HttpStatus.UNAUTHORIZED
             )
         val comment = commentRepository.findById(id).orElse(null) ?:
             return ResponseEntity(
@@ -140,11 +174,11 @@ class CommentService {
         val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
         return ResponseEntity(
             WebResponse(
-                code = HttpStatus.NOT_FOUND.value(),
+                code = HttpStatus.UNAUTHORIZED.value(),
                 message = "Authentication error!",
                 data = null
             ),
-            HttpStatus.NOT_FOUND
+            HttpStatus.UNAUTHORIZED
         )
         val comment = commentRepository.findById(id).orElse(null) ?:
         return ResponseEntity(

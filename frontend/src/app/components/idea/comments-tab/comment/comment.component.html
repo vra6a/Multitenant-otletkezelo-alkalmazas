@@ -7,17 +7,21 @@
       <p class="date">{{ comment?.creationDate | date }}</p>
       <p class="date" *ngIf="comment?.isEdited"><i>(Edited)</i></p>
     </div>
-    <button
-      mat-icon-button
-      aria-label="Like"
-      (click)="likeAction()"
-      *ngIf="canEdit"
-    >
-      <mat-icon><span>edit</span></mat-icon>
+    <button mat-icon-button aria-label="Edit" *ngIf="canEdit">
+      <mat-icon><span (click)="edit()">edit</span></mat-icon>
     </button>
   </div>
 
-  <p>{{ comment?.text }}</p>
+  <p>
+    {{ comment?.text }}
+  </p>
+  <div class="edit" *ngIf="isEditing">
+    <input [(ngModel)]="EditedText" placeholder="Type here" />
+    <button mat-icon-button aria-label="Save" (click)="save()">
+      <mat-icon><span>save</span></mat-icon>
+    </button>
+  </div>
+
   <div class="likes">
     <p>{{ likeText }}</p>
     <button mat-icon-button aria-label="Like" (click)="likeAction()">

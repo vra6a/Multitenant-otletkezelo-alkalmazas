@@ -24,6 +24,8 @@ data class Comment (
     @JoinColumn(name = "idea_id")
     var idea: Idea,
 
+    var isEdited: Boolean,
+
     @ManyToMany
     @JoinTable(
         name = "comment_likes",
