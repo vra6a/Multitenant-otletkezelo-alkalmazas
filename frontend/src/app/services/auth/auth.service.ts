@@ -21,12 +21,14 @@ export class AuthService {
     private snackBar: SnackBarService
   ) {}
 
-  currentUser: UserSlimDto = null;
+  private currentUser: UserSlimDto = null;
+  private role: string = '';
   login = new Subject<UserSlimDto>();
   accessToken: string = '';
 
   setCurrentUser(data: WebData) {
     if (this.currentUser == null) {
+      this.role = data.role;
       this.currentUser = {
         id: data.id,
         firstName: data.firstName,
@@ -77,6 +79,10 @@ export class AuthService {
     return this.currentUser;
   }
 
+  getRole(): string {
+    return this.role;
+  }
+
   getAccessToken(): string {
     if (this.accessToken != '') {
       return this.accessToken;
@@ -92,6 +98,7 @@ export class AuthService {
 
   logOut() {
     if (this.currentUser) {
+      this.role = '';
       this.currentUser = null;
       window.sessionStorage.removeItem('token');
       this.accessToken = '';

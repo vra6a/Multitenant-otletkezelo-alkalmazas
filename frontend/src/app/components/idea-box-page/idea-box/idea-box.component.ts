@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBoxDto } from 'src/app/models/dto/ideaBoxDto';
+import { UserSlimDto } from 'src/app/models/slimDto/userSlimDto';
 import { WebResponse } from 'src/app/models/webResponse';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
 
@@ -16,11 +18,13 @@ export class IdeaBoxComponent implements OnInit {
   constructor(
     private ideaBoxService: IdeaBoxService,
     private route: ActivatedRoute,
-    private snackBar: SnackBarService
+    private snackBar: SnackBarService,
+    private auth: AuthService
   ) {}
 
   ideaBox: IdeaBoxDto = null;
   id: string = '';
+  canEdit: boolean = false;
 
   submitted: IdeaBoxDto[] = [];
   reviewed: IdeaBoxDto[] = [];
@@ -36,6 +40,7 @@ export class IdeaBoxComponent implements OnInit {
         if (res.code == 200) {
           this.ideaBox = res.data;
           this.sortIdeas();
+          this.checkCanEdit();
         } else {
           this.snackBar.error(res.message);
         }
@@ -59,5 +64,16 @@ export class IdeaBoxComponent implements OnInit {
           break;
       }
     });
+  }
+
+  private checkCanEdit() {
+    let user = this.auth.getCurrentUser();
+    if (user.role == 'ADMIN') {
+      this.canEdit = true;
+    } else if (user.id == this.ideaBox.creator.id) {
+      this.canEdit = true;
+    } else {
+      this.canEdit = false;
+    }
   }
 }

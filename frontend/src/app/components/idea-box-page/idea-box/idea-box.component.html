@@ -22,7 +22,11 @@
         >
           New Idea
         </button>
-        <button mat-stroked-button [routerLink]="'/idea-boxes/' + id + '/edit'">
+        <button
+          mat-stroked-button
+          [routerLink]="'/idea-boxes/' + id + '/edit'"
+          *ngIf="canEdit"
+        >
           Edit idea box
         </button>
       </div>

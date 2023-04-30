@@ -8,4 +8,5 @@ export interface CommentDto {
   owner?: UserSlimDto;
   idea?: IdeaSlimDto;
   likes?: UserSlimDto[];
+  isEdited?: boolean;
 }

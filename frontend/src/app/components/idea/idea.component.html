@@ -39,7 +39,21 @@
         </div>
       </div>
       <div class="right">
-        <p class="title">Scores:</p>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            [routerLink]="'/idea-boxes/' + id + '/edit'"
+            *ngIf="canEdit"
+          >
+            Edit idea
+          </button>
+        </div>
+        <div
+          class="score-area"
+          [ngStyle]="{ 'margin-top': canEdit ? '6px' : '62px' }"
+        >
+          <p class="title">Scores:</p>
+        </div>
       </div>
     </div>
   </div>

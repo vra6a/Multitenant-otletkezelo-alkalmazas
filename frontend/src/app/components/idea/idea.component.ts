@@ -28,6 +28,7 @@ export class IdeaComponent implements OnInit {
   likeText: string = '';
   isLiked: boolean = false;
   user: UserSlimDto = null;
+  canEdit: boolean = true;
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -72,6 +73,7 @@ export class IdeaComponent implements OnInit {
           this.idea = res.data;
           this.createLikeText();
           this.checkIfLiked();
+          this.checkCanEdit();
         } else {
           this.snackBar.error(res.message);
         }
@@ -88,5 +90,15 @@ export class IdeaComponent implements OnInit {
         this.isLiked = true;
       }
     });
+  }
+
+  private checkCanEdit() {
+    if (this.user.role == 'ADMIN') {
+      this.canEdit = true;
+    } else if (this.user.id == this.idea.owner.id) {
+      this.canEdit = true;
+    } else {
+      this.canEdit = false;
+    }
   }
 }

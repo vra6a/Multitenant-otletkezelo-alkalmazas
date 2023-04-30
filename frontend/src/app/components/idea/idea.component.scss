@@ -130,10 +130,20 @@ h2 {
 }
 
 .right {
-  margin: 88px 12px 12px 12px;
   width: 40%;
+  margin: 30px 12px 12px 12px;
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+}
+
+.score-area {
+  margin: 6px 12px 12px 12px;
+
   background-color: #f4f5f7;
-  transform: tra;
   border-radius: 16px;
   padding: 12px;
 }

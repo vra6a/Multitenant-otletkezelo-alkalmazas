@@ -52,7 +52,7 @@ export class IdeaBoxService {
 
   createIdeaBox$(ideaBox: IdeaBoxDto): Observable<WebResponse<IdeaBoxDto>> {
     let ib = ideaBox;
-    let currentUser = this.auth.currentUser;
+    let currentUser = this.auth.getCurrentUser();
     ib = { ...ib, creator: currentUser };
     return this.http.post<WebResponse<IdeaBoxDto>>(
       `${this.apiUrl}/idea-box`,

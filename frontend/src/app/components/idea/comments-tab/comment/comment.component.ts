@@ -26,6 +26,7 @@ export class CommentComponent implements OnInit {
   likeText: string = '';
   comment: CommentDto = null;
   isLiked: boolean = false;
+  canEdit: boolean = false;
 
   ngOnInit(): void {
     this.user = this.auth.getCurrentUser();
@@ -73,6 +74,7 @@ export class CommentComponent implements OnInit {
           this.comment = res.data;
           this.createLikeText();
           this.checkIfLiked();
+          this.checkCanEdit();
         } else {
           this.snackBar.error(res.message);
         }
@@ -85,5 +87,15 @@ export class CommentComponent implements OnInit {
         this.isLiked = true;
       }
     });
+  }
+
+  private checkCanEdit() {
+    if (this.user.role == 'ADMIN') {
+      this.canEdit = true;
+    } else if (this.user.id == this.comment.owner.id) {
+      this.canEdit = true;
+    } else {
+      this.canEdit = false;
+    }
   }
 }

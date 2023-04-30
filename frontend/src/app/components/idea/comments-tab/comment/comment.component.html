@@ -1,10 +1,22 @@
 <div class="container">
-  <div class="line">
-    <p class="name">
-      {{ comment?.owner?.firstName + " " + comment?.owner?.lastName }}
-    </p>
-    <p class="date">{{ comment?.creationDate | date }}</p>
+  <div class="header">
+    <div class="line">
+      <p class="name">
+        {{ comment?.owner?.firstName + " " + comment?.owner?.lastName }}
+      </p>
+      <p class="date">{{ comment?.creationDate | date }}</p>
+      <p class="date" *ngIf="comment?.isEdited"><i>(Edited)</i></p>
+    </div>
+    <button
+      mat-icon-button
+      aria-label="Like"
+      (click)="likeAction()"
+      *ngIf="canEdit"
+    >
+      <mat-icon><span>edit</span></mat-icon>
+    </button>
   </div>
+
   <p>{{ comment?.text }}</p>
   <div class="likes">
     <p>{{ likeText }}</p>

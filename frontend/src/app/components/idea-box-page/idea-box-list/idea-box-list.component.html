@@ -7,7 +7,9 @@
       </div>
       <div>
         <button mat-raised-button [routerLink]="'create'">Create</button>
-        <button mat-stroked-button>Manage Idea Boxes</button>
+        <button mat-stroked-button *ngIf="currentUser?.role == 'ADMIN'">
+          Manage Idea Boxes
+        </button>
       </div>
     </div>
     <div class="ideas">
