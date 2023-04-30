@@ -1,12 +1,16 @@
 package com.moa.backend.mapper
 
 import com.moa.backend.model.Comment
+import com.moa.backend.model.Idea
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.CommentDto
 import com.moa.backend.model.slim.CommentSlimDto
+import com.moa.backend.model.slim.IdeaSlimDto
+import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.CommentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
@@ -20,7 +24,20 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
 
 
     override fun modelToDto(entity: Comment): CommentDto {
-        TODO("Not yet implemented")
+
+        val likes: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        entity.likes.forEach{ user: User ->
+            likes.add(userMapper.modelToSlimDto(user))
+        }
+
+        return CommentDto(
+            id = entity.id,
+            text = entity.text,
+            creationDate = entity.creationDate,
+            owner = userMapper.modelToSlimDto(entity.owner),
+            idea = ideaMapper.modelToSlimDto(entity.idea),
+            likes = likes
+        )
     }
 
     override fun modelToSlimDto(entity: Comment): CommentSlimDto {
@@ -36,7 +53,7 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
         if(domain.id == 0L) {
             return Comment(
                     id = domain.id,
-                    creationDate = domain.creationDate,
+                    creationDate = Date(),
                     text = domain.text,
                     owner = userMapper.slimDtoToModel(domain.owner),
                     idea = ideaMapper.slimDtoToModel(domain.idea),

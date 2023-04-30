@@ -8,7 +8,7 @@ data class CommentDto (
 
     var id: Long = 0,
 
-    var creationDate: Date,
+    var creationDate: Date?,
 
     var text: String,
 

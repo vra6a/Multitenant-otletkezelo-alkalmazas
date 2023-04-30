@@ -26,6 +26,11 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
         return ideaService.getIdea(id)
     }
 
+    @GetMapping("/idea/slim/{id}")
+    fun getIdeaSlim(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.getIdeaSlim(id)
+    }
+
     @PostMapping("/idea")
     fun createIdea(@RequestBody idea: IdeaDto): ResponseEntity<*> {
         return ideaService.createIdea(idea)
