@@ -39,6 +39,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { IdeaTabComponent } from './components/idea/idea-tab/idea-tab.component';
 import { DetailsTabComponent } from './components/idea/details-tab/details-tab.component';
 import { CommentsTabComponent } from './components/idea/comments-tab/comments-tab.component';
+import { CommentComponent } from './components/idea/comments-tab/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { CommentsTabComponent } from './components/idea/comments-tab/comments-ta
     IdeaTabComponent,
     DetailsTabComponent,
     CommentsTabComponent,
+    CommentComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,23 @@
-<p>comments-tab works!</p>
+<div class="comment">
+  <form [formGroup]="commentForm" class="line">
+    <mat-form-field appearance="fill">
+      <textarea
+        rows="4"
+        matInput
+        placeholder="Write a comment!"
+        type="text"
+        id="text"
+        formControlName="text"
+      >
+      </textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="comment()">Send</button>
+  </form>
+</div>
+
+<div class="container">
+  <p class="title">Comments:</p>
+  <mat-card *ngFor="let comment of comments">
+    <app-comment [id]="comment.id"></app-comment>
+  </mat-card>
+</div>

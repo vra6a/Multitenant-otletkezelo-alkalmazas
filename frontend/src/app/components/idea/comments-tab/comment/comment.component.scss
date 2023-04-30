@@ -1,0 +1,48 @@
+.container {
+}
+
+.line {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.name {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.date {
+  margin-left: 20px;
+  font-weight: 300;
+}
+
+.likes {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  p {
+    margin: auto 0;
+    font-size: 12px;
+    font-style: italic;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.mat-icon {
+  font-size: 20px;
+}
+
+.material-symbols-outlined {
+  color: #262626;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+}
+
+.material-symbols-filled {
+  color: #262626;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 48;
+}

@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="line">
+    <p class="name">
+      {{ comment?.owner?.firstName + " " + comment?.owner?.lastName }}
+    </p>
+    <p class="date">{{ comment?.creationDate | date }}</p>
+  </div>
+  <p>{{ comment?.text }}</p>
+  <div class="likes">
+    <p>{{ likeText }}</p>
+    <button mat-icon-button aria-label="Like" (click)="likeAction()">
+      <mat-icon
+        ><span
+          [ngClass]="{
+            'material-symbols-outlined': !isLiked,
+            'material-symbols-filled': isLiked
+          }"
+        >
+          thumb_up
+        </span></mat-icon
+      >
+    </button>
+  </div>
+</div>
