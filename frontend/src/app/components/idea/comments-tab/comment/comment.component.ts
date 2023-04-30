@@ -6,6 +6,7 @@ import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
+import Utils from 'src/app/utility/utils';
 
 @UntilDestroy()
 @Component({
@@ -60,47 +61,7 @@ export class CommentComponent implements OnInit {
   }
 
   private createLikeText() {
-    let likes = this.comment?.likes?.length;
-    let lastLike = null;
-
-    if (likes == 0) {
-      lastLike = null;
-    } else {
-      lastLike = this.comment.likes.at(likes - 1);
-    }
-
-    switch (likes) {
-      case 0:
-        this.likeText = 'No one liked this comment';
-        break;
-      case 1:
-        if (lastLike?.id == this.user.id) {
-          this.likeText = 'You liked this';
-        } else {
-          this.likeText =
-            lastLike?.firstName + ' ' + lastLike?.lastName + ' liked this';
-        }
-        break;
-      default:
-        if (lastLike?.id == this.user.id) {
-          this.likeText = 'You and ' + (likes - 1) + ' other liked this';
-        } else {
-          this.likeText =
-            lastLike?.firstName +
-            ' ' +
-            lastLike?.lastName +
-            ' and ' +
-            (likes - 1) +
-            ' other liked this';
-        }
-        this.likeText =
-          lastLike?.firstName +
-          ' ' +
-          lastLike?.lastName +
-          ' and ' +
-          (likes - 1) +
-          ' other liked this';
-    }
+    this.likeText = Utils.createLikeText(this.comment.likes, this.user.id);
   }
 
   private getComment() {

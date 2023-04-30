@@ -25,8 +25,19 @@
 .line {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+}
+
+.likes {
+  display: flex;
+  flex-direction: row;
   justify-content: flex-start;
-  font-size: 16px;
+  margin-top: 40px;
+  p {
+    margin: auto 0;
+    font-size: 12px;
+    font-style: italic;
+  }
 }
 
 .line-button {
@@ -133,4 +144,18 @@ h2 {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.mat-icon {
+  font-size: 20px;
+}
+
+.material-symbols-outlined {
+  color: #262626;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+}
+
+.material-symbols-filled {
+  color: #262626;
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 48;
 }

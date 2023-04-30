@@ -28,4 +28,18 @@ export class IdeaService {
   createIdea$(idea: IdeaDto): Observable<WebResponse<IdeaDto>> {
     return this.http.post<WebResponse<IdeaDto>>(`${this.apiUrl}/idea`, idea);
   }
+
+  likeComment$(id: string): Observable<WebResponse<string>> {
+    return this.http.post<WebResponse<string>>(
+      `${this.apiUrl}/idea/${id}/like`,
+      {}
+    );
+  }
+
+  dislikeComment$(id: string): Observable<WebResponse<string>> {
+    return this.http.post<WebResponse<string>>(
+      `${this.apiUrl}/idea/${id}/dislike`,
+      {}
+    );
+  }
 }

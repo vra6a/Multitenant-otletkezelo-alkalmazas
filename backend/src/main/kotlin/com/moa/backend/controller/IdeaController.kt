@@ -45,4 +45,14 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     fun deleteIdea(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.deleteIdea(id)
     }
+
+    @PostMapping("/idea/{id}/like")
+    fun likeIdea(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.likeIdea(id)
+    }
+
+    @PostMapping("/idea/{id}/dislike")
+    fun dislikeIdea(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.dislikeIdea(id)
+    }
 }

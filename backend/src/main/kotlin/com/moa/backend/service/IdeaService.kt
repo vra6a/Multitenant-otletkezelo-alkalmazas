@@ -1,13 +1,16 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaMapper
+import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.repository.IdeaRepository
+import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,6 +21,12 @@ class IdeaService {
 
     @Autowired
     lateinit var ideaMapper: IdeaMapper
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var userMapper: UserMapper
 
     fun getIdea(id: Long): ResponseEntity<*> {
         val idea = ideaRepository.findById(id).orElse(null)
@@ -138,6 +147,72 @@ class IdeaService {
                 code = HttpStatus.OK.value(),
                 message = "Idea successfully deleted!",
                 data = "Idea successfully deleted!"
+            )
+        )
+    }
+
+    fun likeIdea(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Authentication error!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        val idea = ideaRepository.findById(id).orElse(null) ?:
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+        idea.likes?.add(user)
+        ideaRepository.saveAndFlush(idea)
+
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "Idea Liked!",
+                data = "Idea Liked!"
+            )
+        )
+    }
+
+    fun dislikeIdea(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
+        return ResponseEntity(
+            WebResponse(
+                code = HttpStatus.NOT_FOUND.value(),
+                message = "Authentication error!",
+                data = null
+            ),
+            HttpStatus.NOT_FOUND
+        )
+        val idea = ideaRepository.findById(id).orElse(null) ?:
+        return ResponseEntity(
+            WebResponse(
+                code = HttpStatus.NOT_FOUND.value(),
+                message = "Cannot find Idea with this id $id!",
+                data = null
+            ),
+            HttpStatus.NOT_FOUND
+        )
+
+        idea.likes?.remove(user)
+        ideaRepository.saveAndFlush(idea)
+
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "Idea disliked!",
+                data = "Idea disliked!"
             )
         )
     }

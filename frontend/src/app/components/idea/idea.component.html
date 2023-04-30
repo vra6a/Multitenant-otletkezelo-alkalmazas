@@ -1,6 +1,23 @@
 <div class="container">
   <div class="body">
-    <h1>{{ idea?.title }}</h1>
+    <div class="line">
+      <h1>{{ idea?.title }}</h1>
+      <div class="likes">
+        <p>{{ likeText }}</p>
+        <button mat-icon-button aria-label="Like" (click)="likeAction()">
+          <mat-icon
+            ><span
+              [ngClass]="{
+                'material-symbols-outlined': !isLiked,
+                'material-symbols-filled': isLiked
+              }"
+            >
+              thumb_up
+            </span></mat-icon
+          >
+        </button>
+      </div>
+    </div>
     <div class="body-container">
       <div class="left">
         <div class="tabs">
