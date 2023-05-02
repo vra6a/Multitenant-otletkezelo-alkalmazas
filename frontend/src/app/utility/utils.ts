@@ -6,6 +6,7 @@ export default class Utils {
     let likeText: string = '';
     let likeCount: number = likes?.length;
     let lastLike: UserSlimDto = null;
+    console.log(id, likes);
 
     if (likeCount == 0) {
       lastLike = null;
@@ -37,13 +38,6 @@ export default class Utils {
             (likeCount - 1) +
             ' other liked this';
         }
-        likeText =
-          lastLike?.firstName +
-          ' ' +
-          lastLike?.lastName +
-          ' and ' +
-          (likeCount - 1) +
-          ' other liked this';
     }
     return likeText;
   }

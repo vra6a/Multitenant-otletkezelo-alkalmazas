@@ -85,6 +85,7 @@ export class IdeaComponent implements OnInit {
   }
 
   private checkIfLiked() {
+    this.isLiked = false;
     this.idea.likes.forEach((user) => {
       if (user.id == this.user.id) {
         this.isLiked = true;
