@@ -16,6 +16,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -92,6 +93,7 @@ import { DeleteWarningComponent } from './components/popup/delete-warning/delete
     MatChipsModule,
     MatAutocompleteModule,
     MatTableModule,
+    MatDialogModule,
   ],
   providers: [
     {

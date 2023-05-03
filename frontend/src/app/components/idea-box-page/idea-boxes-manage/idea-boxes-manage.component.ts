@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -6,6 +7,7 @@ import { IdeaBoxSlimDto } from 'src/app/models/slimDto/ideaBoxSlimDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
+import { DeleteWarningComponent } from '../../popup/delete-warning/delete-warning.component';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +19,8 @@ export class IdeaBoxesManageComponent implements OnInit {
   constructor(
     private ideaBoxService: IdeaBoxService,
     private router: Router,
-    private snackBar: SnackBarService
+    private snackBar: SnackBarService,
+    private dialog: MatDialog
   ) {}
 
   displayedColumns: string[] = [
@@ -82,16 +85,21 @@ export class IdeaBoxesManageComponent implements OnInit {
 
   deleteIdea(id: number) {
     console.log('delete ' + id);
-    this.ideaBoxService
-      .deleteIdeaBox$(id)
-      .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse<string>) => {
-        if (res.code == 200) {
-          this.snackBar.ok(res.message);
-          this.getIdeaBoxList(this.search, this.sort, 1, this.pageSize);
-        } else {
-          this.snackBar.error(res.message);
-        }
-      });
+    let dialogRef = this.dialog.open(DeleteWarningComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'Delete') {
+        this.ideaBoxService
+          .deleteIdeaBox$(id)
+          .pipe(untilDestroyed(this))
+          .subscribe((res: WebResponse<string>) => {
+            if (res.code == 200) {
+              this.snackBar.ok(res.message);
+              this.getIdeaBoxList(this.search, this.sort, 1, this.pageSize);
+            } else {
+              this.snackBar.error(res.message);
+            }
+          });
+      }
+    });
   }
 }
