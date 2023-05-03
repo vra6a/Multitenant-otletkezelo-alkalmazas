@@ -59,4 +59,10 @@ export class IdeaBoxService {
       ib
     );
   }
+
+  deleteIdeaBox$(id: number): Observable<WebResponse<string>> {
+    return this.http.delete<WebResponse<string>>(
+      `${this.apiUrl}/idea-box/${id.toString()}`
+    );
+  }
 }

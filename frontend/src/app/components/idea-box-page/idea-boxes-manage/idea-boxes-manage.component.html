@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="body">
+    <h1>Manage Idea Boxes</h1>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Id</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Start Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.startDate | date }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef>End Date</th>
+        <td mat-cell *matCellDef="let element">{{ element.endDate | date }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            aria-label="Edit"
+            (click)="editIdea(element.id)"
+          >
+            <mat-icon><span>edit</span></mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            aria-label="Delete"
+            (click)="deleteIdea(element.id)"
+          >
+            <mat-icon><span>delete</span></mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator
+      #paginator
+      [length]="ideaBoxCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 20, 30]"
+      aria-label="Select page"
+      (page)="getServerData($event)"
+    >
+    </mat-paginator>
+  </div>
+</div>

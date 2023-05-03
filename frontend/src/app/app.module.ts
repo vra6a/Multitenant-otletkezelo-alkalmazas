@@ -14,7 +14,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
-
+import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,7 +26,6 @@ import { UserPageComponent } from './components/user-page/user-page.component';
 import { LoginMainComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { IdeaBoxCreateComponent } from './components/idea-box-page/idea-box-create/idea-box-create.component';
-import { IdeaBoxEditComponent } from './components/idea-box-page/idea-box-edit/idea-box-edit.component';
 import { IdeaComponent } from './components/idea/idea.component';
 import { IdeaCreateComponent } from './components/idea/idea-create/idea-create.component';
 import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
@@ -43,6 +42,8 @@ import { IdeaTabComponent } from './components/idea/idea-tab/idea-tab.component'
 import { DetailsTabComponent } from './components/idea/details-tab/details-tab.component';
 import { CommentsTabComponent } from './components/idea/comments-tab/comments-tab.component';
 import { CommentComponent } from './components/idea/comments-tab/comment/comment.component';
+import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
+import { DeleteWarningComponent } from './components/popup/delete-warning/delete-warning.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,7 @@ import { CommentComponent } from './components/idea/comments-tab/comment/comment
     LoginMainComponent,
     RegisterComponent,
     IdeaBoxCreateComponent,
-    IdeaBoxEditComponent,
+    IdeaBoxesManageComponent,
     IdeaBoxListComponent,
     IdeaComponent,
     IdeaCreateComponent,
@@ -66,6 +67,7 @@ import { CommentComponent } from './components/idea/comments-tab/comment/comment
     DetailsTabComponent,
     CommentsTabComponent,
     CommentComponent,
+    DeleteWarningComponent,
   ],
   imports: [
     FormsModule,
@@ -89,6 +91,7 @@ import { CommentComponent } from './components/idea/comments-tab/comment/comment
     MatTabsModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatTableModule,
   ],
   providers: [
     {
