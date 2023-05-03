@@ -22,6 +22,6 @@ data class IdeaBox (
     @JoinColumn(name = "user_id")
     var creator: User,
 
-    @OneToMany(mappedBy = "ideaBox")
+    @OneToMany(mappedBy = "ideaBox", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var ideas: MutableList<Idea>
 )

@@ -12,7 +12,7 @@ data class Idea (
 
     var description: String,
 
-    @OneToMany(mappedBy = "idea")
+    @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var score: MutableList<Score>,
 
     @ManyToOne
@@ -32,7 +32,7 @@ data class Idea (
     )
     var tags: MutableList<Tag>?,
 
-    @OneToMany(mappedBy = "idea")
+    @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment>?,
 
     @ManyToOne

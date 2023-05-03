@@ -29,13 +29,13 @@ open class User (
     @ManyToMany(mappedBy = "likes")
     var likedComments: MutableList<Comment>?,
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var ideas: MutableList<Idea>?,
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var ideaBoxes: MutableList<IdeaBox>?,
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment>?
 ): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
