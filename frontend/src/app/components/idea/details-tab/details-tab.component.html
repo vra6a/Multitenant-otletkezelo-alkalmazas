@@ -5,4 +5,33 @@
   <p class="description">{{ status }}</p>
   <p class="title">Created at:</p>
   <p class="description">{{ creationDate | date }}</p>
+  <p class="title">Tags:</p>
+  <mat-chip-list aria-label="Tags">
+    <mat-chip *ngFor="let tag of selectedTags" (removed)="remove(tag)">
+      {{ tag.name }}
+      <button matChipRemove [attr.aria-label]="'remove ' + tag.name">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-list>
+  <form class="example-form">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Number</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        aria-label="Number"
+        matInput
+        [formControl]="tagCtrl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.name">
+          {{ tag.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button *ngIf="addButtonVisible" (click)="addNewTag()">asd</button>
+    <button *ngIf="addButtonVisible" (click)="addNewTag()">asd</button>
+  </form>
 </div>

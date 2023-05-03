@@ -41,6 +41,13 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
     }
 
     override fun dtoToModel(domain: TagDto): Tag {
+        if(domain.id == 0L) {
+            return Tag(
+                id = domain.id,
+                name = domain.name,
+                taggedIdeas = emptyList<Idea>().toMutableList()
+            )
+        }
         return idToModel(domain.id)
     }
 
