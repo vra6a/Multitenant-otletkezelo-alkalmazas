@@ -16,7 +16,7 @@ export default class Utils {
 
     switch (likeCount) {
       case 0:
-        likeText = 'No one liked this';
+        likeText = 'Be the first one to like this!';
         break;
       case 1:
         if (lastLike?.id == id) {
