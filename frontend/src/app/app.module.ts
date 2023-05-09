@@ -26,9 +26,9 @@ import { IdeaBoxPageComponent } from './components/idea-box-page/idea-box-page.c
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { LoginMainComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { IdeaBoxCreateComponent } from './components/idea-box-page/idea-box-create/idea-box-create.component';
+import { IdeaBoxCreateEditComponent } from './components/idea-box-page/idea-box-create-edit/idea-box-create-edit.component';
 import { IdeaComponent } from './components/idea/idea.component';
-import { IdeaCreateComponent } from './components/idea/idea-create/idea-create.component';
+import { IdeaCreateComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
 import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
 import { IdeaListComponent } from './components/idea/idea-list/idea-list.component';
 import { IdeaListViewComponent } from './components/idea/idea-list/idea-list-view/idea-list-view.component';
@@ -54,7 +54,7 @@ import { DeleteWarningComponent } from './components/popup/delete-warning/delete
     UserPageComponent,
     LoginMainComponent,
     RegisterComponent,
-    IdeaBoxCreateComponent,
+    IdeaBoxCreateEditComponent,
     IdeaBoxesManageComponent,
     IdeaBoxListComponent,
     IdeaComponent,
