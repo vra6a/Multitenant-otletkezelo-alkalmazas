@@ -10,33 +10,33 @@ open class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    open var id: Long = 0,
 
-    var firstName: String,
+    open var firstName: String,
 
-    var lastName: String,
+    open var lastName: String,
 
-    var email: String,
+    open var email: String,
 
     private var password: String,
 
     @Enumerated(EnumType.STRING)
-    var role: Role,
+    open var role: Role,
 
     @ManyToMany(mappedBy = "likes")
-    var likedIdeas: MutableList<Idea>?,
+    open var likedIdeas: MutableList<Idea>?,
 
     @ManyToMany(mappedBy = "likes")
-    var likedComments: MutableList<Comment>?,
+    open var likedComments: MutableList<Comment>?,
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var ideas: MutableList<Idea>?,
+    open var ideas: MutableList<Idea>?,
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var ideaBoxes: MutableList<IdeaBox>?,
+    open var ideaBoxes: MutableList<IdeaBox>?,
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var comments: MutableList<Comment>?
+    open var comments: MutableList<Comment>?
 ): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities = ArrayList<SimpleGrantedAuthority>()
