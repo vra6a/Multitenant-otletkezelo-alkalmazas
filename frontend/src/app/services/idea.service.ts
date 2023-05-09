@@ -29,6 +29,17 @@ export class IdeaService {
     return this.http.post<WebResponse<IdeaDto>>(`${this.apiUrl}/idea`, idea);
   }
 
+  editIdea$(id: string, idea: IdeaDto) {
+    return this.http.put<WebResponse<IdeaDto>>(
+      `${this.apiUrl}/idea/${id}`,
+      idea
+    );
+  }
+
+  deleteIdea$(id: number): Observable<WebResponse<string>> {
+    return this.http.delete<WebResponse<string>>(`${this.apiUrl}/idea/${id}`);
+  }
+
   likeComment$(id: string): Observable<WebResponse<string>> {
     return this.http.post<WebResponse<string>>(
       `${this.apiUrl}/idea/${id}/like`,
