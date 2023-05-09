@@ -39,6 +39,47 @@
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
+        <div>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>Id</th>
+              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Title</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.title | truncate : [40, "..."] }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.status }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  mat-icon-button
+                  aria-label="Edit"
+                  (click)="editIdea(element.id)"
+                >
+                  <mat-icon><span>edit</span></mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  aria-label="Delete"
+                  (click)="deleteIdea(element.id)"
+                >
+                  <mat-icon><span>delete</span></mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
         <div class="actions">
           <button
             [disabled]="!IdeaBoxForm.valid"

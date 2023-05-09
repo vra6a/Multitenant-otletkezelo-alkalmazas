@@ -1,34 +1,39 @@
 form {
-    display: flex;
-    flex-direction: column;
-  
-    mat-form-field {
-      margin-top: 10px;
-    }
-  }
-  
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  mat-card {
-    margin: auto 0;
-    width: 800px;
-    min-width: 400px;
-  }
-  
-  mat-card-title {
-    text-align: center;
-  }
-  
+  display: flex;
+  flex-direction: column;
+
   mat-form-field {
-    width: 100%;
-    margin: 10px auto;
+    margin-top: 10px;
   }
-  
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+mat-card {
+  margin: auto 0;
+  width: 800px;
+  min-width: 400px;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-form-field {
+  width: 100%;
+  margin: 10px auto;
+}
+
+table {
+  width: 100%;
+}
+
+.actions {
   button {
     background-color: #262626;
     border: none;
@@ -45,11 +50,12 @@ form {
   .disabled {
     background-color: #949494;
     color: #262626;
-    cursor: not-allowed
+    cursor: not-allowed;
   }
-  
+
   .cancel {
     background-color: #ffffff;
     color: #262626;
     border: 1px solid #262626;
   }
+}
