@@ -45,9 +45,11 @@ import { CommentsTabComponent } from './components/idea/comments-tab/comments-ta
 import { CommentComponent } from './components/idea/comments-tab/comment/comment.component';
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
 import { DeleteWarningComponent } from './components/popup/delete-warning/delete-warning.component';
+import { TruncatePipe } from './utility/pipes/truncate';
 
 @NgModule({
   declarations: [
+    TruncatePipe,
     AppComponent,
     NavComponent,
     IdeaBoxPageComponent,
