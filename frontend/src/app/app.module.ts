@@ -46,10 +46,12 @@ import { CommentComponent } from './components/idea/comments-tab/comment/comment
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
 import { DeleteWarningComponent } from './components/popup/delete-warning/delete-warning.component';
 import { TruncatePipe } from './utility/pipes/truncate';
+import { AccessControlDirective } from './utility/directives/accessControl';
 
 @NgModule({
   declarations: [
     TruncatePipe,
+    AccessControlDirective,
     AppComponent,
     NavComponent,
     IdeaBoxPageComponent,
@@ -109,6 +111,7 @@ import { TruncatePipe } from './utility/pipes/truncate';
       multi: true,
     },
   ],
+  exports: [AccessControlDirective],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
