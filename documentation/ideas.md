@@ -9,6 +9,7 @@
 - FE permissionok rendberakása
 - BE permissionok rendberakása
 - visszagomb mindenhol
+- linkekkel megnyíljanak az adott oldalak (most mindig a főoldal nyílik meg az authentikálás miatt)
 - commentek törlése
 - Swagger openapi generálás
 
