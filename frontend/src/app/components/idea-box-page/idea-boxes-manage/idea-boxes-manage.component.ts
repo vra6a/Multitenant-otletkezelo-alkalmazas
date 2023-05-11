@@ -79,12 +79,10 @@ export class IdeaBoxesManageComponent implements OnInit {
   }
 
   editIdea(id: number) {
-    console.log('edit ' + id);
     this.router.navigateByUrl('/idea-boxes/' + id + '/edit');
   }
 
   deleteIdea(id: number) {
-    console.log('delete ' + id);
     let dialogRef = this.dialog.open(DeleteWarningComponent);
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'Delete') {

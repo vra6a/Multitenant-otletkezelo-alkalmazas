@@ -12,7 +12,7 @@ data class Tag (
     var name: String,
 
     @ManyToMany(mappedBy = "tags")
-    var taggedIdeas: MutableList<Idea>
+    var taggedIdeas: MutableList<Idea>?
 
 
 )

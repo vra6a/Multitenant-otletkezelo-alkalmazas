@@ -58,7 +58,6 @@ export class IdeaBoxCreateEditComponent implements OnInit {
     } else {
       this.isEdit = false;
     }
-    console.log(this.isEdit);
   }
 
   create() {

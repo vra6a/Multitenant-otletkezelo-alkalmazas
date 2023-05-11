@@ -1,9 +1,13 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaMapper
+import com.moa.backend.mapper.TagMapper
 import com.moa.backend.mapper.UserMapper
+import com.moa.backend.model.Tag
 import com.moa.backend.model.dto.IdeaDto
+import com.moa.backend.model.dto.TagDto
 import com.moa.backend.model.slim.IdeaSlimDto
+import com.moa.backend.model.slim.TagSlimDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
@@ -27,6 +31,9 @@ class IdeaService {
 
     @Autowired
     lateinit var userMapper: UserMapper
+
+    @Autowired
+    lateinit var tagMapper: TagMapper
 
     fun getIdea(id: Long): ResponseEntity<*> {
         val idea = ideaRepository.findById(id).orElse(null)
@@ -120,10 +127,17 @@ class IdeaService {
         if(originalIdea.status != idea.status) {
             originalIdea.status = idea.status
         }
+
+        val tags: MutableList<Tag> = emptyList<Tag>().toMutableList()
+        idea.tags?.forEach{ tag: TagSlimDto ->
+                tags.add(tagMapper.slimDtoToModel(tag))
+        }
+        originalIdea.tags = tags
+
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
-                message = "",
+                message = "Idea successfully updated!",
                 data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(originalIdea))
             )
         )

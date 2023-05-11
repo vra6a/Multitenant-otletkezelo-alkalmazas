@@ -30,6 +30,7 @@
                 [owner]="idea?.owner"
                 [status]="idea?.status"
                 [creationDate]="idea?.creationDate"
+                [tags]="idea?.tags"
               ></app-details-tab>
             </mat-tab>
             <mat-tab label="Comments">
@@ -42,7 +43,7 @@
         <div class="button-container">
           <button
             mat-stroked-button
-            [routerLink]="'/idea-boxes/' + id + '/edit'"
+            [routerLink]="'/idea/' + id + '/edit'"
             *ngIf="canEdit"
           >
             Edit idea

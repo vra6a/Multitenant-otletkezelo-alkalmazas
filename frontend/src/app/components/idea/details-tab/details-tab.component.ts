@@ -20,53 +20,5 @@ export class DetailsTabComponent implements OnInit {
   @Input() creationDate: Date = null;
   @Input() tags: TagSlimDto[] = [];
 
-  selectedTags: TagSlimDto[] = [];
-  tagCtrl = new FormControl('');
-  filteredTags: Observable<TagSlimDto[]>;
-  addButtonVisible: boolean = false;
-
-  ngOnInit(): void {
-    this.selectedTags.push({ id: 1, name: 'asd' });
-    this.selectedTags.push({ id: 2, name: 'haha' });
-    this.selectedTags.push({ id: 3, name: 'hehe' });
-
-    this.tags.push({ id: 1, name: 'asd' });
-    this.tags.push({ id: 2, name: 'haha' });
-    this.tags.push({ id: 3, name: 'hehe' });
-
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value || ''))
-    );
-  }
-
-  private _filter(value: string): TagSlimDto[] {
-    const filterValue = value.toLowerCase();
-
-    let values = this.tags.filter((option) =>
-      option.name.toLowerCase().includes(filterValue)
-    );
-    this.addButtonVisible = values.length == 0;
-    return values;
-  }
-
-  remove(tag: TagSlimDto) {
-    const index = this.selectedTags.indexOf(tag);
-    console.log(this.selectedTags);
-
-    if (index >= 0) {
-      this.selectedTags.splice(index, 1);
-    }
-
-    console.log(this.selectedTags);
-  }
-
-  addNewTag() {
-    console.log(this.tagCtrl.value);
-    this.selectedTags.push({ id: 5, name: this.tagCtrl.value });
-    this.tags.push({ id: 5, name: this.tagCtrl.value });
-    this.tagCtrl.setValue('');
-  }
-
-  createNewTag() {}
+  ngOnInit(): void {}
 }

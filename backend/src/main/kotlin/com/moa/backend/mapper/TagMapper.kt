@@ -21,7 +21,7 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
     override fun modelToDto(entity: Tag): TagDto {
 
         val ideas: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
-        entity.taggedIdeas.forEach{ idea: Idea ->
+        entity.taggedIdeas?.forEach{ idea: Idea ->
             ideas.add(ideaMapper.modelToSlimDto(idea))
         }
 

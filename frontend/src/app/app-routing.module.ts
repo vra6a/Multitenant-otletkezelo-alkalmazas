@@ -7,8 +7,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { IdeaBoxPageComponent } from './components/idea-box-page/idea-box-page.component';
 import { IdeaBoxCreateEditComponent } from './components/idea-box-page/idea-box-create-edit/idea-box-create-edit.component';
 import { IdeaComponent } from './components/idea/idea.component';
-import { IdeaCreateComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
-import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
+import { IdeaCreateEditComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
@@ -52,8 +51,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'idea-boxes/:id/create',
-    component: IdeaCreateComponent,
+    path: 'idea-boxes/:ideaBoxId/create',
+    component: IdeaCreateEditComponent,
     canActivate: [AuthGuard],
   },
   {
@@ -63,7 +62,7 @@ const routes: Routes = [
   },
   {
     path: 'idea/:id/edit',
-    component: IdeaEditComponent,
+    component: IdeaCreateEditComponent,
     canActivate: [AuthGuard],
   },
   {

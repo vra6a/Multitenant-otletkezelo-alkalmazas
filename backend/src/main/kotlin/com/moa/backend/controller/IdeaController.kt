@@ -1,7 +1,6 @@
 package com.moa.backend.controller
 
 import com.moa.backend.model.dto.IdeaDto
-import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.service.IdeaService
 import org.springframework.beans.factory.annotation.Autowired

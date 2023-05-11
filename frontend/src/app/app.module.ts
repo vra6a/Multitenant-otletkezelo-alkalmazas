@@ -28,7 +28,7 @@ import { LoginMainComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { IdeaBoxCreateEditComponent } from './components/idea-box-page/idea-box-create-edit/idea-box-create-edit.component';
 import { IdeaComponent } from './components/idea/idea.component';
-import { IdeaCreateComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
+import { IdeaCreateEditComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
 import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
 import { IdeaListComponent } from './components/idea/idea-list/idea-list.component';
 import { IdeaListViewComponent } from './components/idea/idea-list/idea-list-view/idea-list-view.component';
@@ -60,7 +60,7 @@ import { TruncatePipe } from './utility/pipes/truncate';
     IdeaBoxesManageComponent,
     IdeaBoxListComponent,
     IdeaComponent,
-    IdeaCreateComponent,
+    IdeaCreateEditComponent,
     IdeaEditComponent,
     IdeaListComponent,
     IdeaListViewComponent,

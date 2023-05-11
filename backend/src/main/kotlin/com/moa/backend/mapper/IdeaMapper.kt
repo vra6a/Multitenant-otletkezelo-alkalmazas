@@ -68,6 +68,10 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
     }
 
     override fun dtoToModel(domain: IdeaDto): Idea {
+        val tags: MutableList<Tag> = emptyList<Tag>().toMutableList()
+        domain.tags?.forEach{ tag: TagSlimDto ->
+            tags.add(tagMapper.slimDtoToModel(tag))
+        }
         if(domain.id == 0L) {
             return Idea(
                     id = domain .id,
@@ -77,7 +81,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     owner = userMapper.slimDtoToModel(domain.owner),
                     status = Status.SUBMITTED,
                     creationDate = Date(),
-                    tags = emptyList<Tag>().toMutableList(),
+                    tags = tags,
                     comments = emptyList<Comment>().toMutableList(),
                     ideaBox = ideaBoxMapper.slimDtoToModel(domain.ideaBox),
                     likes = emptyList<User>().toMutableList(),
