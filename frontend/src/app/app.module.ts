@@ -46,6 +46,9 @@ import { CommentComponent } from './components/idea/comments-tab/comment/comment
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
 import { DeleteWarningComponent } from './components/popup/delete-warning/delete-warning.component';
 import { TruncatePipe } from './utility/pipes/truncate';
+import { UserComponent } from './components/user-page/user/user.component';
+import { AdminComponent } from './components/user-page/admin/admin.component';
+import { JuryComponent } from './components/user-page/jury/jury.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +74,9 @@ import { TruncatePipe } from './utility/pipes/truncate';
     CommentsTabComponent,
     CommentComponent,
     DeleteWarningComponent,
+    UserComponent,
+    AdminComponent,
+    JuryComponent,
   ],
   imports: [
     FormsModule,
