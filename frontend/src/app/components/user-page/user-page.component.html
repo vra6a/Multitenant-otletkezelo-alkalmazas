@@ -1,1 +1,8 @@
-<p>user-page works!</p>
+<div class="container">
+  <div class="body">
+    <h1>Welcome {{ currentUser?.firstName + " " + currentUser?.lastName }}!</h1>
+    <app-admin></app-admin>
+    <app-jury></app-jury>
+    <app-user></app-user>
+  </div>
+</div>
