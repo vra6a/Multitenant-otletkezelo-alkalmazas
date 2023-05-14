@@ -25,6 +25,12 @@ export class UserService {
     return this.http.get<WebResponse<User>>(`${this.apiUrl}/user/` + id);
   }
 
+  getUserByEmail$(email: string): Observable<WebResponse<User>> {
+    return this.http.get<WebResponse<User>>(
+      `${this.apiUrl}/user/email/` + email
+    );
+  }
+
   registerUser$(user: RegisterModel): Observable<WebResponse<WebData>> {
     return this.http.post<WebResponse<WebData>>(
       `${this.apiUrl}/auth/register`,

@@ -1,0 +1,12 @@
+.scroll-container {
+  padding: 16px;
+  max-height: 90%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #f4f5f7;
+  border-radius: 12px;
+}
+
+app-idea-list-view {
+  margin: 4px 0;
+}

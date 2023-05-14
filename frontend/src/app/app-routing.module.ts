@@ -11,14 +11,28 @@ import { IdeaCreateEditComponent } from './components/idea/idea-create-edit/idea
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
+import { UserComponent } from './components/user-page/user/user.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
-    path: 'user',
+    path: 'user/:email',
     component: UserPageComponent,
     canActivate: [AuthGuard],
-    children: [],
+    children: [
+      {
+        path: 'user',
+        component: UserComponent,
+      },
+      {
+        path: 'jury',
+        component: UserComponent,
+      },
+      {
+        path: 'admin',
+        component: UserComponent,
+      },
+    ],
   },
   {
     path: 'idea-boxes',

@@ -1,1 +1,12 @@
-<p>user works!</p>
+<div class="container">
+  <div class="col">
+    <h2>Own Ideas</h2>
+    <app-user-idea-list [ideas]="user?.ideas"></app-user-idea-list>
+  </div>
+  <div class="col">
+    <h2>Own Idea boxes</h2>
+    <app-user-idea-box-list
+      [ideaBoxes]="user?.ideaBoxes"
+    ></app-user-idea-box-list>
+  </div>
+</div>

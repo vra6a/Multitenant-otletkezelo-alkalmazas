@@ -19,3 +19,13 @@ h2 {
   font-size: 20px;
   font-weight: 400;
 }
+
+.half-divider {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  width: 45%;
+  margin: 2.5%;
+}

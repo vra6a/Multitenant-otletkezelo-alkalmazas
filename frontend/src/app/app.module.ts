@@ -49,6 +49,8 @@ import { TruncatePipe } from './utility/pipes/truncate';
 import { UserComponent } from './components/user-page/user/user.component';
 import { AdminComponent } from './components/user-page/admin/admin.component';
 import { JuryComponent } from './components/user-page/jury/jury.component';
+import { UserIdeaListComponent } from './components/user-page/components/user-idea-list/user-idea-list.component';
+import { UserIdeaBoxListComponent } from './components/user-page/components/user-idea-box-list/user-idea-box-list.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { JuryComponent } from './components/user-page/jury/jury.component';
     UserComponent,
     AdminComponent,
     JuryComponent,
+    UserIdeaListComponent,
+    UserIdeaBoxListComponent,
   ],
   imports: [
     FormsModule,

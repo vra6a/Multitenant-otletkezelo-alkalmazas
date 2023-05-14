@@ -1,0 +1,8 @@
+<div class="scroll-container">
+  <div class="idea" *ngFor="let idea of ideas">
+    <app-idea-list-view
+      [idea]="idea"
+      [routerLink]="'/idea/' + idea?.id"
+    ></app-idea-list-view>
+  </div>
+</div>
