@@ -3,7 +3,7 @@
 ## TODO
 
 - Scoring
-- User felület
+- ~~User felület~~
 - Admin felület
 - Jury felület
 - FE permissionok rendberakása

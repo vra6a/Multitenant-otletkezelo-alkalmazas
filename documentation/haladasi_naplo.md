@@ -79,15 +79,22 @@ WebResponse bevezetése, hogy egységesen lehessen kezelni a http üzeneteket, m
 
 IdeaBox page haladás: Felület nagyjából kész, lehet új Idea-t létrehozni, azok megjelennek a felületen.
 
-Idea page nagyjából kész, lehet commentelni.
+Idea page nagyjából kész, lehet commentelni, kommenteket likeolni.
 
 ## 10. hét
 
 Május 1. - Május 7.
 
+Ezen a héten főleg frontenden történtek változások. Alap permission lezelés implementálva lett. Kommenteket a tulajdonosa szerkesztheti.
+
+Létre lehet hozni tageket, amikkel csoportosítani lehet az ütleteket témakörökbe. Szerkesztő oldalak létrehozva az idea boxoknak, ideáknak. Törlésnél popup figyelmeztető.
+
 ## 11. hét
 
 Május 8. - Május 14.
+
+Frontenden create-edit komponenseket összevontam, itt hibajavítások.
+User page halad, a user oldal listázói készek (valamennyire)
 
 ## 12. hét
 
