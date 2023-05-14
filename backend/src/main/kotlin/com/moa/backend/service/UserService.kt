@@ -43,6 +43,26 @@ class UserService {
         )
     }
 
+    fun getUserByEmail(email: String): ResponseEntity<*> {
+        val user = userRepository.findByEmail(email).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find User with this email: $email!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+        return ResponseEntity.ok(
+            WebResponse<UserDto>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = userMapper.modelToDto(user)
+            )
+        )
+    }
+
     fun getUsers(): ResponseEntity<*> {
         val users = userRepository.findAll()
         val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()

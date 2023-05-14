@@ -48,6 +48,10 @@ class UserController(private val userRepository: UserRepository) {
         return userService.getUser(id)
     }
 
+    @GetMapping("/user/email/{email}")
+    fun getUserByEmail(@PathVariable email: String): ResponseEntity<*> {
+        return userService.getUserByEmail(email)
+    }
 
     @PutMapping("/user/{id}")
     fun updateUser(@PathVariable id: Long, @RequestBody user: UserDto): ResponseEntity<*> {
