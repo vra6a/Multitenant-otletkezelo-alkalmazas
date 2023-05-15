@@ -43,6 +43,11 @@ class UserController(private val userRepository: UserRepository) {
         return userService.getUsers()
     }
 
+    @GetMapping("/user/juries")
+    fun getJuries(): ResponseEntity<*> {
+        return userService.getJuries()
+    }
+
     @GetMapping("/user/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<*> {
         return userService.getUser(id)

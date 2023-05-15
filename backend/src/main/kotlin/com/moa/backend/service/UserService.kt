@@ -82,6 +82,25 @@ class UserService {
         )
     }
 
+    fun getJuries(): ResponseEntity<*> {
+        val users = userRepository.findJuries()
+        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+
+        for( user in users ) {
+            user.let {
+                response.add(userMapper.modelToSlimDto(user))
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<MutableList<UserSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
+    }
+
     fun updateUser(id: Long, user: UserDto): ResponseEntity<*> {
         val originalUser = userRepository.findById(id).orElse(null)
             ?: return ResponseEntity(
@@ -134,5 +153,7 @@ class UserService {
             )
         )
     }
+
+
 
 }
