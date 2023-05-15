@@ -49,7 +49,10 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             likedIdeas.add(ideaMapper.modelToSlimDto(idea))
         }
 
-
+        val itj: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        entity.ideasToJury?.forEach{ idea: Idea ->
+            itj.add(ideaMapper.modelToSlimDto(idea))
+        }
 
         return UserDto(
             id = entity.id,
@@ -61,7 +64,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             comments = comments,
             ideaBoxes = ideaBoxes,
             ideas = ideas,
-            likedIdeas = likedIdeas
+            likedIdeas = likedIdeas,
+            ideasToJury = itj,
         )
     }
 
@@ -89,6 +93,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
                     ideas = emptyList<Idea>().toMutableList(),
                     ideaBoxes = emptyList<IdeaBox>().toMutableList(),
                     comments = emptyList<Comment>().toMutableList(),
+                    ideasToJury = emptyList<Idea>().toMutableList()
             )
         }
         return idToModel(domain.id)
@@ -112,7 +117,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             likedComments = user.likedComments,
             ideas = user.ideas,
             ideaBoxes = user.ideaBoxes,
-            comments = user.comments
+            comments = user.comments,
+            ideasToJury = user.ideasToJury
         )
     }
 }

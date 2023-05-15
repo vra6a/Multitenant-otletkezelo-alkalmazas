@@ -27,4 +27,6 @@ data class IdeaDto (
     var ideaBox: IdeaBoxSlimDto,
 
     var likes: MutableList<UserSlimDto>?,
+
+    var requiredJuries: MutableList<UserSlimDto>?,
 )

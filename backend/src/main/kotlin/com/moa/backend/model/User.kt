@@ -35,6 +35,9 @@ open class User (
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var ideaBoxes: MutableList<IdeaBox>?,
 
+    @ManyToMany(mappedBy = "requiredJuries")
+    open var ideasToJury: MutableList<Idea>?,
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var comments: MutableList<Comment>?
 ): UserDetails {

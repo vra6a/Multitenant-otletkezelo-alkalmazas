@@ -1,5 +1,6 @@
 package com.moa.backend.model.dto
 
+import com.moa.backend.model.Idea
 import com.moa.backend.model.Role
 import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
@@ -25,4 +26,6 @@ data class UserDto(
      var ideaBoxes: MutableList<IdeaBoxSlimDto>?,
 
      var comments: MutableList<CommentSlimDto>?,
+
+     var ideasToJury: MutableList<IdeaSlimDto>?,
 )

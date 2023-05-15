@@ -32,6 +32,14 @@ data class Idea (
     )
     var tags: MutableList<Tag>?,
 
+    @ManyToMany
+    @JoinTable(
+        name = "idea_juries",
+        joinColumns = [JoinColumn(name = "idea_id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id")]
+    )
+    var requiredJuries: MutableList<User>?,
+
     @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment>?,
 

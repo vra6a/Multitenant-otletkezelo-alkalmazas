@@ -37,6 +37,7 @@ class AuthenticationService {
             ideas = emptyList<Idea>().toMutableList(),
             ideaBoxes = emptyList<IdeaBox>().toMutableList(),
             comments = emptyList<Comment>().toMutableList(),
+            ideasToJury = emptyList<Idea>().toMutableList()
         )
         userRepository.saveAndFlush(user)
         val jwtToken = jwtService.generateToken(user)
