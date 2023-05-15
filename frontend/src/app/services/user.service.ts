@@ -18,8 +18,8 @@ export class UserService {
 
   apiUrl = `${environment.apiUrl}`;
 
-  getUsers$(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/user`);
+  getUsers$(): Observable<WebResponse<UserSlimDto[]>> {
+    return this.http.get<WebResponse<UserSlimDto[]>>(`${this.apiUrl}/user`);
   }
 
   getJuries$(): Observable<WebResponse<UserSlimDto[]>> {
@@ -54,5 +54,19 @@ export class UserService {
 
   getRoles$(): Observable<Role[]> {
     return this.http.get<Role[]>(`${this.apiUrl}/roles`);
+  }
+
+  editUserPermission$(
+    id: number,
+    role: string
+  ): Observable<WebResponse<UserSlimDto>> {
+    return this.http.post<WebResponse<UserSlimDto>>(
+      `${this.apiUrl}/user/${id}/permission`,
+      role
+    );
+  }
+
+  deleteUser$(id: number): Observable<WebResponse<string>> {
+    return this.http.delete<WebResponse<string>>(`${this.apiUrl}/user/${id}`);
   }
 }

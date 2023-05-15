@@ -1,0 +1,16 @@
+<mat-form-field appearance="fill">
+  <mat-label>Favorite food</mat-label>
+  <mat-select [(ngModel)]="role" (selectionChange)="change($event)">
+    <mat-option value="ADMIN">ADMIN</mat-option>
+    <mat-option value="JURY">JURY</mat-option>
+    <mat-option value="USER">USER</mat-option>
+  </mat-select>
+</mat-form-field>
+<button
+  *ngIf="showEditButton"
+  mat-icon-button
+  aria-label="Edit"
+  (click)="edit()"
+>
+  <mat-icon><span>save</span></mat-icon>
+</button>

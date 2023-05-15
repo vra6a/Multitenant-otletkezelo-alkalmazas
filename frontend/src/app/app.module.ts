@@ -51,6 +51,8 @@ import { AdminComponent } from './components/user-page/admin/admin.component';
 import { JuryComponent } from './components/user-page/jury/jury.component';
 import { UserIdeaListComponent } from './components/user-page/components/user-idea-list/user-idea-list.component';
 import { UserIdeaBoxListComponent } from './components/user-page/components/user-idea-box-list/user-idea-box-list.component';
+import { UserPermissionComponent } from './components/user-page/admin/user-permission/user-permission.component';
+import { EditRoleComponent } from './components/user-page/admin/user-permission/edit-role/edit-role.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { UserIdeaBoxListComponent } from './components/user-page/components/user
     JuryComponent,
     UserIdeaListComponent,
     UserIdeaBoxListComponent,
+    UserPermissionComponent,
+    EditRoleComponent,
   ],
   imports: [
     FormsModule,

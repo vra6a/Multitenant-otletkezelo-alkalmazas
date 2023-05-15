@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { User } from 'src/app/models/dto/userDto';
 import { WebResponse } from 'src/app/models/webResponse';
@@ -25,6 +25,16 @@ export class UserPageComponent implements OnInit {
   currentUser: User = null;
 
   ngOnInit(): void {
+    this.router.events.subscribe((val) => {
+      console.log(val);
+      if (val instanceof NavigationEnd) {
+        this.getUser();
+      }
+    });
+    this.getUser();
+  }
+
+  private getUser() {
     let email = this.route.snapshot.paramMap.get('email');
     this.userService
       .getUserByEmail$(email)
