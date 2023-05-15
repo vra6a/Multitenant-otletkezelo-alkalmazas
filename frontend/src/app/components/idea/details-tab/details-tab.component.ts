@@ -19,6 +19,7 @@ export class DetailsTabComponent implements OnInit {
   @Input() status: string = '';
   @Input() creationDate: Date = null;
   @Input() tags: TagSlimDto[] = [];
+  @Input() juries: UserSlimDto[] = [];
 
   ngOnInit(): void {}
 }

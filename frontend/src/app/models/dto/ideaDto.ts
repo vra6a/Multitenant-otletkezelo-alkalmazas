@@ -16,4 +16,5 @@ export interface IdeaDto {
   comments?: CommentSlimDto[];
   ideaBox?: IdeaBoxSlimDto;
   likes?: UserSlimDto[];
+  requiredJuries?: UserSlimDto[];
 }

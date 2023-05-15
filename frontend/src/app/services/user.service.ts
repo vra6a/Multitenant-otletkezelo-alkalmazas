@@ -8,6 +8,7 @@ import { RegisterModel } from 'src/app/models/registerModel';
 import { LoginModel } from 'src/app/models/loginModel';
 import { WebResponse } from 'src/app/models/webResponse';
 import { WebData } from '../models/webData';
+import { UserSlimDto } from '../models/slimDto/userSlimDto';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,12 @@ export class UserService {
 
   getUsers$(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/user`);
+  }
+
+  getJuries$(): Observable<WebResponse<UserSlimDto[]>> {
+    return this.http.get<WebResponse<UserSlimDto[]>>(
+      `${this.apiUrl}/user/juries`
+    );
   }
 
   getUser$(id: number): Observable<WebResponse<User>> {

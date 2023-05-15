@@ -13,4 +13,12 @@
       </mat-chip>
     </mat-chip-list>
   </div>
+  <p class="title">Juries:</p>
+  <div class="tag-list">
+    <mat-chip-list aria-label="Juries">
+      <mat-chip *ngFor="let jury of juries">
+        {{ jury.firstName + " " + jury.lastName }}
+      </mat-chip>
+    </mat-chip-list>
+  </div>
 </div>
