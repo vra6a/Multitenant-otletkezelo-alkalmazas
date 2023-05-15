@@ -1,6 +1,7 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.UserMapper
+import com.moa.backend.model.Role
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
@@ -101,6 +102,28 @@ class UserService {
         )
     }
 
+    fun editUserRole(id: Long, role: String): ResponseEntity<*> {
+        val originalUser = userRepository.findById(id).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find User with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        if(originalUser.role.toString() != role) {
+            originalUser.role = Role.valueOf(role)
+        }
+        return ResponseEntity.ok(
+            WebResponse<UserDto>(
+                code = HttpStatus.OK.value(),
+                message = "User SuccessFully updated!",
+                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
+            )
+        )
+    }
+
     fun updateUser(id: Long, user: UserDto): ResponseEntity<*> {
         val originalUser = userRepository.findById(id).orElse(null)
             ?: return ResponseEntity(
@@ -153,6 +176,7 @@ class UserService {
             )
         )
     }
+
 
 
 

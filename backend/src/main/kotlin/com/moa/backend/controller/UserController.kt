@@ -58,16 +58,6 @@ class UserController(private val userRepository: UserRepository) {
         return userService.getUserByEmail(email)
     }
 
-    @PutMapping("/user/{id}")
-    fun updateUser(@PathVariable id: Long, @RequestBody user: UserDto): ResponseEntity<*> {
-        return userService.updateUser(id, user)
-    }
-
-    @DeleteMapping("/user/{id}")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<*> {
-        return userService.deleteUser(id)
-    }
-
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): WebResponse<AuthenticationResponse> {
         if(userRepository.findByEmail(request.email).isPresent) {
@@ -91,4 +81,21 @@ class UserController(private val userRepository: UserRepository) {
             data = authService.authenticate(request)
         )
     }
+
+    @PostMapping("/user/{id}/permission")
+    fun editRole(@PathVariable id: Long, @RequestBody role: String): ResponseEntity<*> {
+        return userService.editUserRole(id, role);
+    }
+
+    @PutMapping("/user/{id}")
+    fun updateUser(@PathVariable id: Long, @RequestBody user: UserDto): ResponseEntity<*> {
+        return userService.updateUser(id, user)
+    }
+
+    @DeleteMapping("/user/{id}")
+    fun deleteUser(@PathVariable id: Long): ResponseEntity<*> {
+        return userService.deleteUser(id)
+    }
+
+
 }
