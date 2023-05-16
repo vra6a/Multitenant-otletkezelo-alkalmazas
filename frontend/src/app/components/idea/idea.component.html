@@ -49,6 +49,13 @@
           >
             Edit idea
           </button>
+          <button
+            mat-stroked-button
+            [routerLink]="'/idea/' + id + '/score'"
+            *ngIf="canEdit"
+          >
+            Score idea
+          </button>
         </div>
         <div
           class="score-area"

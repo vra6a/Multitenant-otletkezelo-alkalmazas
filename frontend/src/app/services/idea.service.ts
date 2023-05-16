@@ -6,6 +6,7 @@ import { IdeaDto } from '../models/dto/ideaDto';
 import { Observable } from 'rxjs';
 import { WebResponse } from '../models/webResponse';
 import { IdeaSlimDto } from '../models/slimDto/ideaSlimDto';
+import { ScoreDto } from '../models/dto/scoreDto';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,19 @@ export class IdeaService {
     return this.http.post<WebResponse<string>>(
       `${this.apiUrl}/idea/${id}/dislike`,
       {}
+    );
+  }
+
+  addScore$(id: number, score: ScoreDto): Observable<WebResponse<ScoreDto>> {
+    return this.http.post<WebResponse<ScoreDto>>(
+      `${this.apiUrl}/idea/${id}/score`,
+      score
+    );
+  }
+
+  removeScore$(id: number, score: ScoreDto): Observable<WebResponse<string>> {
+    return this.http.delete<WebResponse<string>>(
+      `${this.apiUrl}/idea/${id}/score`
     );
   }
 }

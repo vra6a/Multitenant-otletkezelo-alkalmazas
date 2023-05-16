@@ -18,4 +18,10 @@ data class Score (
     @JoinColumn(name = "idea_id")
     var idea: Idea,
 
+    var title: String,
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    var owner: User
+
 )

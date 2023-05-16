@@ -17,6 +17,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -53,6 +54,9 @@ import { UserIdeaListComponent } from './components/user-page/components/user-id
 import { UserIdeaBoxListComponent } from './components/user-page/components/user-idea-box-list/user-idea-box-list.component';
 import { UserPermissionComponent } from './components/user-page/admin/user-permission/user-permission.component';
 import { EditRoleComponent } from './components/user-page/admin/user-permission/edit-role/edit-role.component';
+import { IdeaScoreComponent } from './components/idea/idea-score/idea-score.component';
+import { StarScoreComponent } from './components/idea/idea-score/star-score/star-score.component';
+import { SliderScoreComponent } from './components/idea/idea-score/slider-score/slider-score.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +89,9 @@ import { EditRoleComponent } from './components/user-page/admin/user-permission/
     UserIdeaBoxListComponent,
     UserPermissionComponent,
     EditRoleComponent,
+    IdeaScoreComponent,
+    StarScoreComponent,
+    SliderScoreComponent,
   ],
   imports: [
     FormsModule,
@@ -110,6 +117,7 @@ import { EditRoleComponent } from './components/user-page/admin/user-permission/
     MatAutocompleteModule,
     MatTableModule,
     MatDialogModule,
+    MatSliderModule,
   ],
   providers: [
     {

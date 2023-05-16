@@ -12,6 +12,7 @@ import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/i
 import { IdeaBoxComponent } from './components/idea-box-page/idea-box/idea-box.component';
 import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-manage/idea-boxes-manage.component';
 import { UserComponent } from './components/user-page/user/user.component';
+import { IdeaScoreComponent } from './components/idea/idea-score/idea-score.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -77,6 +78,11 @@ const routes: Routes = [
   {
     path: 'idea/:id/edit',
     component: IdeaCreateEditComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea/:id/score',
+    component: IdeaScoreComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="body">
+    <h1>{{ idea?.title }}</h1>
+    <h2>Add Star Scorings!</h2>
+    <div class="add-new">
+      <form [formGroup]="starForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Title: </mat-label>
+          <input matInput id="title" type="text" formControlName="title" />
+        </mat-form-field>
+        <div>
+          <button
+            mat-icon-button
+            *ngFor="let ratingId of starRatingArr; index as i"
+            [id]="'star_' + i"
+            (click)="onClick(i + 1)"
+          >
+            <mat-icon>
+              {{ showIcon(i) }}
+            </mat-icon>
+          </button>
+          <p class="body-2">
+            Your rated <span class="body-2">{{ starRating }}</span> /
+            <span class="body-2">{{ starCount }}</span>
+          </p>
+        </div>
+        <button
+          (click)="addStarRating()"
+          *ngIf="starForm.valid"
+          class="addButton"
+          mat-raised-button
+        >
+          add
+        </button>
+      </form>
+    </div>
+    <div class="edit"></div>
+
+    <h2>Add slider Scorings!</h2>
+    <div class="add-new">
+      <form [formGroup]="sliderForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Title: </mat-label>
+          <input matInput id="title" type="text" formControlName="title" />
+        </mat-form-field>
+        <div>
+          <mat-slider
+            [max]="10"
+            [min]="0"
+            [step]="1"
+            (valueChange)="sliderChange($event)"
+          >
+            <input matSliderThumb />
+          </mat-slider>
+          <p>Score: {{ sliderValue }}</p>
+        </div>
+        <button
+          (click)="addSliderRating()"
+          *ngIf="sliderForm.valid"
+          class="addButton"
+          mat-raised-button
+        >
+          add
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

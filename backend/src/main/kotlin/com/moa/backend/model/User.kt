@@ -39,6 +39,9 @@ open class User (
     open var ideasToJury: MutableList<Idea>?,
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var scores: MutableList<Score>?,
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var comments: MutableList<Comment>?
 ): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {

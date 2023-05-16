@@ -12,8 +12,12 @@ class ScoreMapper: Mapper<ScoreDto, ScoreSlimDto, Score> {
 
     @Autowired
     lateinit var ideaMapper: IdeaMapper
+
     @Autowired
     lateinit var scoreRepository: ScoreRepository
+
+    @Autowired
+    lateinit var userMapper: UserMapper
 
 
     override fun modelToDto(entity: Score): ScoreDto {
@@ -21,7 +25,9 @@ class ScoreMapper: Mapper<ScoreDto, ScoreSlimDto, Score> {
             id = entity.id,
             score = entity.score,
             type = entity.type,
-            idea = ideaMapper.modelToSlimDto(entity.idea)
+            idea = ideaMapper.modelToSlimDto(entity.idea),
+            title = entity.title,
+            owner = userMapper.modelToSlimDto(entity.owner)
         )
     }
 
@@ -29,17 +35,20 @@ class ScoreMapper: Mapper<ScoreDto, ScoreSlimDto, Score> {
         return ScoreSlimDto(
             id = entity.id,
             score = entity.score,
-            type = entity.type
+            type = entity.type,
+            title = entity.title
         )
     }
 
     override fun dtoToModel(domain: ScoreDto): Score {
         if(domain.id == 0L) {
             return Score(
-                    id = domain.id,
-                    score = domain.score,
-                    type = domain.type,
-                    idea = ideaMapper.slimDtoToModel(domain.idea)
+                id = domain.id,
+                score = domain.score,
+                type = domain.type,
+                idea = ideaMapper.slimDtoToModel(domain.idea),
+                title = domain.title,
+                owner = userMapper.slimDtoToModel(domain.owner)
             )
         }
         return idToModel(domain.id)
@@ -56,7 +65,9 @@ class ScoreMapper: Mapper<ScoreDto, ScoreSlimDto, Score> {
             id = score.id,
             score = score.score,
             type = score.type,
-            idea = score.idea
+            idea = score.idea,
+            title = score.title,
+            owner = score.owner
         )
     }
 }

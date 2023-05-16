@@ -10,4 +10,6 @@ data class ScoreSlimDto (
 
     var type: ScoreType,
 
+    var title: String,
+
 )
