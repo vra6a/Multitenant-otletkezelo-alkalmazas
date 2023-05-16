@@ -94,11 +94,17 @@ Létre lehet hozni tageket, amikkel csoportosítani lehet az ütleteket témakö
 Május 8. - Május 14.
 
 Frontenden create-edit komponenseket összevontam, itt hibajavítások.
-User page halad, a user oldal listázói készek (valamennyire)
+User page halad, a user oldal listázói készek (valamennyire).
+
+Ideaknak lehet required jury-t adni. Ha egy required jury pontoz egy Idea-t akkor az automatikusan átkerül Reviewed állapotba.
+
+Admin felületen a user role aloldal kész, a felhasználóknak lehet állítani a role-jukat.
 
 ## 12. hét
 
 Május 15. - Mákus 21.
+
+Pontozás csillagokkal és sliderrel.
 
 ## 13. hét
 
