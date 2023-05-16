@@ -132,6 +132,8 @@ export class IdeaScoreComponent implements OnInit {
   }
 
   private distributeScores() {
+    this.starScores = [];
+    this.sliderScores = [];
     this.idea.score.forEach((score: ScoreSlimDto) => {
       switch (score.type) {
         case 'STAR':
@@ -142,7 +144,5 @@ export class IdeaScoreComponent implements OnInit {
           break;
       }
     });
-    console.log(this.starScores);
-    console.log(this.sliderScores);
   }
 }

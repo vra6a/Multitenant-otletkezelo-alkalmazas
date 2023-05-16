@@ -34,7 +34,10 @@
         </button>
       </form>
     </div>
-    <div class="edit"></div>
+    <app-star-score
+      *ngFor="let score of starScores"
+      [score]="score"
+    ></app-star-score>
 
     <h2>Add slider Scorings!</h2>
     <div class="add-new">
@@ -64,5 +67,9 @@
         </button>
       </form>
     </div>
+    <app-slider-score
+      *ngFor="let score of sliderScores"
+      [score]="score"
+    ></app-slider-score>
   </div>
 </div>
