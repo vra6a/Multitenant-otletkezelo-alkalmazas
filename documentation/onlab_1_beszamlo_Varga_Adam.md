@@ -18,6 +18,7 @@ Konzulens: Forstner Bertalan
     - [Spring Boot (Kotlin)](#spring-boot-kotlin)
     - [MySQL](#mysql)
 - [Front-End](#front-end)
+    - [Nézetek](#nézetek)
 - [Back-end](#back-end)
 - [Továbbfejlesztési lehetőségek](#továbbfejlesztési-lehetőségek)
 - [Összefoglalás](#összefoglalás)
@@ -130,11 +131,111 @@ Az egyedi stílusozást SCSS segítségével valósítottam meg, ahol erre szük
 
 ### **Spring Boot (Kotlin)**
 
+//TODO
+
 ### **MySQL**
+
+A MySQL egy többfelhasználós, többszálú relációs 
+adatbázis kiszolgálásához használható szerver. A kora 
+ellenére még most is az egyi legelterjedtebb adatbázis 
+szerver, ami gyorsaságának, és nyílt forráskódjának
+köszönhető. A MySQL szerverek fejlesztése nagyon 
+költséghatékony, emiatt rengeted keretrendszer 
+támogatja a MySQL könnyű integrálását és ez alól a Go 
+sem kivétel.
 
 <div style="page-break-after: always;"></div>
 
 ## **Front-End**
+
+### **Nézetek**
+
+Az alkalmazás kliens oldala több nézetet is tartalmaz, amik között a felhasználó (a jogaitól függően) szabadon navigálhat.
+
+**Login/Register oldal**
+
+Ez az odlal fogadja először a felhasználót. Az alkalmazás használata felhasználói fiókhoz kötött, ha nem vagyunk belépve akkor az alkalmazás funkcióit nem tudjuk használni, az odlalakat nem tudjuk látogatni. Ha a felhasználó rendelkezik fiókkal, akkor az email címével és jelszavával be tud lépni az alkalmazása. Ha még nem rendelkezik fiókkal, akkor a Register gomb megnyomásával egy regisztráló oldalra irányítódik át, ahol a vezetéknév, keresztnév, email és jelszó megadását követően tud fiókot létrehozni. 
+
+//TODO KÉP
+
+**Ötletdoboz listázó oldal**
+
+Ez az oldal tekinthető az alkalmazás főoldalának. Itt láthatóak az aktív ötletdobozok, melyekbe bárki ötletet írhat. Ezt a listázó doboz jobb fölső sarkában található **Create** gombbal tehetjük meg. A listázott ötletdobozokból kereshetünk is a keresőmező használatával, illetve a keresődoboz alján található lapozóval lapozhatunk is a találatok között, ha nem férnek ki az ötletdobozok egy oldalra. Az oldalak számát a felhasználó szabhatja meg (4, 8 illetve 12 ötletdoboz).
+
+Ha adminként vagyunk belépve, akkor megnyithatjuk az ötletdobozokat menedzselő felületet.
+
+//TODO KÉP
+
+**Ötletdoboz menedzsekő oldal**
+
+Ez egy egyszerő listázó oldal, ahol az adminok gyorsan és egyszerően hajthatnak végre műveleteket az ötletdobozokon.
+
+A táblázatban az ötletdobozokat gyorsan törölhetjük, illetve megnyithatjuk a szerkesztő oldalukat. A törés gomb megnyomásakor egy felugró ablak figyelmeztet, hogy biztosan törölni akarjuk-e az ötletdobozt, és annak minden ötletét, az ötletek minden kommentjét.
+
+//TODO KÉP
+
+**Ötletdoboz Create/Edit**
+
+Ez a felület két célt szolgál. Új ötletdobozt lehet itt felvenni, vagy egy már meglévő ötletdobozt szerkeszteni.
+
+Az ötletdobozoknak Címet, leírást, kezdeti és zárási időpontot lehet adni. Ha admin felhasználóként vagyunk bejelentkezve, akkor ezen kívül még megjelenik egy táblázat, ami - hasonlóan mint az ötletdoboz menedzselő felületnél - egy gyors módot biztosít az ötletek szerkesztésére és törlésére.
+
+//TODO KÉP
+
+**Ötletdoboz**
+
+Ezen a felületen láthatunk egy adott ötletdobozt és annak adatait, illetve a benne már leadott ötleteket. Az ötletek 4 nagyobb kategóriába sorolhatók.
+
+- **SUBMITTED**
+
+    Ezek a friss ötletek. Amikor egy felhasználó létrehoz egy ötletet, akkor az ebbe a kategóriába kerül.
+
+- **REVIEWED**
+
+    Ebbe a kategóriába akkor kerülnek az ötletek, ha az összes hozzárendelt bíráló lepontozta az ötletet. Ez az áthelyezés automatikus.
+
+- **APPROVED/DENIED**
+
+    A review során összegyűlt pontok alapján az admin dönthet úgy, hogy az adott ötlet megfelelő, ekkor elfogadja az ötletet. Ebben az esetben az ötlet átkerül az APPROVED státuszba. Ellenkező esetben az ötlet a DENIED státuszba kerül. Ez az áthelyezés nem automatikus.
+
+Az admin felhasználó az ötletek státuszát direktben is állíthatja.
+
+A felületen a már megszokott helyen létrehozhatunk új ötletet az ötletdobozba, illetve admin jogosultsággal az ötletdoboz szerkesztőfelülete is megnyitható.
+
+//TODO KÉP
+
+**Ötlet Create/Edit**
+
+Hasonlóan mint az Ötletdoboznál, ez a felület és két célt szolgál, ötlet létrehozását és módosítását. A felületetn megadható az ötlet címe, leírása. Hozzáadhatunk már létező Tag-eket, illetve új Tag-eket is felvehetünk. Az ötlethez itt tudunk hozzárendelni Bírálókat.
+
+//TODO KÉP
+
+**Ötlet**
+
+Ez a felület 4 alrészből áll, ezek: az Idea, a Details, a Comments illetve a Scores rész. Az első három részből a felületen mindig csak 1 látható, a Scores rész azonban a képernyő jobb szélén mindig megjelenik.
+
+Az ötleteket lehet like-olni is a jobb fölső sarokban. Itt a like gomb mellett láthatjuk, hogy hány ember like-olta eddig és az utolsó likeoló nevét is láthatjuk. Abban az esetben, ha az utolsó lájkoló mi vagyunk, akkor a felület a "You"-t fogja kiírni. 
+
+//TODO KÉP
+
+- **Idea:**
+    Az Idea fülön található a leírás, illetve a későbbiekben ide lehet még több adatot felvinni.
+
+- **Details:**
+    Itt találhatóak az alap adatai az ötletnek, mint például az hogy ki csinálta, mikor, és hogy éppen milyen státuszban van az ötlet. Itt látható, hogy milyen Tag-ekkel van ellátva, illetve mely bírálók vannak az ötlethez adva.
+
+- **Comments:**
+    Itt láthatóak az ötlethez fűzött kommentek. Ez az oldal részletesebb mint a többi, így ez a következő részben részletesen kifejtem.
+
+**Comment**
+
+Ez az aloldal arra hívatott, hogy az ötletekre lehessen kommenteket írni. Ezt az aloldal tetején lévő szövegdobozból tudjuk megtenni. Alatta láthatjuk a már létező kommenteket. Ezeket a kommenteket lehet like-olni. itt a likeolás és annak kiírása ugyanúgy működik, mint az ötleten lévő like rendszer. A felhasználó a saját maga által írt kommenteket tudja szerkeszteni. Ekkor a kommentnél megjelenik egy "Edited" szöveg, jelezve, hogy a komment szerkesztve lett. Az admin felhasználók bárkinek a kommentjét szerkeszthetik.
+
+//TODO KÉP
+
+**Score**
+
+Ez az oldal valamilyen formában létrejött, de a kitűzött céloknak majdnem semmilyen formában nem felel meg, így ennek a szolgáltatásnak a fejlesztésére csak a következő félévben lesz lehetőség.
 
 <div style="page-break-after: always;"></div>
 
