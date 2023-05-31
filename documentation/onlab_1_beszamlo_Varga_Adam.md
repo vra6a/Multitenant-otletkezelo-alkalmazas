@@ -363,6 +363,70 @@ fun editComment(comment: CommentSlimDto): ResponseEntity<*> {
 
 ## **Továbbfejlesztési lehetőségek**
 
+Az alkalmazás egy jelentős része, a pontozás nem úgy valósult meg, mint ahogy azt az elején terveztem. Illetve úgy valósult meg, mivel az elején sokkal kisebbre terveztem, mint amekkora része ez az alkalmazásnak. Emiatt ez a rész befejezetlen maradt ennek a félévnek a végére. A tervek azonban készen állnak, hogy implementáljam a következő (diplomaterv 1) félévben.
+
+### **Ötletdoboz életciklus**
+
+Az egész rendszer életciklusát újra kellett gondolni az első tervezés után. Jelenleg a rendszerben az ötletdobozoknak és a pontozásnak nincsen végcélja.
+
+A következő félévben a következő rendzsert szeretném implementálni:
+
+![Ötletdoboz életciklus](./images/beszamolo/ideabox_life_cycle.png)
+
+Az ötletdoboz életciklusa a következő lesz:
+
+- **Ötletdoboz létrehozás**
+
+  Ahogy a jelenlegi rendzserben is, az ötletdobozt el lehet majd készíteni, névvel, leírással és egyéb adatokkal ellátni.
+
+- **Kötelező bírálók beállítása**
+
+  Az ütletdoboznak be lehessen állítani kötelező bírálókat, akik majd az adott dobozba érkező ötleteket bírálják. Ezen felül ötletenként lehet majd egyéb bírálókat is felvenni, de ezek a bírálók, amik itt beállításra kerülnek alapértelmezetten szerepelni fognak minden beérkező ötletnél.
+
+- **Bírálási szempontok beállítása**
+
+  Az ötletdobozhoz egy egyedi bírálási szempontokat tartalmazó bírálólapot kell majd összeállítani az adminnak. Ebben a bírálólapban minden bírálási szempontnak szerepelni kell, és minden bírálási szemponthoz egy bírálási módszert lehet majd hozzárendelni (csillagos, csúszkás, szöveges). Ezek után az ötletdoboz aktívvá válik, és megnyílik a felhasználóknak az ötletgyűjtésre
+
+- **Beérkező ötletek bírálása**
+
+  A beérkezett ötletek a bíráló bizottság tagjainál megjelenik, ha kötelező bírálói az ötletnek. Ők az ötletek bírálását elvégzik, és az Ötlet életciklusának a végén az ötlet valamelyik sávba kerül. Erről részletesebben az [ötlet életciklusában](#ötlet-életciklus) írok.
+
+- **Ötletdoboz lezárása**
+
+  Az ötletdoboz határideje után már nem fogad több ötletet, azaz lezáródik. Az beérkező ötletek még bírálásra kerülnek, de visszaküldésre már nincs lehetőség.
+
+- **Eredmények**
+
+  Az elbírált és elfogadott ötletek kihirdetésre kerülnek.
+
+### **Ötlet életciklus**
+
+Az ötletek tervezett életciklusa az alébbi képen látható:
+
+![Ötlet életciklusa](./images/beszamolo/idea_life_cycle.png)
+
+- **Ötlet létrehozva**
+
+  Az ötletet a felhasználó létrehozta. Ilyenkor az ötlethez hozzákerülnek a szülő ötletdobozából a kötelező bírálók, de a felhasználó maga is adhat hozzá új bírálókat.
+
+- **Ötlet minden bíráló által bírálva**
+
+  Ha az ötletet minden hozzárendelt bíráló lepontozta, akkor az automatikusan átkerül a REVIEWED oszlopba és ADMIN beavatkozásra vár
+
+- **Döntés**
+
+  Az admin dönthet arról, hogy az ötletet elfogadja, elutasítja vagy visszaküldi. Amennyiben elfogadja vagy elutasítja, akkor az ötlet életciklusa véget ér. Ha visszaküldi javításra, akkor visszakerül a submitted státuszba, és a pontozások lekerülnek róla.
+
+Az ötleteknél a SUBMITTED és REVIEWED státuszban ha a felhasználó szerkeszti az ötletet, akkor arról az összes eddigi pontozás lekerül.
+
+Az ötletek bírálásánál az admin egy összesítő oldalon látja a szempontokhoz összegyűlt átlagos értékeket, esetleg ábrán, grafikonon, illetve a szöveges hozzászólásokat. Ezek alapján hozza meg a végleges döntést.
+
 <div style="page-break-after: always;"></div>
 
 ## **Összefoglalás**
+
+A félév során az alapvető alkalmazás elég nagy részét sikerült implementálni. A hátralévő pontozási rendszer nem kalkulált méretei miatt az a rész nem lett befejezve.
+
+A félév során sokat tanultam mind front-end, mind backend tervezés kapcsán. A back-end alkalmazásom struktúrájában jól működik, és könnyű továbbfejleszteni. Itt rengeteget tanultam a Spring keretrendszerről hiszen ez volt az első komolyabb alkalmazás, amit írtam benne. A spring security is új rendszer volt, de a félév végére sikerült belemélyednem és megvalósítanom egy implementációt.
+
+Front-end részről az alkalmazás vizonyos részei (mivel előre nem kalkuált méreteket öltött) a félév végére kezdtek összecsúszni, így a front-end-re egy refaktorálás ráfér, ahol a különböző felelősségek jobban szét válnak akár modulok formályában is
