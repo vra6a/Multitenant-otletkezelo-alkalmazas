@@ -26,6 +26,12 @@ export class IdeaService {
     );
   }
 
+  getReviewedIdeas(): Observable<WebResponse<IdeaSlimDto[]>> {
+    return this.http.get<WebResponse<IdeaSlimDto[]>>(
+      `${this.apiUrl}/ideas/reviewed`
+    );
+  }
+
   createIdea$(idea: IdeaDto): Observable<WebResponse<IdeaDto>> {
     return this.http.post<WebResponse<IdeaDto>>(`${this.apiUrl}/idea`, idea);
   }

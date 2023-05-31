@@ -98,6 +98,24 @@ class IdeaService {
         )
     }
 
+    fun getReviewedIdeas(): ResponseEntity<*> {
+        val ideas = ideaRepository.getReviewedIdeas()
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+
+        for( idea in ideas ) {
+            idea.let {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
+    }
+
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
@@ -272,4 +290,6 @@ class IdeaService {
     fun deleteScore(id: Long, score: ScoreDto): ResponseEntity<*> {
         TODO("Not yet implemented")
     }
+
+
 }

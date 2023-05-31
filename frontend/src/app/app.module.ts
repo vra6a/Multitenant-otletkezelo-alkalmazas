@@ -57,6 +57,8 @@ import { EditRoleComponent } from './components/user-page/admin/user-permission/
 import { IdeaScoreComponent } from './components/idea/idea-score/idea-score.component';
 import { StarScoreComponent } from './components/idea/idea-score/star-score/star-score.component';
 import { SliderScoreComponent } from './components/idea/idea-score/slider-score/slider-score.component';
+import { IdeaApproveDenyPageComponent } from './components/user-page/admin/idea-approve-deny-page/idea-approve-deny-page.component';
+import { ReviewedIdeasListComponent } from './components/user-page/components/reviewed-ideas-list/reviewed-ideas-list.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +94,8 @@ import { SliderScoreComponent } from './components/idea/idea-score/slider-score/
     IdeaScoreComponent,
     StarScoreComponent,
     SliderScoreComponent,
+    IdeaApproveDenyPageComponent,
+    ReviewedIdeasListComponent,
   ],
   imports: [
     FormsModule,

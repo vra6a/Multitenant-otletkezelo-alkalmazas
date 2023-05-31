@@ -21,6 +21,11 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
         return ideaService.getIdeas()
     }
 
+    @GetMapping("/ideas/reviewed")
+    fun getReviewedIdeas(): ResponseEntity<*> {
+        return ideaService.getReviewedIdeas()
+    }
+
     @GetMapping("/idea/{id}")
     fun getIdea(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.getIdea(id)
