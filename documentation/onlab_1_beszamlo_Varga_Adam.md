@@ -242,6 +242,123 @@ Ez az oldal valamilyen formában létrejött, de a kitűzött céloknak majdnem 
 
 ## **Back-End**
 
+Ahogy már említettem, az alkalmazás szerver odlala egy Spring Boot alkalmazás, amit Kotlin nyelven írtam. Az alkalmazás követi a Spring jól bevált struktúráját, azaz megtalálhatóak a Controllerek, a modellek, a repositoryk és a servicek. Ezen felül két mappa is a struktúra részét képezi, a mapperek és a security
+
+### **Controller**
+
+Itt találhatók az endpontok, amiken keresztül az alkalmazás fogadja a kéréseket. A kérések az /api/\*\*\* url-en érhetőek el. Ezek az endpontok kérés érkezése esetén a service mappában implementált függvényeket hívják meg. Azok az endpontok amik listát adnak vissza, rendelkeznek szűrési és paginálási lehetőségekkel is. Ilyen például az ötletdobozok listázása.
+
+```
+@GetMapping("/idea-box")
+    fun getIdeaBoxes(
+        @RequestParam("s", defaultValue = "") s: String,
+        @RequestParam("sort", defaultValue = "") sort: String,
+        @RequestParam("page", defaultValue = "1") page: Int,
+        @RequestParam("items", defaultValue = "12") items: Int
+    ): ResponseEntity<*> {
+        var direction = Sort.unsorted()
+        when(sort) {
+            "newest" -> direction = Sort.by(Sort.Direction.DESC, "startDate")
+            "oldest" -> direction = Sort.by(Sort.Direction.ASC, "startDate")
+            "closing" -> direction = Sort.by(Sort.Direction.ASC, "endDate")
+        }
+        return ideaBoxService.getIdeaBoxes(s, PageRequest.of(page-1, items, direction))
+    }
+```
+
+### **Model**
+
+Az alkalmazás modell szerkezete nem egyedi módon követi a DAO-DTO mintát. Ez azt jelenti, hogy az alkalmazásban 3 féle modell típus tartozik minden objektumhoz, ezek a **model**, a **dto** és a **slimDto**.
+
+- **Model**
+
+  Ez írja le a legbővebben az objektumokat, és ebben a formában kerülnek az objektumok tárolásra az adatbázisban is. Ebben a leírásban találhatók az objektumok összekapcsolására szolgáló adatbázis kapcsolatok is, amiket a JPA választ majd szét, hogy relációs adatbázisba lehessen ültetni.
+
+  A JPA segítségével könnyen kezelhetők az objektumok közötti egy-egy, egy-több, több-több kapcsolatok. Erre egy példa:
+
+  ```
+  @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade =   [CascadeType.ALL], orphanRemoval = true)
+  var comments: MutableList<Comment>?,
+
+  @ManyToOne
+  @JoinColumn(name = "ideaBox_id")
+  var ideaBox: IdeaBox,
+  ```
+
+  Ebben a példában például egy több-több kapcsolatot láthatunk, ahol az ötlethez kapcsoljuk a hozzá tartozó kommenteket. Itt látható, hogy az ötlet törlésénél a kommentek is törlésre kerülnek. Ezen felül egy egy-több kapcsolat is látható, amikor az ötletdobozok több ötletet is tartalmazhatnak, de egy ötlet csak egy ötletdobozhoz tartozhat.
+
+- **Dto**
+
+  A Dto (Data Transfer Object) feladata, hogy ne minden adat kerüljön kiküldésre a kliens felé, hanem csak azok, amikre valóban szükség van, illetve, hogy a kényes adatok ne kerüljenek ki. Ez egy védelmet is biztosít az adatbázisnak.
+
+- **SlimDto**
+
+  A SlimDto-k feladata az, hogy a Dto-knál küldött kapcsolódó adatok ne az egész objektumot küldjék, hanem csak a feltétlen szükséges adatokat, amikkel lekérhető a szerverről a teljes objektum, ha erre szükség van. Ebben általában csak id-k, illetve 1-2 listázás és nevesítés céljából használt adat utazik. Ebben az adattípusban már nincs utalás az esetleges al-objektumaira, így nem keletkezik végtelen utalás az adatok között.
+
+### **Mapper**
+
+A Mapperben olyan függvények találhatóak, amik a különböző modelltípusokon végeznek konverziókat. 4 Féle konverziót valósítottam meg.
+
+- modelToDto
+- modelToSlimDto
+- dtoToModel
+- slimDtoToModel
+
+### **Repository**
+
+A repository mappában vannak azok a kódok, amik segítségével a JPA az egymásba ágyazott objektum struktúrából leképez egy relációs adatbázisba ültethető adatmodellt. A modellben az annotációkkal ellátott kapcsolatokból kapcsolótáblák képződnek. Ezen felül szűrési és keresési függvények is létrehozhatók itt.
+
+Erre példa a UserRepository findJuries függvénye, ami a felhasználók közül visszaadja azokat, akiknek a szerepköre bíráló vagy admin.
+
+```
+@Query("SELECT u FROM User u WHERE u.role='Jury' OR u.role='ADMIN'")
+    fun findJuries(): List<User>
+```
+
+### **Security**
+
+Az alkalmazás biztonságáért a spring security és JWT tokene alkalmazása felel. A felhasználó bejelentkezéskor illetve regisztrációkor kap egy JWT-t, amit eltárol. A belső rendszer minden endpointja csak akkor látogatható, ha a felhasználó rendelkezik érvényes JWT-vel. Bizonyos endpoint csak akkor látogatható, ha a felhasználó jogosultsági köre is engedélyt ad rá (a bírálást csak jury és admin felhasználó végezheti).
+
+### **Service**
+
+A service rétegben vannak az alkalmazás által használt függvények implementációi. Ezek hívódnak meg amikor az bejövő hívás érkezik az alkalmazásban. Itt hívódnak az adatbázis műveletek, illetve itt is vannak biztonsági intézkedések. (Csak a bejelentkezett felhasználó szerkeszthet egy adott commentet).
+
+```
+fun editComment(comment: CommentSlimDto): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if(comment.owner.email != authentication.name) {
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+        val originalComment = commentRepository.findById(comment.id).orElse(null)
+            ?: return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Comment with this id $comment.id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+        originalComment.isEdited = true
+        originalComment.text = comment.text
+
+        return ResponseEntity.ok(
+            WebResponse<CommentDto>(
+                code = HttpStatus.OK.value(),
+                message = "Comment successfully edited!",
+                data = commentMapper.modelToDto(commentRepository.saveAndFlush(originalComment))
+            )
+        )
+    }
+```
+
 <div style="page-break-after: always;"></div>
 
 ## **Továbbfejlesztési lehetőségek**
@@ -249,5 +366,3 @@ Ez az oldal valamilyen formában létrejött, de a kitűzött céloknak majdnem 
 <div style="page-break-after: always;"></div>
 
 ## **Összefoglalás**
-
-> > > > > > > Stashed changes
