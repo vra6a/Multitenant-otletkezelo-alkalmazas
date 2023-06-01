@@ -110,9 +110,13 @@ Pontozás csillagokkal és sliderrel.
 
 Május 22. - Májua 28.
 
+Ezen a héten nem tudtam foglalkozni az önálló laborra egyéb egyetemi teendők miatt.
+
 ## 14. hét
 
 Május 29. - Június 4.
+
+Ezen a héten megírtam a beszámolót, frissítettem az API leírást és nagy vonalakban elkészítettem a következő féléves terveket.
 
 ## póthét
 
