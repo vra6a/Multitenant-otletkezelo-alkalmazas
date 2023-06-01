@@ -398,23 +398,23 @@ code {
 <div style="page-break-after: always;"></div>
 <h2 id="bevezet%C3%A9s"><strong>Bevezetés</strong></h2>
 <h3 id="motiv%C3%A1ci%C3%B3"><strong>Motiváció</strong></h3>
-<p>Azért választottam ezt a témát, olyan témával akartam foglalkozni, amit továbbvihetek Diplomaterv 1 illetve 2 tárgyakra, mert eég nagy ahhoz, hogy 3 féléven keresztül tudjak benne mivel foglalkozni.</p>
-<p>Emellett a témával lehetőségem van olyan dolokat kipróbálni, amikkel eddig nem foglalkoztam. Ilyen például a Spring Boot rendszer megismerése és a multitenant architektúra implementálása.</p>
-<p>Emellett az megvalósítandó alkalmazás, ami egy akár ipari környezetben is használható ötletkezelő rendszer fejlesztését is érdekes feladatnak találtam, hiszen alapjaiban véve hasonló felépítésű (csak más célt szolgáló) rendzsereket ma már a szoftverfejlesztő cégek többsége használ a mindennapokban a feladatok kiosztásában. (Jira, Redmine, Trello)</p>
+<p>Azért választottam ezt a témát, olyan témával akartam foglalkozni, amit továbbvihetek Diplomaterv 1 illetve 2 tárgyakra, mert elég nagy ahhoz, hogy 3 féléven keresztül tudjak benne mivel foglalkozni.</p>
+<p>Emellett a témával lehetőségem van olyan dolgokat kipróbálni, amikkel eddig nem foglalkoztam. Ilyen például a Spring Boot rendszer megismerése és a multitenant architektúra implementálása.</p>
+<p>Emellett az megvalósítandó alkalmazás, ami egy akár ipari környezetben is használható ötletkezelő rendszer fejlesztését is érdekes feladatnak találtam, hiszen alapjaiban véve hasonló felépítésű (csak más célt szolgáló) rendszereket ma már a szoftverfejlesztő cégek többsége használ a mindennapokban a feladatok kiosztásában. (Jira, Redmine, Trello)</p>
 <h3 id="megval%C3%B3s%C3%ADtand%C3%B3-feladatok"><strong>Megvalósítandó feladatok</strong></h3>
-<p>A félévben a fő célként azt tűztem ki, hogy az alkalmazás alapjait fektetem le, hogy a Diplomaterv 1 illetve 2 tárgyak keretében a már működő rendzsert tudjam továbbfejleszteni új, speciálisabb feature-ökkel, modulokkal.</p>
+<p>A félévben a fő célként azt tűztem ki, hogy az alkalmazás alapjait fektetem le, hogy a Diplomaterv 1 illetve 2 tárgyak keretében a már működő rendszert tudjam továbbfejleszteni új, speciálisabb feature-ökkel, modulokkal.</p>
 <p>Ez alapján a félévre tervezett feladatok a következők voltak:</p>
 <p><strong>Rendszer</strong></p>
 <p>Az alkalmazás alapvetően 3 felhasználót támogat, a <strong>USER</strong>-t, a <strong>JURY</strong>-t és az <strong>ADMIN</strong>-t. Ezek a felhasználóknak különböző jogosultságaik vannak, amikkel az alkalmazás különböző részeihez férnek hozzá.</p>
 <ul>
 <li>
 <p><strong>USER</strong></p>
-<p>A USER felhasználó az oldalon limitált képességekkel rendelkezik. A listázott ötletdobozokat látja, amiket meg tud nyitni. Ezekbe az ötletdobozokba létrehozhat új ötleteket. A saját ötletét szerkesztheti, illetve töröleti, de más ötletét csak megnyitni tudja. Az ötleteket Like-olhatja, illetve ha már Like-olta, akkor a Like-ot visszavonhatja. Az ötlet kommentjeit Like/Dislikeolhatja (a sajátját is) illetve új kommentet is létrehozat egy adott ötlethez. A saját kommentjét szerkeszteti.</p>
+<p>A USER felhasználó az oldalon limitált képességekkel rendelkezik. A listázott ötletdobozokat látja, amiket meg tud nyitni. Ezekbe az ötletdobozokba létrehozhat új ötleteket. A saját ötletét szerkesztheti, illetve töröleti, de más ötletét csak megnyitni tudja. Az ötleteket Like-olhatja, illetve ha már Like-olta, akkor a Like-ot visszavonhatja. Az ötlet kommentjeit Like/Dislikeolhatja (a sajátját is) illetve új kommentet is létrehozhat egy adott ötlethez. A saját kommentjét szerkeszteti.</p>
 <p>Ezen felül hozzáfér a User oldal első részéhez, ami listázza a saját ötleteket és kommenteket.</p>
 </li>
 <li>
 <p><strong>JURY</strong></p>
-<p>A JURY felhasználónak már több leetősége van interakcióba lépni az oldallal. A JURY felhasználók megkapják a USER felhasználók jogait, illetve új funkciókhoz is hozzájutnak.</p>
+<p>A JURY felhasználónak már több lehetősége van interakcióba lépni az oldallal. A JURY felhasználók megkapják a USER felhasználók jogait, illetve új funkciókhoz is hozzájutnak.</p>
 <ul>
 <li>Ötletdobozok létrehozása</li>
 <li>Ötletdobozokba érkező ötletek bírálása</li>
@@ -427,14 +427,14 @@ code {
 </li>
 </ul>
 <p><strong>Biztonság</strong></p>
-<p>A rendszernek mind Front-End-en, mind Back-end-en meg kell valósítani biztonsági intézkedéseket, amikkel csak a megfelelő jogusultságú felhasználók érhetnek el a jogaiknak megfelelő funkciókat.</p>
+<p>A rendszernek mind Front-End-en, mind Back-end-en meg kell valósítani biztonsági intézkedéseket, amikkel csak a megfelelő jogosultságú felhasználók érhetnek el a jogaiknak megfelelő funkciókat.</p>
 <div style="page-break-after: always;"></div>
 <h2 id="architekt%C3%BAra">Architektúra</h2>
 <p>Az alkalmazást webes környezetben valósítottam meg, és mivel több feladatot is ellát (illetve még a jövőben bővítve is lesz), ezért 3 rétegű architektúra megvalósítása mellett döntöttem.</p>
 <p><strong>Megjelenítési réteg:</strong> Angular 14</p>
 <p><strong>Üzleti logikai réteg:</strong> Spring Boot Kotlin nyelven</p>
 <p><strong>Perzisztencia:</strong> MySQL Adatbázis</p>
-<p>Mind a kliens oldali Angular alkalmazásban, mind a szerver oldali Go alkalmazásban
+<p>Mind a kliens oldali Angular alkalmazásban, mind a szerver oldali Spring Boot alkalmazásban
 törekedtem az adott keretrendszer által diktált struktúrák és konvenciók megtartására.</p>
 <hr>
 <p>Ez a Back-End rétegben megvalósult. A szerver megvalósítja a Controller-Service-Repository mintát.</p>
@@ -448,50 +448,27 @@ törekedtem az adott keretrendszer által diktált struktúrák és konvenciók 
 <h2 id="felhaszn%C3%A1lt-technol%C3%B3gi%C3%A1k"><strong>Felhasznált technológiák</strong></h2>
 <h3 id="angular"><strong>Angular</strong></h3>
 <p><strong>Angular</strong>
-Az Angular egy webes keretrendszer, amit a Google fejleszt. SPA
-(Single Page Application) létrehozására lett kitalálva, ami azt jelenti,
-hogy a megjelenített nézeteket nem a szerver generálja és statikus
-oldalakként küldi a kliens számára, hanem kliens oldalon kerülnek
-generálásra, és ezek a generált oldalak és komponensek
-dinamikusan vannak beillesztve a DOM-ba (Document Object
-Model). Ennek köszönhetően az SPA alkalmazások nagyon gyorsak
-és „mozgékonynak” tűnhetnek a végfelhasználók számára.
-A fejlesztésük is egyszerű, mivel az Angular is komponenseken alapul. A komponensek kisebb
-alkotóelemei az oldalnak, amik akár önállóan is működhetnek. Ezekből a kisebb komponensekből
-áll elő az oldal. Ezeket a komponensek úgy vannak tervezve, hogy újra felhasználhatóak legyenek
-az alkalmazás több részében is, így jelentősen kevesebb (akár semmiféle) kódismétlést tartalmaz
-az oldal forráskódja</p>
+Az Angular egy webes keretrendszer, amit a Google fejleszt. SPA (Single Page Application) létrehozására lett kitalálva, ami azt jelenti, hogy a megjelenített nézeteket nem a szerver generálja és statikus oldalakként küldi a kliens számára, hanem kliens oldalon kerülnek generálásra, és ezek a generált oldalak és komponensek dinamikusan vannak beillesztve a DOM-ba (Document Object Model). Ennek köszönhetően az SPA alkalmazások nagyon gyorsak és „mozgékonynak” tűnhetnek a végfelhasználók számára. A fejlesztésük is egyszerű, mivel az Angular is komponenseken alapul. A komponensek kisebb alkotóelemei az oldalnak, amik akár önállóan is működhetnek. Ezekből a kisebb komponensekből áll elő az oldal. Ezeket a komponensek úgy vannak tervezve, hogy újra felhasználhatóak legyenek az alkalmazás több részében is, így jelentősen kevesebb (akár semmiféle) kódismétlést tartalmaz az oldal forráskódja.</p>
 <p><strong>Angular Material</strong></p>
-<p>Az Angular Material szintén a Google által fejlesztett könyvtár, ami az Angular
-alkalmazásokhoz biztosít különböző előre létrehozott komponenst, amikkel a fejlesztés még
-gyorsabb és egyszerűbb. A könyvtár ezen felül egy nagyon jól definiált material designt is nyújt,
-ami könnyen használható a saját komponensek stílusozására is.
-Az alkalmazásban több komponens is Angular Material komponens, vagy abból lett átalakítva.
-Az egyedi stílusozást SCSS segítségével valósítottam meg, ahol erre szükség volt</p>
+<p>Az Angular Material szintén a Google által fejlesztett könyvtár, ami az Angular alkalmazásokhoz biztosít különböző előre létrehozott komponenst, amikkel a fejlesztés még gyorsabb és egyszerűbb. A könyvtár ezen felül egy nagyon jól definiált material designt is nyújt, ami könnyen használható a saját komponensek stílusozására is. Az alkalmazásban több komponens is Angular Material komponens, vagy abból lett átalakítva. Az egyedi stílusozást SCSS segítségével valósítottam meg, ahol erre szükség volt.</p>
 <h3 id="spring-boot-kotlin"><strong>Spring Boot (Kotlin)</strong></h3>
-<p>//TODO</p>
+<p>A Spring Boot egy nyílt forráskódú keretrendszer és egyben fejlesztési platform, amely lehetővé teszi a könnyű és gyors alkalmazásfejlesztést a Spring keretrendszerrel. A Spring Boot célja, hogy egyszerűsítse és gyorsítsa fel a Spring alapú alkalmazások létrehozását, konfigurálását és telepítését, így csökkentve a fejlesztési erőfeszítéseket és az alkalmazások bevezetésének időtartamát.</p>
+<p>A Spring Boot támogatja a Kotlin nyelvet, és a Spring keretrendszer Kotlin-kompatibilis API-kat is kínál. Ez lehetővé teszi a fejlesztők számára, hogy Kotlinban írjanak Spring Boot alkalmazásokat, kihasználva a Kotlin nyelv nyújtotta előnyöket, például a rövidebb és olvashatóbb kódot, a csökkentett hibalehetőséget és a funkcionális programozás támogatását. Így a Spring Boot és a Kotlin kombinációja erőteljes és hatékony platformot nyújt az alkalmazásfejlesztéshez.</p>
 <h3 id="mysql"><strong>MySQL</strong></h3>
-<p>A MySQL egy többfelhasználós, többszálú relációs
-adatbázis kiszolgálásához használható szerver. A kora
-ellenére még most is az egyi legelterjedtebb adatbázis
-szerver, ami gyorsaságának, és nyílt forráskódjának
-köszönhető. A MySQL szerverek fejlesztése nagyon
-költséghatékony, emiatt rengeted keretrendszer
-támogatja a MySQL könnyű integrálását és ez alól a Go
-sem kivétel.</p>
+<p>A MySQL egy többfelhasználós, többszálú relációs adatbázis kiszolgálásához használható szerver. A kora ellenére még most is az egyik legelterjedtebb adatbázis szerver, ami gyorsaságának, és nyílt forráskódjának köszönhető. A MySQL szerverek fejlesztése nagyon költséghatékony, emiatt rengeted keretrendszer támogatja a MySQL könnyű integrálását és ez alól a Go sem kivétel.</p>
 <div style="page-break-after: always;"></div>
 <h2 id="front-end"><strong>Front-End</strong></h2>
 <h3 id="n%C3%A9zetek"><strong>Nézetek</strong></h3>
 <p>Az alkalmazás kliens oldala több nézetet is tartalmaz, amik között a felhasználó (a jogaitól függően) szabadon navigálhat.</p>
 <p><strong>Login/Register oldal</strong></p>
-<p>Ez az odlal fogadja először a felhasználót. Az alkalmazás használata felhasználói fiókhoz kötött, ha nem vagyunk belépve akkor az alkalmazás funkcióit nem tudjuk használni, az odlalakat nem tudjuk látogatni. Ha a felhasználó rendelkezik fiókkal, akkor az email címével és jelszavával be tud lépni az alkalmazása. Ha még nem rendelkezik fiókkal, akkor a Register gomb megnyomásával egy regisztráló oldalra irányítódik át, ahol a vezetéknév, keresztnév, email és jelszó megadását követően tud fiókot létrehozni.</p>
+<p>Ez az oldal fogadja először a felhasználót. Az alkalmazás használata felhasználói fiókhoz kötött, ha nem vagyunk belépve akkor az alkalmazás funkcióit nem tudjuk használni, az oldalakat nem tudjuk látogatni. Ha a felhasználó rendelkezik fiókkal, akkor az email címével és jelszavával be tud lépni az alkalmazása. Ha még nem rendelkezik fiókkal, akkor a Register gomb megnyomásával egy regisztráló oldalra irányítódik át, ahol a vezetéknév, keresztnév, email és jelszó megadását követően tud fiókot létrehozni.</p>
 <p><img src="./images/beszamolo/login.png" alt="Bejelentkező oldal"></p>
 <p><strong>Ötletdoboz listázó oldal</strong></p>
 <p>Ez az oldal tekinthető az alkalmazás főoldalának. Itt láthatóak az aktív ötletdobozok, melyekbe bárki ötletet írhat. Ezt a listázó doboz jobb fölső sarkában található <strong>Create</strong> gombbal tehetjük meg. A listázott ötletdobozokból kereshetünk is a keresőmező használatával, illetve a keresődoboz alján található lapozóval lapozhatunk is a találatok között, ha nem férnek ki az ötletdobozok egy oldalra. Az oldalak számát a felhasználó szabhatja meg (4, 8 illetve 12 ötletdoboz).</p>
 <p>Ha adminként vagyunk belépve, akkor megnyithatjuk az ötletdobozokat menedzselő felületet.</p>
 <p><img src="./images/beszamolo/idea_box_listing.png" alt="Ötletdoboz listázó oldal"></p>
 <p><strong>Ötletdoboz menedzselő oldal</strong></p>
-<p>Ez egy egyszerő listázó oldal, ahol az adminok gyorsan és egyszerően hajthatnak végre műveleteket az ötletdobozokon.</p>
+<p>Ez egy egyszerű listázó oldal, ahol az adminok gyorsan és egyszerűen hajthatnak végre műveleteket az ötletdobozokon.</p>
 <p>A táblázatban az ötletdobozokat gyorsan törölhetjük, illetve megnyithatjuk a szerkesztő oldalukat. A törés gomb megnyomásakor egy felugró ablak figyelmeztet, hogy biztosan törölni akarjuk-e az ötletdobozt, és annak minden ötletét, az ötletek minden kommentjét.</p>
 <p><img src="./images/beszamolo/idea_box_manage.png" alt="Ötletdoboz menedzselő oldal"></p>
 <p><strong>Ötletdoboz Create/Edit</strong></p>
@@ -507,7 +484,7 @@ sem kivétel.</p>
 </li>
 <li>
 <p><strong>REVIEWED</strong></p>
-<p>Ebbe a kategóriába akkor kerülnek az ötletek, ha az összes hozzárendelt bíráló lepontozta az ötletet. Ez az áthelyezés automatikus.</p>
+<p>Ebben a kategóriába akkor kerülnek az ötletek, ha az összes hozzárendelt bíráló lepontozta az ötletet. Ez az áthelyezés automatikus.</p>
 </li>
 <li>
 <p><strong>APPROVED/DENIED</strong></p>
@@ -518,7 +495,7 @@ sem kivétel.</p>
 <p>A felületen a már megszokott helyen létrehozhatunk új ötletet az ötletdobozba, illetve admin jogosultsággal az ötletdoboz szerkesztőfelülete is megnyitható.</p>
 <p><img src="./images/beszamolo/idea_box.png" alt="Ötletdoboz"></p>
 <p><strong>Ötlet Create/Edit</strong></p>
-<p>Hasonlóan mint az Ötletdoboznál, ez a felület és két célt szolgál, ötlet létrehozását és módosítását. A felületetn megadható az ötlet címe, leírása. Hozzáadhatunk már létező Tag-eket, illetve új Tag-eket is felvehetünk. Az ötlethez itt tudunk hozzárendelni Bírálókat.</p>
+<p>Hasonlóan mint az Ötletdoboznál, ez a felület és két célt szolgál, ötlet létrehozását és módosítását. A felületen megadható az ötlet címe, leírása. Hozzáadhatunk már létező Tag-eket, illetve új Tag-eket is felvehetünk. Az ötlethez itt tudunk hozzárendelni Bírálókat.</p>
 <p><img src="./images/beszamolo/idea_create_edit.png" alt="Ötlet Create/Edit"></p>
 <p><strong>Ötlet</strong></p>
 <p>Ez a felület 4 alrészből áll, ezek: az Idea, a Details, a Comments illetve a Scores rész. Az első három részből a felületen mindig csak 1 látható, a Scores rész azonban a képernyő jobb szélén mindig megjelenik.</p>
@@ -531,7 +508,7 @@ Az Idea fülön található a leírás, illetve a későbbiekben ide lehet még 
 </li>
 <li>
 <p><strong>Details:</strong>
-Itt találhatóak az alap adatai az ötletnek, mint például az hogy ki csinálta, mikor, és hogy éppen milyen státuszban van az ötlet. Itt látható, hogy milyen Tag-ekkel van ellátva, illetve mely bírálók vannak az ötlethez adva.</p>
+Itt találhatóak az alap adatai az ötletnek, mint például az, hogy ki csinálta, mikor, és hogy éppen milyen státuszban van az ötlet. Itt látható, hogy milyen Tag-ekkel van ellátva, illetve mely bírálók vannak az ötlethez adva.</p>
 </li>
 <li>
 <p><strong>Comments:</strong>
@@ -545,9 +522,9 @@ Itt láthatóak az ötlethez fűzött kommentek. Ez az oldal részletesebb mint 
 <p>Ez az oldal valamilyen formában létrejött, de a kitűzött céloknak majdnem semmilyen formában nem felel meg, így ennek a szolgáltatásnak a fejlesztésére csak a következő félévben lesz lehetőség.</p>
 <div style="page-break-after: always;"></div>
 <h2 id="back-end"><strong>Back-End</strong></h2>
-<p>Ahogy már említettem, az alkalmazás szerver odlala egy Spring Boot alkalmazás, amit Kotlin nyelven írtam. Az alkalmazás követi a Spring jól bevált struktúráját, azaz megtalálhatóak a Controllerek, a modellek, a repositoryk és a servicek. Ezen felül két mappa is a struktúra részét képezi, a mapperek és a security</p>
+<p>Ahogy már említettem, az alkalmazás szerver oldala egy Spring Boot alkalmazás, amit Kotlin nyelven írtam. Az alkalmazás követi a Spring jól bevált struktúráját, azaz megtalálhatóak a Controllerek, a modellek, a repositoryk és a servicek. Ezen felül két mappa is a struktúra részét képezi, a mapperek és a security</p>
 <h3 id="controller"><strong>Controller</strong></h3>
-<p>Itt találhatók az endpontok, amiken keresztül az alkalmazás fogadja a kéréseket. A kérések az /api/*** url-en érhetőek el. Ezek az endpontok kérés érkezése esetén a service mappában implementált függvényeket hívják meg. Azok az endpontok amik listát adnak vissza, rendelkeznek szűrési és paginálási lehetőségekkel is. Ilyen például az ötletdobozok listázása.</p>
+<p>Itt találhatók az endpointok, amiken keresztül az alkalmazás fogadja a kéréseket. A kérések az /api/*** url-en érhetőek el. Ezek az endpointok kérés érkezése esetén a service mappában implementált függvényeket hívják meg. Azok az endpontok amik listát adnak vissza, rendelkeznek szűrési és paginálási lehetőségekkel is. Ilyen például az ötletdobozok listázása.</p>
 <pre class="hljs"><code><div>@GetMapping(&quot;/idea-box&quot;)
     fun getIdeaBoxes(
         @RequestParam(&quot;s&quot;, defaultValue = &quot;&quot;) s: String,
@@ -565,7 +542,7 @@ Itt láthatóak az ötlethez fűzött kommentek. Ez az oldal részletesebb mint 
     }
 </div></code></pre>
 <h3 id="model"><strong>Model</strong></h3>
-<p>Az alkalmazás modell szerkezete nem egyedi módon követi a DAO-DTO mintát. Ez azt jelenti, hogy az alkalmazásban 3 féle modell típus tartozik minden objektumhoz, ezek a <strong>model</strong>, a <strong>dto</strong> és a <strong>slimDto</strong>.</p>
+<p>Az alkalmazás modell szerkezete nem egyedi módon követi a DAO-DTO mintát. Ez azt jelenti, hogy az alkalmazásban 3-féle modell típus tartozik minden objektumhoz, ezek a <strong>model</strong>, a <strong>dto</strong> és a <strong>slimDto</strong>.</p>
 <ul>
 <li>
 <p><strong>Model</strong></p>
@@ -646,21 +623,21 @@ var ideaBox: IdeaBox,
 <p>Az alkalmazás egy jelentős része, a pontozás nem úgy valósult meg, mint ahogy azt az elején terveztem. Illetve úgy valósult meg, mivel az elején sokkal kisebbre terveztem, mint amekkora része ez az alkalmazásnak. Emiatt ez a rész befejezetlen maradt ennek a félévnek a végére. A tervek azonban készen állnak, hogy implementáljam a következő (diplomaterv 1) félévben.</p>
 <h3 id="%C3%B6tletdoboz-%C3%A9letciklus"><strong>Ötletdoboz életciklus</strong></h3>
 <p>Az egész rendszer életciklusát újra kellett gondolni az első tervezés után. Jelenleg a rendszerben az ötletdobozoknak és a pontozásnak nincsen végcélja.</p>
-<p>A következő félévben a következő rendzsert szeretném implementálni:</p>
+<p>A következő félévben a következő rendszert szeretném implementálni:</p>
 <p><img src="./images/beszamolo/ideabox_life_cycle.png" alt="Ötletdoboz életciklus"></p>
 <p>Az ötletdoboz életciklusa a következő lesz:</p>
 <ul>
 <li>
 <p><strong>Ötletdoboz létrehozás</strong></p>
-<p>Ahogy a jelenlegi rendzserben is, az ötletdobozt el lehet majd készíteni, névvel, leírással és egyéb adatokkal ellátni.</p>
+<p>Ahogy a jelenlegi rendszerben is, az ötletdobozt el lehet majd készíteni, névvel, leírással és egyéb adatokkal ellátni.</p>
 </li>
 <li>
 <p><strong>Kötelező bírálók beállítása</strong></p>
-<p>Az ütletdoboznak be lehessen állítani kötelező bírálókat, akik majd az adott dobozba érkező ötleteket bírálják. Ezen felül ötletenként lehet majd egyéb bírálókat is felvenni, de ezek a bírálók, amik itt beállításra kerülnek alapértelmezetten szerepelni fognak minden beérkező ötletnél.</p>
+<p>Az ötletdoboznak be lehessen állítani kötelező bírálókat, akik majd az adott dobozba érkező ötleteket bírálják. Ezen felül ötletenként lehet majd egyéb bírálókat is felvenni, de ezek a bírálók, amik itt beállításra kerülnek alapértelmezetten szerepelni fognak minden beérkező ötletnél.</p>
 </li>
 <li>
 <p><strong>Bírálási szempontok beállítása</strong></p>
-<p>Az ötletdobozhoz egy egyedi bírálási szempontokat tartalmazó bírálólapot kell majd összeállítani az adminnak. Ebben a bírálólapban minden bírálási szempontnak szerepelni kell, és minden bírálási szemponthoz egy bírálási módszert lehet majd hozzárendelni (csillagos, csúszkás, szöveges). Ezek után az ötletdoboz aktívvá válik, és megnyílik a felhasználóknak az ötletgyűjtésre</p>
+<p>Az ötletdobozhoz egy egyedi bírálási szempontokat tartalmazó bírálólapot kell majd összeállítani az adminnak. Ebben a bírálólapban minden bírálási szempontnak szerepelni kell, és minden bírálási szemponthoz egy bírálási módszert lehet majd hozzárendelni (csillagos, csúszkás, szöveges). Ezek után az ötletdoboz aktívvá válik, és megnyílik a felhasználóknak az ötletgyűjtésre.</p>
 </li>
 <li>
 <p><strong>Beérkező ötletek bírálása</strong></p>
@@ -676,7 +653,7 @@ var ideaBox: IdeaBox,
 </li>
 </ul>
 <h3 id="%C3%B6tlet-%C3%A9letciklus"><strong>Ötlet életciklus</strong></h3>
-<p>Az ötletek tervezett életciklusa az alébbi képen látható:</p>
+<p>Az ötletek tervezett életciklusa az alábbi képen látható:</p>
 <p><img src="./images/beszamolo/idea_life_cycle.png" alt="Ötlet életciklusa"></p>
 <ul>
 <li>
@@ -685,7 +662,7 @@ var ideaBox: IdeaBox,
 </li>
 <li>
 <p><strong>Ötlet minden bíráló által bírálva</strong></p>
-<p>Ha az ötletet minden hozzárendelt bíráló lepontozta, akkor az automatikusan átkerül a REVIEWED oszlopba és ADMIN beavatkozásra vár</p>
+<p>Ha az ötletet minden hozzárendelt bíráló lepontozta, akkor az automatikusan átkerül a REVIEWED oszlopba és ADMIN beavatkozásra vár.</p>
 </li>
 <li>
 <p><strong>Döntés</strong></p>
@@ -698,7 +675,7 @@ var ideaBox: IdeaBox,
 <h2 id="%C3%B6sszefoglal%C3%A1s"><strong>Összefoglalás</strong></h2>
 <p>A félév során az alapvető alkalmazás elég nagy részét sikerült implementálni. A hátralévő pontozási rendszer nem kalkulált méretei miatt az a rész nem lett befejezve.</p>
 <p>A félév során sokat tanultam mind front-end, mind backend tervezés kapcsán. A back-end alkalmazásom struktúrájában jól működik, és könnyű továbbfejleszteni. Itt rengeteget tanultam a Spring keretrendszerről hiszen ez volt az első komolyabb alkalmazás, amit írtam benne. A spring security is új rendszer volt, de a félév végére sikerült belemélyednem és megvalósítanom egy implementációt.</p>
-<p>Front-end részről az alkalmazás vizonyos részei (mivel előre nem kalkuált méreteket öltött) a félév végére kezdtek összecsúszni, így a front-end-re egy refaktorálás ráfér, ahol a különböző felelősségek jobban szét válnak akár modulok formályában is</p>
+<p>Front-end részről az alkalmazás bizonyos részei (mivel előre nem kalkulált méreteket öltött) a félév végére kezdtek összecsúszni, így a front-end-re egy refaktorálás ráfér, ahol a különböző felelősségek jobban szét válnak akár modulok formájában is</p>
 
 </body>
 </html>
