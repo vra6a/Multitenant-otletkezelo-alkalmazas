@@ -19,6 +19,10 @@ A téma diplomatervként végigvihető.
 
 [Napló](./documentation/haladasi_naplo.md)
 
+## Beszámoló
+
+[API v.1.2](./documentation/onlab_1_beszamlo_Varga_Adam.md)
+
 ## Figma
 
 https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX3aE09MxQf-1
@@ -29,4 +33,4 @@ https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX
 
 ## API Leírás
 
-[API v.1.1](./documentation/openapi.json)
+[API v.1.2](./documentation/openapi.json)
