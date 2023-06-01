@@ -14,6 +14,10 @@
   },
   "tags": [
     {
+      "name": "Auth",
+      "description": "Operations about Authentication"
+    },
+    {
       "name": "Comment",
       "description": "Operations about Comments"
     },
@@ -26,28 +30,1053 @@
       "description": "Operations about Ideas"
     },
     {
-      "name": "Score",
-      "description": "Operations about Scores"
-    },
-    {
       "name": "Tag",
       "description": "Operations about Tags"
     },
     {
       "name": "User",
       "description": "Operations about Users"
-    },
-    {
-      "name": "Utility",
-      "description": "Helper operations"
     }
   ],
   "paths": {
+    "/auth/register": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Register new User",
+        "description": "Registers new user to the system",
+        "operationId": "register",
+        "responses": {
+          "200": {
+            "description": "User Successfully registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Login new User",
+        "description": "Log in user to the system",
+        "operationId": "login",
+        "responses": {
+          "200": {
+            "description": "Login was successfull.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Create new idea box",
+        "description": "Create new idea box in the database. Throws error if the idea box already exists.",
+        "operationId": "createComment",
+        "responses": {
+          "200": {
+            "description": "Comment Successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Get comments for idea",
+        "description": "Returns all comments on a specific idea.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "getCommentsByIdea",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/comment/{id}": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Get a specific comment",
+        "description": "Returns a specific comment by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "getComment",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Edit a specific comment",
+        "description": "Edits and return a specific comment by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "editComment",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          }
+        }
+      }
+    },
+    "/comment/{id}/like": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Like a comment",
+        "description": "The user who is logged in likes a specific comment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "likeComment",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/comment/{id}/dislike": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Dislike a comment",
+        "description": "The user who is logged in dislikes a specific comment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "dislikeComment",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/idea-box": {
+      "get": {
+        "tags": ["IdeaBox"],
+        "summary": "Get all idea boxes with params",
+        "description": "Returns Idea boxes from the database. Can search for specific names, and can sort the idea boxes.",
+        "operationId": "getIdeaBoxes",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Can filter the idea boxes. if the title has this substring then it returns.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the returning array in descending or ascending order.",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Requested page of all idea boxes.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "items",
+            "in": "query",
+            "description": "Requested items in one page of idea boxes",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      },
+      "post": {
+        "tags": ["IdeaBox"],
+        "summary": "Create new idea box",
+        "description": "Create new idea box in the database. Throws error if the idea box already exists.",
+        "operationId": "createIdeaBox",
+        "requestBody": {
+          "description": "Create new idea box using IdeaBoxDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaBoxDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Box Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          },
+          "404": {
+            "description": "Idea box with this id already exists."
+          }
+        }
+      }
+    },
+    "/idea-box/{id}": {
+      "get": {
+        "tags": ["IdeaBox"],
+        "summary": "Get specific idea box",
+        "description": "Returns a specific idea box by its id",
+        "operationId": "getIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea Box found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      },
+      "put": {
+        "tags": ["IdeaBox"],
+        "summary": "Update a specific idea box",
+        "description": "Overwrite an idea box data in the database.",
+        "operationId": "updateIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea Box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update existing idea box",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaBoxDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Box found by provided the id and has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      },
+      "delete": {
+        "tags": ["IdeaBox"],
+        "summary": "Deletes specific idea box",
+        "description": "Finds and deletes a specific idea box from the database",
+        "operationId": "deleteIdeaBox",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea Box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea Box found by the provided id and has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          },
+          "404": {
+            "description": "Idea Box with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea-box-count": {
+      "get": {
+        "tags": ["IdeaBox"],
+        "summary": "get idea box count",
+        "description": "Returns how many idea boxes are saved in the database",
+        "operationId": "getIdeaBoxCount",
+        "responses": {
+          "200": {
+            "description": "Idea Box found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/idea-box/slim/{id}": {
+      "get": {
+        "tags": ["IdeaBox"],
+        "summary": "Get specific idea box slim dto",
+        "description": "Returns a specific idea box slim dto by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea Box id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "operationId": "getIdeaBoxSlim",
+        "responses": {
+          "200": {
+            "description": "Idea Box found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      }
+    },
+    "/idea": {
+      "get": {
+        "tags": ["Idea"],
+        "summary": "Get all Ideas with params",
+        "description": "Returns Ideas from the database. Can search for specific names, and can sort the Ideas.",
+        "operationId": "getIdeas",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Can filter the Ideas. if the title has this substring then it returns.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the returning array in descending or ascending order.",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Requested page of all Ideas.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "items",
+            "in": "query",
+            "description": "Requested items in one page of Ideas",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Idea"],
+        "summary": "Create new Idea",
+        "description": "Create new Idea in the database. Throws error if the Idea already exists.",
+        "operationId": "createIdea",
+        "requestBody": {
+          "description": "Create new Idea using IdeaDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea with this id already exists."
+          }
+        }
+      }
+    },
+    "/idea/{id}": {
+      "get": {
+        "tags": ["Idea"],
+        "summary": "Get specific Idea",
+        "description": "Returns a specific Idea by its id",
+        "operationId": "getIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      },
+      "put": {
+        "tags": ["Idea"],
+        "summary": "Update a specific Idea",
+        "description": "Overwrite an Idea data in the database.",
+        "operationId": "updateIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update existing Idea",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdeaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea found by provided the id and has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Idea"],
+        "summary": "Deletes specific Idea",
+        "description": "Finds and deletes a specific Idea from the database",
+        "operationId": "deleteIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebResponse"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea found by the provided id and has been deleted"
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "403": {
+            "description": "User has no permission to do this action."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea/slim/{id}": {
+      "get": {
+        "tags": ["Idea"],
+        "summary": "Get specific Idea slim dto",
+        "description": "Returns a specific Idea slim dto by its id",
+        "operationId": "getIdeaSlim",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea slim dto found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea/{id}/like": {
+      "post": {
+        "tags": ["Idea"],
+        "summary": "Like a specific Idea slim dto",
+        "description": "Likes a specific Idea slim dto by its id",
+        "operationId": "likeIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea slim dto found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Idea liked"
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea/{id}/dislike": {
+      "post": {
+        "tags": ["Idea"],
+        "summary": "Dislike a specific Idea slim dto",
+        "description": "Dislikes a specific Idea slim dto by its id",
+        "operationId": "dislikeIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Idea disliked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/idea/{id}/score": {
+      "post": {
+        "tags": ["Idea"],
+        "summary": "Score a specific Idea slim dto",
+        "description": "Score a specific Idea slim dto by its id",
+        "operationId": "scoreIdea",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Idea id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Score a new Idea score using ScoreDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Idea Scored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Idea with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/tag": {
+      "get": {
+        "tags": ["Tag"],
+        "summary": "Get all tags",
+        "description": "Returns Users from the database. Can search for specific names, and can sort the users.",
+        "operationId": "getTags",
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Create new tag",
+        "description": "Create new tag in the database. Throws error if the tag already exists.",
+        "operationId": "createTag",
+        "requestBody": {
+          "description": "Create new Tag using TagDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Tag Successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Tag with this id already exists."
+          }
+        }
+      }
+    },
+    "/tag/{id}": {
+      "get": {
+        "tags": ["Tag"],
+        "summary": "Get specific tag",
+        "description": "Returns a specific tag by its id",
+        "operationId": "getTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "tag id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Tag with this id cannot be found."
+          }
+        }
+      }
+    },
+    "/tag/slim/{id}": {
+      "get": {
+        "tags": ["Tag"],
+        "summary": "Get specific tag slim dto",
+        "description": "Returns a specific tag slim dto by its id",
+        "operationId": "getTagSlim",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "tag id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag found and served.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are not valid."
+          },
+          "404": {
+            "description": "Tag with this id cannot be found."
+          }
+        }
+      }
+    },
     "/user": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "summary": "Get all users with params",
         "description": "Returns Users from the database. Can search for specific names, and can sort the users.",
         "operationId": "getUsers",
@@ -66,10 +1095,7 @@
             "description": "Sort the returning array in descending or ascending order.",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           },
           {
@@ -102,13 +1128,14 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Credentials are not valid."
           }
         }
       },
       "post": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "summary": "Create new user",
         "description": "Create new user in the database. Throws error if the user already exists.",
         "operationId": "createUser",
@@ -134,6 +1161,9 @@
               }
             }
           },
+          "401": {
+            "description": "Credentials are not valid."
+          },
           "404": {
             "description": "User with this id already exists."
           }
@@ -142,9 +1172,7 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "summary": "Get specific user",
         "description": "Returns a specific user by its id",
         "operationId": "getUser",
@@ -171,15 +1199,16 @@
               }
             }
           },
+          "401": {
+            "description": "Credentials are not valid."
+          },
           "404": {
             "description": "User with this id cannot be found."
           }
         }
       },
       "put": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "summary": "Update a specific user",
         "description": "Overwrite an users data in the database.",
         "operationId": "updateUser",
@@ -217,15 +1246,16 @@
               }
             }
           },
+          "401": {
+            "description": "Credentials are not valid."
+          },
           "404": {
             "description": "User with this id cannot be found."
           }
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "summary": "Deletes specific user",
         "description": "Finds and deletes a specific user from the database",
         "operationId": "deleteUser",
@@ -245,446 +1275,11 @@
           "200": {
             "description": "User found by the provided id and has been deleted"
           },
+          "401": {
+            "description": "Credentials are not valid."
+          },
           "404": {
             "description": "User with this id cannot be found."
-          }
-        }
-      }
-    },
-    "/idea-box": {
-      "get": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "Get all idea boxes with params",
-        "description": "Returns Idea boxes from the database. Can search for specific names, and can sort the idea boxes.",
-        "operationId": "getIdeaBoxes",
-        "parameters": [
-          {
-            "name": "s",
-            "in": "query",
-            "description": "Can filter the idea boxes. if the title has this substring then it returns.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort the returning array in descending or ascending order.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Requested page of all idea boxes.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "items",
-            "in": "query",
-            "description": "Requested items in one page of idea boxes",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Succesful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IdeaBoxSlimDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "Create new idea box",
-        "description": "Create new idea box in the database. Throws error if the idea box already exists.",
-        "operationId": "createIdeaBox",
-        "requestBody": {
-          "description": "Create new idea box using IdeaBoxDto",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IdeaBoxDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Idea Box Successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaBoxDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea box with this id already exists."
-          }
-        }
-      }
-    },
-    "/idea-box/{id}": {
-      "get": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "Get specific idea box",
-        "description": "Returns a specific idea box by its id",
-        "operationId": "getIdeaBox",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea box id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Idea Box found and served.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaBoxDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea Box with this id cannot be found."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "Update a specific idea box",
-        "description": "Overwrite an idea box data in the database.",
-        "operationId": "updateIdeaBox",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea Box id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Update existing idea box",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IdeaBoxDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Idea Box found by provided the id and has been updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaBoxDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea Box with this id cannot be found."
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "Deletes specific idea box",
-        "description": "Finds and deletes a specific idea box from the database",
-        "operationId": "deleteIdeaBox",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea Box id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Idea Box found by the provided id and has been deleted"
-          },
-          "404": {
-            "description": "Idea Box with this id cannot be found."
-          }
-        }
-      }
-    },
-    "/idea-box-count": {
-      "get": {
-        "tags": [
-          "IdeaBox"
-        ],
-        "summary": "get idea box count",
-        "description": "Returns how many idea boxes are saved in the database",
-        "operationId": "getIdeaBoxCount",
-        "responses": {
-          "200": {
-            "description": "Idea Box found and served.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/idea": {
-      "get": {
-        "tags": [
-          "Idea"
-        ],
-        "summary": "Get all Ideas with params",
-        "description": "Returns Ideas from the database. Can search for specific names, and can sort the Ideas.",
-        "operationId": "getIdeas",
-        "parameters": [
-          {
-            "name": "s",
-            "in": "query",
-            "description": "Can filter the Ideas. if the title has this substring then it returns.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort the returning array in descending or ascending order.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Requested page of all Ideas.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "items",
-            "in": "query",
-            "description": "Requested items in one page of Ideas",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Succesful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IdeaSlimDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Idea"
-        ],
-        "summary": "Create new Idea",
-        "description": "Create new Idea in the database. Throws error if the Idea already exists.",
-        "operationId": "createIdea",
-        "requestBody": {
-          "description": "Create new Idea using IdeaDto",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IdeaDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Idea Successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea with this id already exists."
-          }
-        }
-      }
-    },
-    "/idea/{id}": {
-      "get": {
-        "tags": [
-          "Idea"
-        ],
-        "summary": "Get specific Idea",
-        "description": "Returns a specific Idea by its id",
-        "operationId": "getIdea",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Idea found and served.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea with this id cannot be found."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Idea"
-        ],
-        "summary": "Update a specific Idea",
-        "description": "Overwrite an Idea data in the database.",
-        "operationId": "updateIdea",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Update existing Idea",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/IdeaDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Idea found by provided the id and has been updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdeaDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Idea with this id cannot be found."
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Idea"
-        ],
-        "summary": "Deletes specific Idea",
-        "description": "Finds and deletes a specific Idea from the database",
-        "operationId": "deleteIdea",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Idea id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Idea found by the provided id and has been deleted"
-          },
-          "404": {
-            "description": "Idea with this id cannot be found."
           }
         }
       }
@@ -692,6 +1287,113 @@
   },
   "components": {
     "schemas": {
+      "WebResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/IdeaBoxDto"
+              },
+              {
+                "$ref": "#/components/schemas/IdeaBoxSlimDto"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdeaBoxSlimDto"
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/IdeaDto"
+              },
+              {
+                "$ref": "#/components/schemas/IdeaSlimDto"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdeaSlimDto"
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/CommentDto"
+              },
+              {
+                "$ref": "#/components/schemas/CommentSlimDto"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CommentSlimDto"
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/TagDto"
+              },
+              {
+                "$ref": "#/components/schemas/TagSlimDto"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TagSlimDto"
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/UserDto"
+              },
+              {
+                "$ref": "#/components/schemas/UserSlimDto"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserSlimDto"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
       "CommentDto": {
         "type": "object",
         "properties": {
@@ -717,6 +1419,9 @@
             "items": {
               "$ref": "#/components/schemas/UserSlimDto"
             }
+          },
+          "isEdited": {
+            "type": "boolean"
           }
         }
       },
@@ -815,12 +1520,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "SUBMITTED",
-              "REVIEWED",
-              "APPROVED",
-              "DENIED"
-            ]
+            "enum": ["SUBMITTED", "REVIEWED", "APPROVED", "DENIED"]
           },
           "creationDate": {
             "type": "string",
@@ -846,6 +1546,12 @@
             "items": {
               "$ref": "#/components/schemas/UserSlimDto"
             }
+          },
+          "requiredJuries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSlimDto"
+            }
           }
         }
       },
@@ -861,12 +1567,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "SUBMITTED",
-              "REVIEWED",
-              "APPROVED",
-              "DENIED"
-            ]
+            "enum": ["SUBMITTED", "REVIEWED", "APPROVED", "DENIED"]
           }
         }
       },
@@ -877,19 +1578,21 @@
             "type": "integer",
             "format": "int64"
           },
+          "title": {
+            "type": "string"
+          },
           "score": {
             "type": "integer"
           },
           "type": {
             "type": "string",
-            "enum": [
-              "STAR",
-              "SLIDER",
-              "OTHER"
-            ]
+            "enum": ["STAR", "SLIDER", "OTHER"]
           },
           "idea": {
             "$ref": "#/components/schemas/IdeaSlimDto"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserSlimDto"
           }
         }
       },
@@ -905,11 +1608,10 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "STAR",
-              "SLIDER",
-              "OTHER"
-            ]
+            "enum": ["STAR", "SLIDER", "OTHER"]
+          },
+          "title": {
+            "type": "string"
           }
         }
       },
@@ -961,11 +1663,7 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "VISITOR",
-              "JURY",
-              "ADMIN"
-            ]
+            "enum": ["VISITOR", "JURY", "ADMIN"]
           },
           "likesIdeas": {
             "type": "array",
@@ -996,6 +1694,12 @@
             "items": {
               "$ref": "#/components/schemas/CommentSlimDto"
             }
+          },
+          "ideasToJury": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdeaSlimDto"
+            }
           }
         }
       },
@@ -1014,6 +1718,10 @@
           },
           "email": {
             "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["VISITOR", "JURY", "ADMIN"]
           }
         }
       }
