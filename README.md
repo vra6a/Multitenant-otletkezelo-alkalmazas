@@ -21,7 +21,7 @@ A téma diplomatervként végigvihető.
 
 ## Beszámoló
 
-[API v.1.2](./documentation/onlab_1_beszamlo_Varga_Adam.md)
+[Beszámoló](./documentation/onlab_1_beszamlo_Varga_Adam.md)
 
 ## Figma
 
