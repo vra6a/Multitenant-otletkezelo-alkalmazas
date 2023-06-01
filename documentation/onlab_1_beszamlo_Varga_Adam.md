@@ -115,7 +115,9 @@ Az Angular Material szintén a Google által fejlesztett könyvtár, ami az Angu
 
 ### **Spring Boot (Kotlin)**
 
-//TODO
+A Spring Boot egy nyílt forráskódú keretrendszer és egyben fejlesztési platform, amely lehetővé teszi a könnyű és gyors alkalmazásfejlesztést a Spring keretrendszerrel. A Spring Boot célja, hogy egyszerűsítse és gyorsítsa fel a Spring alapú alkalmazások létrehozását, konfigurálását és telepítését, így csökkentve a fejlesztési erőfeszítéseket és az alkalmazások bevezetésének időtartamát.
+
+A Spring Boot támogatja a Kotlin nyelvet, és a Spring keretrendszer Kotlin-kompatibilis API-kat is kínál. Ez lehetővé teszi a fejlesztők számára, hogy Kotlinban írjanak Spring Boot alkalmazásokat, kihasználva a Kotlin nyelv nyújtotta előnyöket, például a rövidebb és olvashatóbb kódot, a csökkentett hibalehetőséget és a funkcionális programozás támogatását. Így a Spring Boot és a Kotlin kombinációja erőteljes és hatékony platformot nyújt az alkalmazásfejlesztéshez.
 
 ### **MySQL**
 
