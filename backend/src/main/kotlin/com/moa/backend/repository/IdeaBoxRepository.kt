@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface IdeaBoxRepository : JpaRepository<IdeaBox, Long> {
 
-    @Query("select i from IdeaBox i where i.name like %?1%")
+    @Query("SELECT i FROM IdeaBox i WHERE i.name LIKE %?1%")
     fun search(s: String, pageable: Pageable): List<IdeaBox>
 }

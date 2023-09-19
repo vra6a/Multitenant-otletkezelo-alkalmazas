@@ -9,6 +9,7 @@ import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.repository.CommentRepository
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.Query
 import org.springframework.http.HttpStatus
@@ -32,9 +33,13 @@ class CommentService {
     @Autowired
     lateinit var userMapper: UserMapper
 
+    private val logger = KotlinLogging.logger {}
+
     fun getComment(id: Long): ResponseEntity<*> {
         val comment = commentRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(comment == null) {
+            logger.info { "MOA-INFO: Comment with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Comment with this id $id!",
@@ -42,6 +47,9 @@ class CommentService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: Comment with id: ${id} found." }
         return ResponseEntity.ok(
             WebResponse<CommentDto>(
                 code = HttpStatus.OK.value(),
@@ -53,7 +61,9 @@ class CommentService {
 
     fun getCommentSlim(id: Long): ResponseEntity<*> {
         val comment = commentRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(comment == null) {
+            logger.info { "MOA-INFO: Comment with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Comment with this id $id!",
@@ -61,6 +71,10 @@ class CommentService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: Comment with id: ${id} found." }
+
         return ResponseEntity.ok(
             WebResponse<CommentSlimDto>(
                 code = HttpStatus.OK.value(),
@@ -79,6 +93,9 @@ class CommentService {
                 response.add((commentMapper.modelToSlimDto(comment)))
             }
         }
+
+        logger.info { "MOA-INFO: Comments found." }
+
         return ResponseEntity.ok(
             WebResponse<MutableList<CommentSlimDto>>(
                 code = HttpStatus.OK.value(),
@@ -89,22 +106,21 @@ class CommentService {
     }
 
     fun createComment(comment: CommentDto): ResponseEntity<*> {
+        val data = commentMapper.modelToDto(commentRepository.save(commentMapper.dtoToModel(comment)))
+        logger.info { "MOA-INFO: Comment created with id: ${data.id}. Comment: $data" }
         return ResponseEntity.ok(
             WebResponse<CommentDto>(
                 code = HttpStatus.OK.value(),
                 message = "Comment successfully created!",
-                data = commentMapper.modelToDto(
-                    commentRepository.saveAndFlush(
-                        commentMapper.dtoToModel(comment)
-                    )
+                data = data
                 )
-            )
         )
     }
 
     fun editComment(comment: CommentSlimDto): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         if(comment.owner.email != authentication.name) {
+            logger.info { "MOA-INFO: Comment edit with id: ${comment.id} failed. Reason: Editing user is not the creator user" }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.UNAUTHORIZED.value(),
@@ -114,8 +130,11 @@ class CommentService {
                 HttpStatus.UNAUTHORIZED
             )
         }
+
         val originalComment = commentRepository.findById(comment.id).orElse(null)
-            ?: return ResponseEntity(
+        if(originalComment == null) {
+            logger.info { "MOA-INFO: Comment with id: ${comment.id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Comment with this id $comment.id!",
@@ -123,22 +142,27 @@ class CommentService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
 
         originalComment.isEdited = true
         originalComment.text = comment.text
 
+        val data = commentMapper.modelToDto(commentRepository.save(originalComment))
+        logger.info { "MOA-INFO: Comment edited with id: ${data.id}. Comment: $data" }
         return ResponseEntity.ok(
             WebResponse<CommentDto>(
                 code = HttpStatus.OK.value(),
                 message = "Comment successfully edited!",
-                data = commentMapper.modelToDto(commentRepository.saveAndFlush(originalComment))
+                data = data
             )
         )
     }
 
     fun likeComment(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.UNAUTHORIZED.value(),
@@ -147,7 +171,11 @@ class CommentService {
                 ),
                 HttpStatus.UNAUTHORIZED
             )
-        val comment = commentRepository.findById(id).orElse(null) ?:
+        }
+
+        val comment = commentRepository.findById(id).orElse(null)
+        if(comment == null) {
+            logger.info { "MOA-INFO: Comment with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -156,9 +184,11 @@ class CommentService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
 
         comment.likes.add(user)
-        commentRepository.saveAndFlush(comment)
+        commentRepository.save(comment)
+        logger.info { "MOA-INFO: Comment with id: ${comment.id} liked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -171,27 +201,35 @@ class CommentService {
 
     fun dislikeComment(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
-        return ResponseEntity(
-            WebResponse(
-                code = HttpStatus.UNAUTHORIZED.value(),
-                message = "Authentication error!",
-                data = null
-            ),
-            HttpStatus.UNAUTHORIZED
-        )
-        val comment = commentRepository.findById(id).orElse(null) ?:
-        return ResponseEntity(
-            WebResponse(
-                code = HttpStatus.NOT_FOUND.value(),
-                message = "Cannot find Comment with this id $id!",
-                data = null
-            ),
-            HttpStatus.NOT_FOUND
-        )
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "Authentication error!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
+        val comment = commentRepository.findById(id).orElse(null)
+        if(comment == null) {
+            logger.info { "MOA-INFO: Comment with id: ${id} not found." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Comment with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
         comment.likes.remove(user)
-        commentRepository.saveAndFlush(comment)
+        commentRepository.save(comment)
+        logger.info { "MOA-INFO: Comment with id: ${comment.id} disliked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -201,5 +239,4 @@ class CommentService {
             )
         )
     }
-
 }

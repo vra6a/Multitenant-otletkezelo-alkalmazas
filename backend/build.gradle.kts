@@ -32,6 +32,8 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	implementation("org.mapstruct:mapstruct:1.5.3.Final")
 	annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.3.Final")
+	implementation ("io.github.microutils:kotlin-logging-jvm:2.0.11")
+	implementation("ch.qos.logback:logback-classic:1.2.6")
 }
 
 tasks.withType<KotlinCompile> {

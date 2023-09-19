@@ -6,6 +6,7 @@ import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.utility.WebResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -17,13 +18,18 @@ class IdeaBoxService {
 
     @Autowired
     lateinit var ideaBoxRepository: IdeaBoxRepository
+
     @Autowired
     lateinit var ideaBoxMapper: IdeaBoxMapper
+
+    private val logger = KotlinLogging.logger {}
 
 
     fun getIdeaBox(id: Long): ResponseEntity<*> {
         val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(ideaBox == null) {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea Box with this id $id!",
@@ -31,6 +37,10 @@ class IdeaBoxService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} found." }
+
         return ResponseEntity.ok(
             WebResponse<IdeaBoxDto>(
                 code = HttpStatus.OK.value(),
@@ -42,7 +52,9 @@ class IdeaBoxService {
 
     fun getIdeaBoxSlim(id: Long): ResponseEntity<*> {
         val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(ideaBox == null) {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea Box with this id $id!",
@@ -50,6 +62,10 @@ class IdeaBoxService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} found." }
+
         return ResponseEntity.ok(
             WebResponse<IdeaBoxSlimDto>(
                 code = HttpStatus.OK.value(),
@@ -68,6 +84,9 @@ class IdeaBoxService {
                 response.add(ideaBoxMapper.modelToSlimDto(ideaBox))
             }
         }
+
+        logger.info { "MOA-INFO: IdeaBoxes found." }
+
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaBoxSlimDto>>(
                 code = HttpStatus.OK.value(),
@@ -88,29 +107,32 @@ class IdeaBoxService {
     }
 
     fun createIdeaBox(box: IdeaBoxDto): ResponseEntity<*> {
+        val data = ideaBoxMapper.modelToDto(ideaBoxRepository.save(ideaBoxMapper.dtoToModel(box)))
+
+        logger.info { "MOA-INFO: IdeaBox created with id: ${data.id}. IdeaBox: $data" }
+
         return ResponseEntity.ok(
             WebResponse<IdeaBoxDto>(
                 code = HttpStatus.OK.value(),
                 message = "Idea Box successfully created!",
-                data = ideaBoxMapper.modelToDto(
-                            ideaBoxRepository.saveAndFlush(
-                                ideaBoxMapper.dtoToModel(box)
-                            )
-                        )
+                data = data
             )
         )
     }
 
     fun updateIdeaBox(id: Long, box: IdeaBoxDto): ResponseEntity<*> {
         val originalBox = ideaBoxRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(originalBox == null) {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found" }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
-                    message = "Cannot find Idea Box with this id $id!",
+                    message = "Cannot find IdeaBox with this id $id!",
                     data = null
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
 
         if(!originalBox.name.isNullOrEmpty() && originalBox.name != box.name) {
             originalBox.name = box.name
@@ -128,11 +150,14 @@ class IdeaBoxService {
             originalBox.endDate = box.endDate
         }
 
+        val data = ideaBoxMapper.modelToDto(ideaBoxRepository.save(originalBox))
+        logger.info { "MOA-INFO: IdeaBox edited with id: ${data.id}. IdeaBox: $data" }
+
         return ResponseEntity.ok(
             WebResponse<IdeaBoxDto>(
                 code = HttpStatus.OK.value(),
                 message = "Idea Box successfully updated!",
-                data = ideaBoxMapper.modelToDto(ideaBoxRepository.saveAndFlush(originalBox))
+                data = data
             )
         )
     }
@@ -141,6 +166,7 @@ class IdeaBoxService {
         kotlin.runCatching {
             ideaBoxRepository.deleteById(id)
         }.onFailure {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse<String>(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -149,6 +175,8 @@ class IdeaBoxService {
                 ),
                 HttpStatus.NOT_FOUND)
         }
+
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} deleted." }
 
         return ResponseEntity.ok(
             WebResponse<String>(

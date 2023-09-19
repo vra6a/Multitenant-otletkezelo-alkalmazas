@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.stream.Collectors
+import mu.KotlinLogging
 
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"])
@@ -35,6 +36,8 @@ class UserController(private val userRepository: UserRepository) {
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
+
+    private val logger = KotlinLogging.logger {}
 
 
 
@@ -75,6 +78,7 @@ class UserController(private val userRepository: UserRepository) {
         if(!userRepository.findByEmail(request.email).isPresent) {
             throw ErrorException("Email address is not found!")
         }
+        logger.info { "MOA-INFO: User with email: ${request.email} tried logging in." }
         return WebResponse(
             code = HttpStatus.OK.value(),
             message = "Login was successfull!",

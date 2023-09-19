@@ -15,6 +15,7 @@ import com.moa.backend.model.slim.TagSlimDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -42,9 +43,13 @@ class IdeaService {
     @Autowired
     lateinit var scoreMapper: ScoreMapper
 
+    private val logger = KotlinLogging.logger {}
+
     fun getIdea(id: Long): ResponseEntity<*> {
         val idea = ideaRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea with this id $id!",
@@ -52,6 +57,10 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: Idea with id: ${id} found." }
+
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
@@ -63,7 +72,9 @@ class IdeaService {
 
     fun getIdeaSlim(id: Long): ResponseEntity<*> {
         val idea = ideaRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea with this id $id!",
@@ -71,6 +82,10 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
+
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} found." }
+
         return ResponseEntity.ok(
             WebResponse<IdeaSlimDto>(
                 code = HttpStatus.OK.value(),
@@ -89,6 +104,9 @@ class IdeaService {
                 response.add(ideaMapper.modelToSlimDto(idea))
             }
         }
+
+        logger.info { "MOA-INFO: IdeaBoxes found." }
+
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaSlimDto>>(
                 code = HttpStatus.OK.value(),
@@ -117,22 +135,24 @@ class IdeaService {
     }
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
+        val data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(ideaMapper.dtoToModel(idea)))
+
+        logger.info { "MOA-INFO: Idea created with id: ${data.id}. Idea: $data" }
+
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
                 message = "Idea successfully created!",
-                data = ideaMapper.modelToDto(
-                            ideaRepository.saveAndFlush(
-                                ideaMapper.dtoToModel(idea)
-                            )
-                        )
+                data = data
             )
         )
     }
 
     fun updateIdea(id: Long, idea: IdeaDto): ResponseEntity<*> {
         val originalIdea = ideaRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+        if(originalIdea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found" }
+            return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea with this id $id!",
@@ -140,6 +160,7 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
 
         if(!originalIdea.title.isNullOrEmpty() && originalIdea.title != idea.title) {
             originalIdea.title = idea.title
@@ -159,11 +180,14 @@ class IdeaService {
         }
         originalIdea.tags = tags
 
+        val data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(originalIdea))
+        logger.info { "MOA-INFO: Idea edited with id: ${data.id}. Idea: $data" }
+
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
                 message = "Idea successfully updated!",
-                data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(originalIdea))
+                data = data
             )
         )
     }
@@ -172,6 +196,7 @@ class IdeaService {
         kotlin.runCatching {
             ideaRepository.deleteById(id)
         }.onFailure {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse<String>(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -180,6 +205,8 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND)
         }
+
+        logger.info { "MOA-INFO: Idea with id: ${id} deleted." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -192,7 +219,9 @@ class IdeaService {
 
     fun likeIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -201,7 +230,11 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND
             )
-        val idea = ideaRepository.findById(id).orElse(null) ?:
+        }
+
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -210,9 +243,11 @@ class IdeaService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        }
 
         idea.likes?.add(user)
         ideaRepository.saveAndFlush(idea)
+        logger.info { "MOA-INFO: Idea with id: ${idea.id} liked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -225,27 +260,35 @@ class IdeaService {
 
     fun dislikeIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val user = userRepository.findByEmail(authentication.name).orElse(null) ?:
-        return ResponseEntity(
-            WebResponse(
-                code = HttpStatus.NOT_FOUND.value(),
-                message = "Authentication error!",
-                data = null
-            ),
-            HttpStatus.NOT_FOUND
-        )
-        val idea = ideaRepository.findById(id).orElse(null) ?:
-        return ResponseEntity(
-            WebResponse(
-                code = HttpStatus.NOT_FOUND.value(),
-                message = "Cannot find Idea with this id $id!",
-                data = null
-            ),
-            HttpStatus.NOT_FOUND
-        )
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Authentication error!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
         idea.likes?.remove(user)
         ideaRepository.saveAndFlush(idea)
+        logger.info { "MOA-INFO: Idea with id: ${idea.id} disliked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(

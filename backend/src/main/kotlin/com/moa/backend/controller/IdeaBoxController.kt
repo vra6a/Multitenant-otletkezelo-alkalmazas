@@ -26,7 +26,7 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
 
     @GetMapping("/idea-box")
     fun getIdeaBoxes(
-        @RequestParam("s", defaultValue = "") s: String,
+        @RequestParam("search", defaultValue = "") s: String,
         @RequestParam("sort", defaultValue = "") sort: String,
         @RequestParam("page", defaultValue = "1") page: Int,
         @RequestParam("items", defaultValue = "12") items: Int
@@ -37,6 +37,7 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
             "oldest" -> direction = Sort.by(Sort.Direction.ASC, "startDate")
             "closing" -> direction = Sort.by(Sort.Direction.ASC, "endDate")
         }
+
         return ideaBoxService.getIdeaBoxes(s, PageRequest.of(page-1, items, direction))
     }
 

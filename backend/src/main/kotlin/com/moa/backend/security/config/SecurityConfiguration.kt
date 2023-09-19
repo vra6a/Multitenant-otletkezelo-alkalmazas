@@ -32,7 +32,7 @@ class SecurityConfiguration {
             .csrf().disable()
             .authorizeHttpRequests()
                 .antMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                //.antMatchers("/api/idea-box").hasAnyAuthority("ADMIN")
+                .antMatchers("/api/idea/{id}/score").hasAnyAuthority("JURY","ADMIN")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
