@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { User } from 'src/app/models/dto/userDto';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -13,10 +12,12 @@ export class NavComponent implements OnInit {
   constructor(private auth: AuthService, private router: Router) {}
 
   currentUser: User;
+  showScoring: boolean = false;
 
   ngOnInit(): void {
     this.auth.login.subscribe((user) => {
       this.currentUser = user;
+      if (user.role == 'ADMIN' || user.role == 'JURY') this.showScoring = true;
     });
   }
 

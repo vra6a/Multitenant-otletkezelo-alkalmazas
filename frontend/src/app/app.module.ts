@@ -30,7 +30,6 @@ import { RegisterComponent } from './components/register/register.component';
 import { IdeaBoxCreateEditComponent } from './components/idea-box-page/idea-box-create-edit/idea-box-create-edit.component';
 import { IdeaComponent } from './components/idea/idea.component';
 import { IdeaCreateEditComponent } from './components/idea/idea-create-edit/idea-create-edit.component';
-import { IdeaEditComponent } from './components/idea/idea-edit/idea-edit.component';
 import { IdeaListComponent } from './components/idea/idea-list/idea-list.component';
 import { IdeaListViewComponent } from './components/idea/idea-list/idea-list-view/idea-list-view.component';
 import { IdeaBoxListComponent } from './components/idea-box-page/idea-box-list/idea-box-list.component';
@@ -54,11 +53,9 @@ import { UserIdeaListComponent } from './components/user-page/components/user-id
 import { UserIdeaBoxListComponent } from './components/user-page/components/user-idea-box-list/user-idea-box-list.component';
 import { UserPermissionComponent } from './components/user-page/admin/user-permission/user-permission.component';
 import { EditRoleComponent } from './components/user-page/admin/user-permission/edit-role/edit-role.component';
-import { IdeaScoreComponent } from './components/idea/idea-score/idea-score.component';
-import { StarScoreComponent } from './components/idea/idea-score/star-score/star-score.component';
-import { SliderScoreComponent } from './components/idea/idea-score/slider-score/slider-score.component';
 import { IdeaApproveDenyPageComponent } from './components/user-page/admin/idea-approve-deny-page/idea-approve-deny-page.component';
 import { ReviewedIdeasListComponent } from './components/user-page/components/reviewed-ideas-list/reviewed-ideas-list.component';
+import { ScoringComponent } from './components/scoring/scoring.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +71,6 @@ import { ReviewedIdeasListComponent } from './components/user-page/components/re
     IdeaBoxListComponent,
     IdeaComponent,
     IdeaCreateEditComponent,
-    IdeaEditComponent,
     IdeaListComponent,
     IdeaListViewComponent,
     IdeaBoxListViewComponent,
@@ -91,11 +87,9 @@ import { ReviewedIdeasListComponent } from './components/user-page/components/re
     UserIdeaBoxListComponent,
     UserPermissionComponent,
     EditRoleComponent,
-    IdeaScoreComponent,
-    StarScoreComponent,
-    SliderScoreComponent,
     IdeaApproveDenyPageComponent,
     ReviewedIdeasListComponent,
+    ScoringComponent,
   ],
   imports: [
     FormsModule,
