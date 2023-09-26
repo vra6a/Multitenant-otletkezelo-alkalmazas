@@ -1,6 +1,6 @@
 import { T } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormControl, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -13,6 +13,7 @@ import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
 import { DeleteWarningComponent } from '../../popup/delete-warning/delete-warning.component';
+import { UserService } from 'src/app/services/user.service';
 
 @UntilDestroy()
 @Component({
@@ -28,6 +29,7 @@ export class IdeaBoxCreateEditComponent implements OnInit {
     private router: Router,
     private ideaBoxService: IdeaBoxService,
     private ideaService: IdeaService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -39,6 +41,13 @@ export class IdeaBoxCreateEditComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'title', 'status', 'actions'];
   dataSource: IdeaSlimDto[] = [];
+
+  defaultJuries: UserSlimDto[] = [];
+  juries: UserSlimDto[] = [];
+  selectedJuries: UserSlimDto[] = [];
+  juryCtrl = new FormControl('');
+  filteredJuries: UserSlimDto[] = [];
+  addJuryButtonVisible: boolean = true;
 
   IdeaBoxForm = this.fb.group({
     name: ['', Validators.required],
@@ -52,17 +61,28 @@ export class IdeaBoxCreateEditComponent implements OnInit {
     this.user = this.auth.getCurrentUser();
     this.id = this.route.snapshot.paramMap.get('id');
     this.IdeaBoxForm.controls['creator'].setValue(this.user);
+
+    this.getJuries();
+    this.getDefaultJuries();
+
     if (this.id) {
       this.isEdit = true;
       this.getIdeaBox();
     } else {
       this.isEdit = false;
     }
+
+    this.juryCtrl.valueChanges.subscribe((value) => {
+      this.filteredJuries = this._filterJuries(value);
+      console.log(this.selectedJuries);
+    });
   }
 
   create() {
+    let ideaBox = this.IdeaBoxForm.value;
+    ideaBox.requiredJuries = this.selectedJuries;
     this.ideaBoxService
-      .createIdeaBox$(this.IdeaBoxForm.value)
+      .createIdeaBox$(ideaBox)
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaBoxDto>) => {
         console.log(res);
@@ -123,6 +143,69 @@ export class IdeaBoxCreateEditComponent implements OnInit {
           this.ideaBox = res.data;
           this.dataSource = res.data.ideas;
           this.fillForm(res.data);
+        } else {
+          this.snackBar.error(res.message);
+        }
+      });
+  }
+
+  removeJury(jury: UserSlimDto) {
+    console.log(jury);
+    const index = this.selectedJuries.indexOf(jury);
+    console.log(index);
+    if (index >= 0) {
+      this.selectedJuries.splice(index, 1);
+    }
+  }
+
+  addNewJury() {
+    console.log(this.juryCtrl.value);
+    let names = this.juryCtrl.value.split(' ');
+    let jury = this.juries.find(
+      (u: UserSlimDto) => u.firstName == names[0] && u.lastName == names[1]
+    );
+    if (!this.selectedJuries.find((u: UserSlimDto) => u.id == jury.id)) {
+      this.selectedJuries.push(jury);
+      this.juryCtrl.setValue('');
+    } else {
+      this.snackBar.error('this Jury has already been added to the idea!');
+    }
+  }
+
+  private _filterJuries(value: string): UserSlimDto[] {
+    const filterValue = value.toLowerCase();
+    if (filterValue === '') {
+      return this.juries;
+    }
+    let values = this.juries.filter((option) => {
+      let name = option.firstName.toLowerCase() + option.lastName.toLowerCase();
+      return name.includes(filterValue);
+    });
+    return values;
+  }
+
+  private getJuries() {
+    this.userService
+      .getJuries$()
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<UserSlimDto[]>) => {
+        if (res.code == 200) {
+          this.juries = res.data;
+          this.filteredJuries = res.data;
+          console.log(this.filteredJuries);
+        } else {
+          this.snackBar.error(res.message);
+        }
+      });
+  }
+
+  private getDefaultJuries() {
+    this.ideaService
+      .getDefaultJuries$(this.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<UserSlimDto[]>) => {
+        if (res.code == 200) {
+          this.selectedJuries = res.data;
         } else {
           this.snackBar.error(res.message);
         }

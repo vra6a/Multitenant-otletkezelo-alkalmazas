@@ -23,5 +23,13 @@ data class IdeaBox (
     var creator: User,
 
     @OneToMany(mappedBy = "ideaBox", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var ideas: MutableList<Idea>
+    var ideas: MutableList<Idea>,
+
+    @ManyToMany
+    @JoinTable(
+        name = "required_juries",
+        joinColumns = [JoinColumn(name = "ideaBox_id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id")]
+    )
+    var defaultRequiredJuries: MutableList<User>?
 )

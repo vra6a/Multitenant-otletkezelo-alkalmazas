@@ -12,4 +12,7 @@ interface UserRepository : JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.role='Jury' OR u.role='ADMIN'")
     fun findJuries(): List<User>
+
+    @Query("SELECT u FROM User u join u.requiredToJury i WHERE i.id = :id")
+    fun getJuriesByIdeaBoxId(id: Long): List<User>
 }

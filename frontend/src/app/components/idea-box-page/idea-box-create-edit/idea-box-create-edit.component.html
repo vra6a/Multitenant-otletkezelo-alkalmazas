@@ -39,6 +39,48 @@
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
+        <mat-chip-list aria-label="Juries">
+          <mat-chip
+            *ngFor="let jury of selectedJuries"
+            (removed)="removeJury(jury)"
+          >
+            {{ jury?.firstName + " " + jury?.lastName }}
+            <button
+              matChipRemove
+              [attr.aria-label]="'remove ' + jury?.firstName"
+            >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+        <div class="jury-form">
+          <mat-form-field appearance="fill">
+            <mat-label>Juries name</mat-label>
+            <input
+              type="text"
+              placeholder="Pick one"
+              aria-label="Type jury name here..."
+              matInput
+              [formControl]="juryCtrl"
+              [matAutocomplete]="jury"
+            />
+            <mat-autocomplete autoActiveFirstOption #jury="matAutocomplete">
+              <mat-option
+                *ngFor="let jury of filteredJuries"
+                [value]="jury.firstName + ' ' + jury.lastName"
+              >
+                {{ jury.firstName + " " + jury.lastName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <button
+            class="tagButton"
+            *ngIf="addJuryButtonVisible"
+            (click)="addNewJury()"
+          >
+            Add Jury
+          </button>
+        </div>
         <div *ngIf="isEdit">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="id">

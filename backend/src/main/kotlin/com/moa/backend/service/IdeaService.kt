@@ -12,6 +12,7 @@ import com.moa.backend.model.dto.ScoreDto
 import com.moa.backend.model.dto.TagDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
+import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
@@ -109,6 +110,24 @@ class IdeaService {
 
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
+    }
+
+    fun getDefaultJuries(id: Long): ResponseEntity<*> {
+        val juries = userRepository.getJuriesByIdeaBoxId(id)
+
+        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        for( jury in juries ) {
+            jury.let {
+                response.add(userMapper.modelToSlimDto(jury))
+            }
+        }
+        return ResponseEntity.ok(
+            WebResponse<MutableList<UserSlimDto>> (
                 code = HttpStatus.OK.value(),
                 message = "",
                 data = response
@@ -333,6 +352,8 @@ class IdeaService {
     fun deleteScore(id: Long, score: ScoreDto): ResponseEntity<*> {
         TODO("Not yet implemented")
     }
+
+
 
 
 }

@@ -59,3 +59,21 @@ table {
     border: 1px solid #262626;
   }
 }
+
+.jury-form {
+  display: flex;
+  flex-direction: row;
+
+  .tagButton {
+    width: 130px;
+    height: 50px;
+    align-self: auto;
+    margin: 10px;
+    background-color: #262626;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+  }
+}

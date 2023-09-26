@@ -14,6 +14,14 @@
           <p><b>Description:</b></p>
           <p>{{ ideaBox?.description }}</p>
         </div>
+        <div class="line">
+          <p><b>Default Juries:</b></p>
+          <mat-chip-list aria-label="Juries">
+            <mat-chip *ngFor="let jury of ideaBox?.requiredJuries">{{
+              jury?.firstName + " " + jury?.lastName
+            }}</mat-chip>
+          </mat-chip-list>
+        </div>
       </div>
       <div class="line">
         <button

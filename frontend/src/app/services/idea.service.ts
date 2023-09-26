@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { WebResponse } from '../models/webResponse';
 import { IdeaSlimDto } from '../models/slimDto/ideaSlimDto';
 import { ScoreDto } from '../models/dto/scoreDto';
+import { UserSlimDto } from '../models/slimDto/userSlimDto';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,12 @@ export class IdeaService {
     return this.http.post<WebResponse<string>>(
       `${this.apiUrl}/idea/${id}/like`,
       {}
+    );
+  }
+
+  getDefaultJuries$(id: string): Observable<WebResponse<UserSlimDto[]>> {
+    return this.http.get<WebResponse<UserSlimDto[]>>(
+      `${this.apiUrl}/idea/${id}/juries`
     );
   }
 

@@ -31,6 +31,11 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
         return ideaService.getIdea(id)
     }
 
+    @GetMapping("/idea/{id}/juries")
+    fun getDefaultJuries(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.getDefaultJuries(id)
+    }
+
     @GetMapping("/idea/slim/{id}")
     fun getIdeaSlim(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.getIdeaSlim(id)

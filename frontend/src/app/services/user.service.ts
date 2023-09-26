@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Role } from 'src/app/models/Role';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/dto/userDto';
 import { RegisterModel } from 'src/app/models/registerModel';
@@ -9,6 +8,7 @@ import { LoginModel } from 'src/app/models/loginModel';
 import { WebResponse } from 'src/app/models/webResponse';
 import { WebData } from '../models/webData';
 import { UserSlimDto } from '../models/slimDto/userSlimDto';
+import { Role } from '../models/role';
 
 @Injectable({
   providedIn: 'root',

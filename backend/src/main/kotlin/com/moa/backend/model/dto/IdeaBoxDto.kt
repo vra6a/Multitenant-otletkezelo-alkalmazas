@@ -19,4 +19,6 @@ data class IdeaBoxDto (
     var creator: UserSlimDto,
 
     var ideas: MutableList<IdeaSlimDto>?,
+
+    var requiredJuries: MutableList<UserSlimDto>?
 )

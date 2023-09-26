@@ -9,4 +9,5 @@ export interface IdeaBoxDto {
   endDate?: Date;
   creator?: UserSlimDto;
   ideas?: IdeaSlimDto[];
+  requiredJuries?: UserSlimDto[];
 }

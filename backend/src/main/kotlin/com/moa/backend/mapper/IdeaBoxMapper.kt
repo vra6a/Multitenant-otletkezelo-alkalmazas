@@ -2,9 +2,11 @@ package com.moa.backend.mapper
 
 import com.moa.backend.model.Idea
 import com.moa.backend.model.IdeaBox
+import com.moa.backend.model.User
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.IdeaSlimDto
+import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -27,6 +29,10 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             ideas.add(ideaMapper.modelToSlimDto(idea))
         }
 
+        val requiredJuries: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        entity.defaultRequiredJuries?.forEach { jury ->
+            requiredJuries.add(userMapper.modelToSlimDto(jury))
+        }
 
         return IdeaBoxDto(
             id = entity.id,
@@ -35,7 +41,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             startDate = entity.startDate,
             endDate = entity.endDate,
             creator = userMapper.modelToSlimDto(entity.creator),
-            ideas = ideas
+            ideas = ideas,
+            requiredJuries = requiredJuries,
         )
     }
 
@@ -50,6 +57,10 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
 
     override fun dtoToModel(domain: IdeaBoxDto): IdeaBox {
         if(domain.id == 0L) {
+            val defaultRequiredJuries: MutableList<User> = emptyList<User>().toMutableList()
+            domain.requiredJuries?.forEach{ jury ->
+                defaultRequiredJuries.add(userMapper.slimDtoToModel(jury))
+            }
             return IdeaBox(
                     id = domain.id,
                     name = domain.name,
@@ -57,7 +68,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
                     startDate = domain.startDate,
                     endDate = domain.endDate,
                     creator = userMapper.slimDtoToModel(domain.creator),
-                    ideas = emptyList<Idea>().toMutableList()
+                    ideas = emptyList<Idea>().toMutableList(),
+                    defaultRequiredJuries = defaultRequiredJuries
             )
         }
         return idToModel(domain.id)
@@ -77,7 +89,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             startDate = ideaBox.startDate,
             endDate = ideaBox.endDate,
             creator = ideaBox.creator,
-            ideas = ideaBox.ideas
+            ideas = ideaBox.ideas,
+            defaultRequiredJuries = ideaBox.defaultRequiredJuries
         )
     }
 }

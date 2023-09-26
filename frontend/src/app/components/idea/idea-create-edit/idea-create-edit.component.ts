@@ -70,6 +70,7 @@ export class IdeaCreateEditComponent implements OnInit {
     this.ideaId = this.route.snapshot.paramMap.get('id');
     this.getAllTags();
     this.getJuries();
+    this.getDefaultJuries();
 
     if (this.ideaId) {
       this.isEdit = true;
@@ -276,7 +277,19 @@ export class IdeaCreateEditComponent implements OnInit {
         if (res.code == 200) {
           this.juries = res.data;
           this.filteredJuries = res.data;
-          console.log(this.filteredJuries);
+        } else {
+          this.snackBar.error(res.message);
+        }
+      });
+  }
+
+  private getDefaultJuries() {
+    this.ideaService
+      .getDefaultJuries$(this.ideaBoxId)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<UserSlimDto[]>) => {
+        if (res.code == 200) {
+          this.selectedJuries = res.data;
         } else {
           this.snackBar.error(res.message);
         }

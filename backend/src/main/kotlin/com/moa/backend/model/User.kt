@@ -38,6 +38,9 @@ open class User (
     @ManyToMany(mappedBy = "requiredJuries")
     open var ideasToJury: MutableList<Idea>?,
 
+    @ManyToMany(mappedBy = "defaultRequiredJuries")
+    open var requiredToJury: MutableList<IdeaBox>?,
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var scores: MutableList<Score>?,
 
