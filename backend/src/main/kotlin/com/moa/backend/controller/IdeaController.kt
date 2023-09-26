@@ -1,7 +1,6 @@
 package com.moa.backend.controller
 
 import com.moa.backend.model.dto.IdeaDto
-import com.moa.backend.model.dto.ScoreDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.service.IdeaService
 import org.springframework.beans.factory.annotation.Autowired
@@ -64,15 +63,5 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     @PostMapping("/idea/{id}/dislike")
     fun dislikeIdea(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.dislikeIdea(id)
-    }
-
-    @PostMapping("/idea/{id}/score")
-    fun addScore(@PathVariable id: Long, @RequestBody score: ScoreDto): ResponseEntity<*> {
-        return ideaService.addScore(id, score)
-    }
-
-    @DeleteMapping("/idea/{id}/score")
-    fun deleteScore(@PathVariable id: Long, @RequestBody score: ScoreDto): ResponseEntity<*> {
-        return ideaService.deleteScore(id, score)
     }
 }

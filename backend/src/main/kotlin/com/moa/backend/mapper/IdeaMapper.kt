@@ -18,18 +18,12 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
     @Autowired
     lateinit var ideaBoxMapper: IdeaBoxMapper
     @Autowired
-    lateinit var scoreMapper: ScoreMapper
-    @Autowired
     lateinit var commentMapper: CommentMapper
     @Autowired
     lateinit var ideaRepository: IdeaRepository
 
     override fun modelToDto(entity: Idea): IdeaDto {
 
-        val scores: MutableList<ScoreSlimDto> = emptyList<ScoreSlimDto>().toMutableList()
-        entity.score.forEach{ score: Score ->
-            scores.add(scoreMapper.modelToSlimDto(score))
-        }
         val tags: MutableList<TagSlimDto> = emptyList<TagSlimDto>().toMutableList()
         entity.tags?.forEach{ tag: Tag ->
             tags.add(tagMapper.modelToSlimDto(tag))
@@ -51,7 +45,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             id = entity.id,
             title = entity.title,
             description = entity.description,
-            score = scores,
             owner = userMapper.modelToSlimDto(entity.owner),
             status = entity.status,
             creationDate = entity.creationDate,
@@ -87,7 +80,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     id = domain .id,
                     title = domain.title,
                     description = domain.description,
-                    score = emptyList<Score>().toMutableList(),
                     owner = userMapper.slimDtoToModel(domain.owner),
                     status = Status.SUBMITTED,
                     creationDate = Date(),
@@ -112,7 +104,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             id = idea.id,
             title = idea.title,
             description = idea.description,
-            score = idea.score,
             owner = idea.owner,
             status = idea.status,
             creationDate = idea.creationDate,

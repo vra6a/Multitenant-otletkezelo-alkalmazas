@@ -12,8 +12,6 @@ data class IdeaDto (
 
     var description: String,
 
-    var score: MutableList<ScoreSlimDto>?,
-
     var owner: UserSlimDto,
 
     var status: Status,

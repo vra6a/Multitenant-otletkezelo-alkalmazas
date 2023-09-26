@@ -12,9 +12,6 @@ data class Idea (
 
     var description: String,
 
-    @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var score: MutableList<Score>,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     var owner: User,

@@ -1,15 +1,12 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaMapper
-import com.moa.backend.mapper.ScoreMapper
 import com.moa.backend.mapper.TagMapper
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.Status
 import com.moa.backend.model.Tag
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.IdeaDto
-import com.moa.backend.model.dto.ScoreDto
-import com.moa.backend.model.dto.TagDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
 import com.moa.backend.model.slim.UserSlimDto
@@ -40,9 +37,6 @@ class IdeaService {
 
     @Autowired
     lateinit var tagMapper: TagMapper
-
-    @Autowired
-    lateinit var scoreMapper: ScoreMapper
 
     private val logger = KotlinLogging.logger {}
 
@@ -317,43 +311,4 @@ class IdeaService {
             )
         )
     }
-
-    fun addScore(id: Long, score: ScoreDto): ResponseEntity<*> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val idea = ideaRepository.findById(id).orElse(null) ?:
-        return ResponseEntity(
-            WebResponse(
-                code = HttpStatus.NOT_FOUND.value(),
-                message = "Cannot find Idea with this id $id!",
-                data = null
-            ),
-            HttpStatus.NOT_FOUND
-        )
-        val scoreModel = scoreMapper.dtoToModel(score)
-        idea.requiredJuries?.forEach { jury: User ->
-            if(jury.email == authentication.name) {
-                if(idea.status == Status.SUBMITTED) {
-                    idea.status = Status.REVIEWED
-                }
-            }
-        }
-        idea.score.add(scoreModel)
-        ideaRepository.saveAndFlush(idea)
-
-        return ResponseEntity.ok(
-            WebResponse<ScoreDto>(
-                code = HttpStatus.OK.value(),
-                message = "Score successfully created!",
-                data = scoreMapper.modelToDto(scoreModel)
-            )
-        )
-    }
-
-    fun deleteScore(id: Long, score: ScoreDto): ResponseEntity<*> {
-        TODO("Not yet implemented")
-    }
-
-
-
-
 }
