@@ -21,6 +21,8 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
     lateinit var commentMapper: CommentMapper
     @Autowired
     lateinit var ideaRepository: IdeaRepository
+    @Autowired
+    lateinit var scoreSheetMapper: ScoreSheetMapper
 
     override fun modelToDto(entity: Idea): IdeaDto {
 
@@ -41,6 +43,11 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             juries.add(userMapper.modelToSlimDto(user))
         }
 
+        val scoreSheets: MutableList<ScoreSheetSlimDto> = emptyList<ScoreSheetSlimDto>().toMutableList()
+        entity.scoreSheets.forEach{ scoreSheet ->
+            scoreSheets.add(scoreSheetMapper.modelToSlimDto(scoreSheet))
+        }
+
         return IdeaDto(
             id = entity.id,
             title = entity.title,
@@ -53,6 +60,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             ideaBox = ideaBoxMapper.modelToSlimDto(entity.ideaBox),
             likes = likes,
             requiredJuries = juries,
+            scoreSheets = scoreSheets
         )
     }
 
@@ -75,6 +83,11 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             juries.add(userMapper.slimDtoToModel(user))
         }
 
+        val scoreSheets: MutableList<ScoreSheet> = emptyList<ScoreSheet>().toMutableList()
+        domain.scoreSheets?.forEach{ scoreSheet: ScoreSheetSlimDto ->
+            scoreSheets.add(scoreSheetMapper.slimDtoToModel(scoreSheet))
+        }
+
         if(domain.id == 0L) {
             return Idea(
                     id = domain .id,
@@ -87,7 +100,8 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     comments = emptyList<Comment>().toMutableList(),
                     ideaBox = ideaBoxMapper.slimDtoToModel(domain.ideaBox),
                     likes = emptyList<User>().toMutableList(),
-                    requiredJuries = juries
+                    requiredJuries = juries,
+                    scoreSheets =scoreSheets
             )
         }
         return idToModel(domain.id)
@@ -111,7 +125,8 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             comments = idea.comments,
             ideaBox = idea.ideaBox,
             likes = idea.likes,
-            requiredJuries = idea.requiredJuries
+            requiredJuries = idea.requiredJuries,
+            scoreSheets = idea.scoreSheets
         )
     }
 }

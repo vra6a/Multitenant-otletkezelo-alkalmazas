@@ -50,6 +50,9 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var likes: MutableList<User>?
+    var likes: MutableList<User>?,
+
+    @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var scoreSheets: MutableList<ScoreSheet>
 
 )

@@ -42,7 +42,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             endDate = entity.endDate,
             creator = userMapper.modelToSlimDto(entity.creator),
             ideas = ideas,
-            requiredJuries = requiredJuries,
+            defaultRequiredJuries = requiredJuries,
+            scoreSheetTemplate = entity.scoreSheetTemplate
         )
     }
 
@@ -58,7 +59,7 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
     override fun dtoToModel(domain: IdeaBoxDto): IdeaBox {
         if(domain.id == 0L) {
             val defaultRequiredJuries: MutableList<User> = emptyList<User>().toMutableList()
-            domain.requiredJuries?.forEach{ jury ->
+            domain.defaultRequiredJuries?.forEach{ jury ->
                 defaultRequiredJuries.add(userMapper.slimDtoToModel(jury))
             }
             return IdeaBox(
@@ -69,7 +70,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
                     endDate = domain.endDate,
                     creator = userMapper.slimDtoToModel(domain.creator),
                     ideas = emptyList<Idea>().toMutableList(),
-                    defaultRequiredJuries = defaultRequiredJuries
+                    defaultRequiredJuries = defaultRequiredJuries,
+                    scoreSheetTemplate = domain.scoreSheetTemplate
             )
         }
         return idToModel(domain.id)
@@ -90,7 +92,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             endDate = ideaBox.endDate,
             creator = ideaBox.creator,
             ideas = ideaBox.ideas,
-            defaultRequiredJuries = ideaBox.defaultRequiredJuries
+            defaultRequiredJuries = ideaBox.defaultRequiredJuries,
+            scoreSheetTemplate = ideaBox.scoreSheetTemplate
         )
     }
 }

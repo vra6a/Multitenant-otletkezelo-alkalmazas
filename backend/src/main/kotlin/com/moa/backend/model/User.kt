@@ -42,7 +42,7 @@ open class User (
     open var requiredToJury: MutableList<IdeaBox>?,
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var scores: MutableList<Score>?,
+    open var scoreSheets: MutableList<ScoreSheet>?,
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var comments: MutableList<Comment>?

@@ -1,5 +1,6 @@
 package com.moa.backend.model.dto
 
+import com.moa.backend.model.ScoreSheet
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.UserSlimDto
 import java.util.*
@@ -20,5 +21,7 @@ data class IdeaBoxDto (
 
     var ideas: MutableList<IdeaSlimDto>?,
 
-    var requiredJuries: MutableList<UserSlimDto>?
+    var defaultRequiredJuries: MutableList<UserSlimDto>?,
+
+    var scoreSheetTemplate: ScoreSheet,
 )

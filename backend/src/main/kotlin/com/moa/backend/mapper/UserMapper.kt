@@ -94,8 +94,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
                     ideaBoxes = emptyList<IdeaBox>().toMutableList(),
                     comments = emptyList<Comment>().toMutableList(),
                     ideasToJury = emptyList<Idea>().toMutableList(),
-                    scores = emptyList<Score>().toMutableList(),
-                    requiredToJury = emptyList<IdeaBox>().toMutableList()
+                    requiredToJury = emptyList<IdeaBox>().toMutableList(),
+                    scoreSheets = emptyList<ScoreSheet>().toMutableList()
             )
         }
         return idToModel(domain.id)
@@ -121,8 +121,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             ideaBoxes = user.ideaBoxes,
             comments = user.comments,
             ideasToJury = user.ideasToJury,
-            scores = user.scores,
-            requiredToJury = user.requiredToJury
+            requiredToJury = user.requiredToJury,
+            scoreSheets = user.scoreSheets,
         )
     }
 }

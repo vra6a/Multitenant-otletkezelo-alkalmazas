@@ -3,25 +3,22 @@ package com.moa.backend.model
 import javax.persistence.*
 
 @Entity
-data class Score (
+data class ScoreItem (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
 
-    var score: Int,
-
     @Enumerated(EnumType.STRING)
     var type: ScoreType,
 
     @ManyToOne
-    @JoinColumn(name = "idea_id")
-    var idea: Idea,
+    @JoinColumn(name = "scoreSheet_id")
+    var scoreSheet: ScoreSheet,
 
     var title: String,
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    var owner: User
+    var score: Int?,
 
+    var text: String?,
 )

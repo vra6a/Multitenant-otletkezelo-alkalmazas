@@ -31,5 +31,9 @@ data class IdeaBox (
         joinColumns = [JoinColumn(name = "ideaBox_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var defaultRequiredJuries: MutableList<User>?
+    var defaultRequiredJuries: MutableList<User>?,
+
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "scoreSheet_id", referencedColumnName = "id")
+    var scoreSheetTemplate: ScoreSheet
 )
