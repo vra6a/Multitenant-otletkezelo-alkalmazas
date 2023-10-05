@@ -63,10 +63,10 @@ export class IdeaBoxCreateEditComponent implements OnInit {
     this.IdeaBoxForm.controls['creator'].setValue(this.user);
 
     this.getJuries();
-    this.getDefaultJuries();
 
     if (this.id) {
       this.isEdit = true;
+      this.getDefaultJuries();
       this.getIdeaBox();
     } else {
       this.isEdit = false;
@@ -80,7 +80,8 @@ export class IdeaBoxCreateEditComponent implements OnInit {
 
   create() {
     let ideaBox = this.IdeaBoxForm.value;
-    ideaBox.requiredJuries = this.selectedJuries;
+    ideaBox.defaultRequiredJuries = this.selectedJuries;
+    ideaBox.scoreSheetTemplate = null;
     this.ideaBoxService
       .createIdeaBox$(ideaBox)
       .pipe(untilDestroyed(this))
@@ -159,11 +160,20 @@ export class IdeaBoxCreateEditComponent implements OnInit {
   }
 
   addNewJury() {
-    console.log(this.juryCtrl.value);
-    let names = this.juryCtrl.value.split(' ');
-    let jury = this.juries.find(
-      (u: UserSlimDto) => u.firstName == names[0] && u.lastName == names[1]
-    );
+    let names = this.juryCtrl.value.replace(' ', '').split(' ');
+    let concatedName = names.join().toLowerCase().replace(',', '');
+    let tmp = this.juries;
+    let jury = null;
+    tmp.forEach((j) => {
+      let name = j.firstName + j.lastName;
+      let innerNames = name.replace(' ', '').split(' ');
+      name = innerNames.join().toLowerCase();
+      console.log(name);
+      console.log(concatedName);
+      if (name === concatedName) {
+        jury = j;
+      }
+    });
     if (!this.selectedJuries.find((u: UserSlimDto) => u.id == jury.id)) {
       this.selectedJuries.push(jury);
       this.juryCtrl.setValue('');

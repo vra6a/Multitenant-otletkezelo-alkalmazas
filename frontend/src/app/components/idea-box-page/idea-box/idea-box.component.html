@@ -17,7 +17,7 @@
         <div class="line">
           <p><b>Default Juries:</b></p>
           <mat-chip-list aria-label="Juries">
-            <mat-chip *ngFor="let jury of ideaBox?.requiredJuries">{{
+            <mat-chip *ngFor="let jury of ideaBox?.defaultRequiredJuries">{{
               jury?.firstName + " " + jury?.lastName
             }}</mat-chip>
           </mat-chip-list>
