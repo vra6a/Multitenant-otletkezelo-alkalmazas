@@ -14,6 +14,8 @@ import { IdeaBoxesManageComponent } from './components/idea-box-page/idea-boxes-
 import { UserComponent } from './components/user-page/user/user.component';
 import { IdeaApproveDenyPageComponent } from './components/user-page/admin/idea-approve-deny-page/idea-approve-deny-page.component';
 import { ScoringComponent } from './components/scoring/scoring.component';
+import { CreateScoreSheetComponent } from './components/scoring/create-score-sheet/create-score-sheet.component';
+import { ViewScoringTemplateComponent } from './components/idea-box-page/view-scoring-template/view-scoring-template.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -57,6 +59,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'idea-boxes/viewScoring/:id',
+    component: ViewScoringTemplateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'idea-boxes/:id',
     component: IdeaBoxComponent,
     canActivate: [AuthGuard],
@@ -90,6 +97,13 @@ const routes: Routes = [
     path: 'scoring',
     component: ScoringComponent,
     canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'createScoreSheet',
+        component: CreateScoreSheetComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
   },
   {
     path: 'login',

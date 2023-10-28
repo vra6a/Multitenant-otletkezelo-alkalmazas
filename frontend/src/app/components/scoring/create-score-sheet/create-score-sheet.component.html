@@ -1,0 +1,23 @@
+<h2>Creating Score sheets</h2>
+<form [formGroup]="selectedDraftIdeaBoxForm">
+  <mat-form-field>
+    <mat-label>Select a Draft Idea Box to give it a scoring template</mat-label>
+    <mat-select formControlName="selectedDraftIdeaBox">
+      <mat-option
+        *ngFor="let ideabox of draftIdeaBoxes"
+        [value]="ideabox?.id"
+        >{{ ideabox?.name }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+</form>
+<div *ngFor="let scoreItem of scoreItems">
+  <mat-card>
+    <h1>Title: {{ scoreItem.title }}</h1>
+    <p>Type: {{ scoreItem.type }}</p>
+  </mat-card>
+</div>
+<app-score-item-form
+  (newScoreItem)="addNewScoreItem($event)"
+></app-score-item-form>
+<button (click)="assignScoreSheet()">Add Score Sheet</button>

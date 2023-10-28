@@ -11,3 +11,8 @@ p {
   text-align: right;
   margin: auto 0;
 }
+
+.draft {
+  pointer-events: none;
+  opacity: 0.5;
+}

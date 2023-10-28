@@ -56,6 +56,12 @@ import { EditRoleComponent } from './components/user-page/admin/user-permission/
 import { IdeaApproveDenyPageComponent } from './components/user-page/admin/idea-approve-deny-page/idea-approve-deny-page.component';
 import { ReviewedIdeasListComponent } from './components/user-page/components/reviewed-ideas-list/reviewed-ideas-list.component';
 import { ScoringComponent } from './components/scoring/scoring.component';
+import { CreateScoreSheetComponent } from './components/scoring/create-score-sheet/create-score-sheet.component';
+import { ScoreItemFormComponent } from './components/scoring/create-score-sheet/score-item-form/score-item-form.component';
+import { TextScoreItemComponent } from './components/scoring/create-score-sheet/score-item-form/text-score-item/text-score-item.component';
+import { StarScoreItemComponent } from './components/scoring/create-score-sheet/score-item-form/star-score-item/star-score-item.component';
+import { SliderScoreItemComponent } from './components/scoring/create-score-sheet/score-item-form/slider-score-item/slider-score-item.component';
+import { ViewScoringTemplateComponent } from './components/idea-box-page/view-scoring-template/view-scoring-template.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +96,12 @@ import { ScoringComponent } from './components/scoring/scoring.component';
     IdeaApproveDenyPageComponent,
     ReviewedIdeasListComponent,
     ScoringComponent,
+    CreateScoreSheetComponent,
+    ScoreItemFormComponent,
+    TextScoreItemComponent,
+    StarScoreItemComponent,
+    SliderScoreItemComponent,
+    ViewScoringTemplateComponent,
   ],
   imports: [
     FormsModule,

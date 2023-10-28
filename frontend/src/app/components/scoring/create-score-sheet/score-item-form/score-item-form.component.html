@@ -1,0 +1,15 @@
+<form [formGroup]="scoreItemForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Title: </mat-label>
+    <input matInput id="title" type="text" formControlName="title" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option value="STAR">Star</mat-option>
+      <mat-option value="SLIDER">Slider</mat-option>
+      <mat-option value="OTHER">Other</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<button (click)="addScoreItem()">Add score item</button>

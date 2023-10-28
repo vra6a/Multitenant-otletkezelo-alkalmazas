@@ -1,7 +1,9 @@
 package com.moa.backend.controller
 
 import com.moa.backend.model.dto.IdeaBoxDto
+import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
+import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.service.IdeaBoxService
 import com.moa.backend.utility.WebResponse
@@ -59,6 +61,11 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     @PostMapping("/idea-box")
     fun createIdeaBox(@RequestBody box: IdeaBoxDto): ResponseEntity<*> {
         return ideaBoxService.createIdeaBox(box)
+    }
+
+    @PostMapping("/idea-box/{id}/createScoreSheetTemplate")
+    fun createScoreSheetTemplate(@RequestBody scoreSheet: ScoreSheetDto): ResponseEntity<*> {
+        return ideaBoxService.createScoreSheetTemplate(scoreSheet)
     }
 
     @PutMapping("/idea-box/{id}")

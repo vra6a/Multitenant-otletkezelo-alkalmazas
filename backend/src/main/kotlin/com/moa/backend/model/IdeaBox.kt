@@ -33,7 +33,6 @@ data class IdeaBox (
     )
     var defaultRequiredJuries: MutableList<User>?,
 
-    @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "scoreSheet_id", referencedColumnName = "id")
-    var scoreSheetTemplate: ScoreSheet
+    @OneToMany(mappedBy = "templateFor", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var scoreSheetTemplates: MutableList<ScoreSheet>,
 )

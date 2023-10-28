@@ -3,4 +3,5 @@ export interface IdeaBoxSlimDto {
   name?: string;
   startDate?: Date;
   endDate?: Date;
+  draft?: boolean;
 }

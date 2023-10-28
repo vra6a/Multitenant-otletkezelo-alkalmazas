@@ -11,4 +11,6 @@ data class IdeaBoxSlimDto (
     var startDate: Date,
 
     var endDate: Date,
+
+    var draft: Boolean,
 )

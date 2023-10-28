@@ -25,6 +25,15 @@
       </div>
       <div class="line">
         <button
+          mat-stroked-button
+          [routerLink]="
+            '/idea-boxes/' + 'viewScoring/' + ideaBox.scoreSheetTemplates[0].id
+          "
+          *ngIf="canEdit"
+        >
+          View Scoring Template
+        </button>
+        <button
           mat-raised-button
           [routerLink]="'/idea-boxes/' + id + '/create'"
         >

@@ -18,8 +18,9 @@ data class ScoreSheet(
 
     @ManyToOne
     @JoinColumn(name = "idea_id")
-    var idea: Idea,
+    var idea: Idea?,
 
-    @OneToOne(mappedBy = "scoreSheetTemplate")
-    var templateFor: IdeaBox
+    @ManyToOne
+    @JoinColumn(name = "ideaBox_id")
+    var templateFor: IdeaBox?
 )

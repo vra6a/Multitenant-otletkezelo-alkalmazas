@@ -9,11 +9,11 @@ data class ScoreSheetDto(
 
     var id: Long = 0,
 
-    var scores: MutableList<ScoreItemSlimDto>,
+    var scores: MutableList<ScoreItemSlimDto>?,
 
     var owner: UserSlimDto,
 
-    var idea: IdeaSlimDto,
+    var idea: IdeaSlimDto?,
 
-    var templateFor: IdeaBoxSlimDto
+    var templateFor: IdeaBoxSlimDto?
 )

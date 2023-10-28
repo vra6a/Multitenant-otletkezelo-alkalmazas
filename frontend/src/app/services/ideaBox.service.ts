@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
 import { WebResponse } from '../models/webResponse';
 import { IdeaBoxSlimDto } from '../models/slimDto/ideaBoxSlimDto';
+import { ScoreSheetDto } from '../models/dto/scoreScheetDto';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,12 @@ export class IdeaBoxService {
           items: items,
         },
       }
+    );
+  }
+
+  getAllIdeaBoxes$(): Observable<WebResponse<IdeaBoxSlimDto[]>> {
+    return this.http.get<WebResponse<IdeaBoxSlimDto[]>>(
+      `${this.apiUrl}/idea-box`
     );
   }
 
@@ -64,6 +71,15 @@ export class IdeaBoxService {
     return this.http.put<WebResponse<IdeaBoxDto>>(
       `${this.apiUrl}/idea-box/${id}`,
       ideaBox
+    );
+  }
+
+  assignScoreSheetTemplate$(
+    scoreSheet: ScoreSheetDto
+  ): Observable<WebResponse<ScoreSheetDto>> {
+    return this.http.post<WebResponse<ScoreSheetDto>>(
+      `${this.apiUrl}/idea-box/${scoreSheet.templateFor.id}/createScoreSheetTemplate`,
+      scoreSheet
     );
   }
 

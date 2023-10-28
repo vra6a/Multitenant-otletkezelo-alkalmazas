@@ -5,6 +5,7 @@ import com.moa.backend.model.ScoreSheet
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
+import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -21,6 +22,8 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
     @Autowired
     lateinit var scoreSheetRepository: ScoreSheetRepository
     @Autowired
+    lateinit var ideaBoxRepository: IdeaBoxRepository
+    @Autowired
     lateinit var scoreItemMapper: ScoreItemMapper
 
     override fun modelToDto(entity: ScoreSheet): ScoreSheetDto {
@@ -32,34 +35,45 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
 
         return ScoreSheetDto(
             id = entity.id,
-            idea = ideaMapper.modelToSlimDto(entity.idea),
+            idea = entity.idea?.let { ideaMapper.modelToSlimDto(it) },
             owner = userMapper.modelToSlimDto(entity.owner),
             scores = scores,
-            templateFor = ideaBoxMapper.modelToSlimDto(entity.templateFor)
+            templateFor = entity.templateFor?.let { ideaBoxMapper.modelToSlimDto(it) }
         )
     }
 
     override fun modelToSlimDto(entity: ScoreSheet): ScoreSheetSlimDto {
         return ScoreSheetSlimDto(
             id = entity.id,
-            idea = ideaMapper.modelToSlimDto(entity.idea),
+            idea = entity.idea?.let { ideaMapper.modelToSlimDto(it) },
             owner = userMapper.modelToSlimDto(entity.owner),
+        )
+    }
+
+    fun initializeScoreSheet(ss: ScoreSheetDto): ScoreSheet {
+
+        return ScoreSheet(
+            id = ss.id,
+            idea = null,
+            owner = userMapper.slimDtoToModel(ss.owner),
+            scores = null,
+            templateFor = ss.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) }
         )
     }
 
     override fun dtoToModel(domain: ScoreSheetDto): ScoreSheet {
         if(domain.id == 0L) {
             val scores: MutableList<ScoreItem> = emptyList<ScoreItem>().toMutableList()
-            domain.scores.forEach{ scoreItem: ScoreItemSlimDto ->
+            domain.scores?.forEach{ scoreItem: ScoreItemSlimDto ->
                 scores.add(scoreItemMapper.slimDtoToModel(scoreItem))
             }
 
             return ScoreSheet(
                 id = domain.id,
-                idea = ideaMapper.slimDtoToModel(domain.idea),
+                idea = domain.idea?.let { ideaMapper.slimDtoToModel(it) },
                 owner = userMapper.slimDtoToModel(domain.owner),
                 scores = scores,
-                templateFor = ideaBoxMapper.slimDtoToModel(domain.templateFor)
+                templateFor = domain.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) }
             )
         }
         return idToModel(domain.id)

@@ -1,10 +1,14 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaBoxMapper
+import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.model.dto.IdeaBoxDto
+import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
+import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
+import com.moa.backend.repository.ScoreSheetRepository
 import com.moa.backend.utility.WebResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +24,13 @@ class IdeaBoxService {
     lateinit var ideaBoxRepository: IdeaBoxRepository
 
     @Autowired
+    lateinit var scoreSheetRepository: ScoreSheetRepository
+
+    @Autowired
     lateinit var ideaBoxMapper: IdeaBoxMapper
+
+    @Autowired
+    lateinit var scoreSheetMapper: ScoreSheetMapper
 
     private val logger = KotlinLogging.logger {}
 
@@ -81,7 +91,9 @@ class IdeaBoxService {
 
         for (ideaBox in ideaBoxes) {
             ideaBox.let {
-                response.add(ideaBoxMapper.modelToSlimDto(ideaBox))
+                val ideaBoxSlimDto = ideaBoxMapper.modelToSlimDto(ideaBox)
+                ideaBoxSlimDto.draft = ideaBox.scoreSheetTemplates.isEmpty()
+                response.add(ideaBoxSlimDto)
             }
         }
 
@@ -183,6 +195,19 @@ class IdeaBoxService {
                 code = HttpStatus.OK.value(),
                 message = "Idea Box successfully deleted!",
                 data = "Idea Box successfully deleted!"
+            )
+        )
+    }
+
+    fun createScoreSheetTemplate(scoreSheet: ScoreSheetDto): ResponseEntity<*> {
+
+        val ss = this.scoreSheetRepository.saveAndFlush(scoreSheetMapper.initializeScoreSheet(scoreSheet))
+        logger.info { "MOA-INFO: Empty ScoreSheet created with id: ${ss.id}" }
+        return ResponseEntity.ok(
+            WebResponse<ScoreSheetSlimDto>(
+                code = HttpStatus.OK.value(),
+                message = "ScoreSheet Created, ready to be filled",
+                data = scoreSheetMapper.modelToSlimDto(ss)
             )
         )
     }

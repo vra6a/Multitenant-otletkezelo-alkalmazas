@@ -1,5 +1,6 @@
 import { IdeaSlimDto } from '../slimDto/ideaSlimDto';
 import { UserSlimDto } from '../slimDto/userSlimDto';
+import { ScoreSheetDto } from './scoreScheetDto';
 
 export interface IdeaBoxDto {
   id?: number;
@@ -10,5 +11,5 @@ export interface IdeaBoxDto {
   creator?: UserSlimDto;
   ideas?: IdeaSlimDto[];
   defaultRequiredJuries?: UserSlimDto[];
-  scoreSheetTemplate?: null;
+  scoreSheetTemplates?: ScoreSheetDto[];
 }
