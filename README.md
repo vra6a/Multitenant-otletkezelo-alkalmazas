@@ -17,7 +17,9 @@ A téma diplomatervként végigvihető.
 
 ## Haladási napló
 
-[Napló](./documentation/haladasi_naplo.md)
+[Önálló laboratórium 2 Haladási napló](./documentation/haladasi_naplo_1.md)
+
+[Diplomatervezés 1 Haladási napló](./documentation/haladasi_naplo_2.md)
 
 ## Beszámoló
 
