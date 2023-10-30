@@ -311,4 +311,27 @@ class IdeaService {
             )
         )
     }
+
+    fun getIdeasToScore(): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        val ideas = ideaRepository.findAll()
+
+        ideas.forEach{ idea ->
+            if(idea.requiredJuries?.contains(user) == true) {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
+    }
 }

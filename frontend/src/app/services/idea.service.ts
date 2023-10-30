@@ -80,4 +80,10 @@ export class IdeaService {
       `${this.apiUrl}/idea/${id}/score`
     );
   }
+
+  getIdeasToScore$(): Observable<WebResponse<IdeaDto[]>> {
+    return this.http.get<WebResponse<IdeaDto[]>>(
+      `${this.apiUrl}/idea/ideasToScore`
+    );
+  }
 }

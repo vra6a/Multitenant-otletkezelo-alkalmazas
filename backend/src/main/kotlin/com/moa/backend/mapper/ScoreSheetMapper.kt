@@ -94,4 +94,6 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
             templateFor = scoreSheet.templateFor
         )
     }
+
+
 }
