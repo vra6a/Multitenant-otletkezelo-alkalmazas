@@ -1,5 +1,7 @@
 # Multitenant ötletkezelő alkalmazás Spring alapokon - Haladási napló
 
+Önálló laboratórium 2 - 2022-23/2 félév
+
 ## 1. hét
 
 Február 27. - Március 5.
