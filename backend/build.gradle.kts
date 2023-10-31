@@ -23,7 +23,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -35,6 +35,7 @@ dependencies {
 	annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.3.Final")
 	implementation ("io.github.microutils:kotlin-logging-jvm:2.0.11")
 	implementation("ch.qos.logback:logback-classic:1.2.6")
+	runtimeOnly("com.h2database:h2")
 }
 
 tasks.withType<KotlinCompile> {
