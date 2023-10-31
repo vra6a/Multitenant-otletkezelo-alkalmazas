@@ -20,7 +20,7 @@ jobs:
           distribution: "adopt"
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ../../backend/gradlew build
 
       - name: Run Unit Tests
         run: ./gradlew test
