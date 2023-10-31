@@ -19,8 +19,8 @@ jobs:
           java-version: 11
           distribution: "adopt"
 
-      - name: Build with Gradle
-        run: cd backend && ./gradlew build
+      - name: Make gradlew script executable
+        run: cd backend && chmod +x gradlew
 
       - name: Run Unit Tests
         run: cd backend && ./gradlew build
