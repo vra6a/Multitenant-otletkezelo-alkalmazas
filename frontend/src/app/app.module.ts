@@ -64,6 +64,9 @@ import { SliderScoreItemComponent } from './components/scoring/create-score-shee
 import { ViewScoringTemplateComponent } from './components/idea-box-page/view-scoring-template/view-scoring-template.component';
 import { ScoreIdeaComponentComponent } from './components/scoring/score-idea-component/score-idea-component.component';
 import { IdeasToScoreComponent } from './components/scoring/ideas-to-score/ideas-to-score.component';
+import { StarScoreComponent } from './components/scoring/score-idea-component/star-score/star-score.component';
+import { SliderScoreComponent } from './components/scoring/score-idea-component/slider-score/slider-score.component';
+import { OtherScoreComponent } from './components/scoring/score-idea-component/other-score/other-score.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +109,9 @@ import { IdeasToScoreComponent } from './components/scoring/ideas-to-score/ideas
     ViewScoringTemplateComponent,
     ScoreIdeaComponentComponent,
     IdeasToScoreComponent,
+    StarScoreComponent,
+    SliderScoreComponent,
+    OtherScoreComponent,
   ],
   imports: [
     FormsModule,

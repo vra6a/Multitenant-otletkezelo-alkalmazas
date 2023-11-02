@@ -1,0 +1,31 @@
+<h1>{{ item.title }}</h1>
+<div>
+  <div
+    [style.color]="
+      index == 0
+        ? '#be1100'
+        : index == 1
+        ? 'red'
+        : index == 2
+        ? '#f48771'
+        : index == 3
+        ? '#b89500'
+        : 'green'
+    "
+  >
+    <ul>
+      <li
+        *ngFor="let i of arr; let in = index"
+        [style.color]="in > index ? 'gray' : 'inherit'"
+        (click)="onClickItem(in)"
+      >
+        <mat-icon><span class="material-symbols"> star </span></mat-icon>
+      </li>
+    </ul>
+  </div>
+  <p>Score: {{ index + 1 }}/5</p>
+</div>
+<div class="container">
+  <button (click)="saveItem()">Save</button>
+</div>
+<p *ngIf="scored">item is scored</p>

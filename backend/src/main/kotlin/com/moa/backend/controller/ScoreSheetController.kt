@@ -1,6 +1,7 @@
 package com.moa.backend.controller
 
 import com.moa.backend.model.dto.ScoreItemDto
+import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.service.ScoreItemService
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +30,11 @@ class ScoreSheetController {
     @PostMapping("/scoreSheet/create/{id}")
     fun CreateScoreItem(@RequestBody items: MutableList<ScoreItemDto>, @PathVariable id: Long): ResponseEntity<*> {
         return scoreItemService.CreateScoreItem(items, id)
+    }
+
+    @PostMapping("/scoreSheet/{id}/save")
+    fun SaveScoreSheet(@RequestBody scoreSheet: ScoreSheetDto, @PathVariable id: Long): ResponseEntity<*> {
+        return scoreItemService.saveScoreSheet(scoreSheet, id)
     }
 
     @GetMapping("/scoreSheet/{id}")

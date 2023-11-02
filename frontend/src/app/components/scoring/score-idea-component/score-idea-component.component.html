@@ -1,5 +1,29 @@
 <div class="container">
   <mat-card>
-    <mat-card-title>Create Scoring for idea: {{ idea.title }}</mat-card-title>
+    <mat-card-title>Create Scoring for idea: {{ idea?.title }}</mat-card-title>
+    <div *ngFor="let item of scoreSheet?.scores">
+      <div *ngIf="item.type == 'STAR'">
+        <mat-card class="item">
+          <app-star-score
+            [scored]="item.score != null"
+            (save)="saveItem($event, item.id)"
+            [item]="item"
+          ></app-star-score>
+        </mat-card>
+      </div>
+      <div *ngIf="item.type == 'SLIDER'">
+        <mat-card class="item">
+          <app-slider-score
+            [scored]="item.score != null"
+            (save)="saveItem($event, item.id)"
+            [item]="item"
+          >
+          </app-slider-score>
+        </mat-card>
+      </div>
+    </div>
+    <div class="button-container">
+      <button (click)="save()">Save</button>
+    </div>
   </mat-card>
 </div>

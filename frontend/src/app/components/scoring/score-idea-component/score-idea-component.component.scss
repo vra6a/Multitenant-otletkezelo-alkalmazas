@@ -9,6 +9,10 @@ mat-card {
   margin: auto 0;
   width: 800px;
   min-width: 400px;
+
+  .item {
+    width: 90%;
+  }
 }
 
 mat-card-title {
@@ -32,4 +36,30 @@ mat-form-field {
   background-color: #ffffff;
   color: #262626;
   border: 1px solid #262626;
+}
+
+ul li {
+  width: 20px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 8px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background-color: #262626;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  width: 70%;
+  margin: 10px auto;
+  align-self: center;
+  cursor: pointer;
 }

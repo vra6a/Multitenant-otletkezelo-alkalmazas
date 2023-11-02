@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaDto } from 'src/app/models/dto/ideaDto';
+import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { IdeaService } from 'src/app/services/idea.service';
+import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
 
 @UntilDestroy()
 @Component({

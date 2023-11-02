@@ -41,4 +41,11 @@ export class ScoreSheetService {
       `${this.apiUrl}/scoreSheet/` + id
     );
   }
+
+  saveScoreSheet(ss: ScoreSheetDto): Observable<WebResponse<ScoreSheetDto>> {
+    return this.http.post<WebResponse<ScoreSheetDto>>(
+      `${this.apiUrl}/scoreSheet/` + ss.id + `/save`,
+      ss
+    );
+  }
 }
