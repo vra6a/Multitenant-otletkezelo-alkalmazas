@@ -19,10 +19,11 @@ jobs:
           java-version: 11
           distribution: "adopt"
 
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
       - name: Setup H2 database
-        uses: docker://oarmstrong/h2
-        with:
-          args: -e H2_OPTIONS='-ifNotExists -tcp -tcpAllowOthers -tcpPort 9092'
+        run: docker run -d --name h2-database -p 9092:9092 -e H2_OPTIONS='-ifNotExists -tcp -tcpAllowOthers -tcpPort 9092' oarmstrong/h2
 
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
