@@ -9,6 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: moa_db
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,8 +30,8 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Setup H2 database
-        run: docker run -d --name h2-database -p 9092:9092 -e H2_OPTIONS='-ifNotExists -tcp -tcpAllowOthers -tcpPort 9092' oscarfonts/h2
+      - name: Start MySQL Service
+        run: docker run -d --name mysql-database -p 3306:3306 --network=host -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=moa_db mysql:8
 
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
