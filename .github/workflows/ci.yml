@@ -19,6 +19,11 @@ jobs:
           java-version: 11
           distribution: "adopt"
 
+      - name: Setup H2 database
+        uses: docker://oarmstrong/h2
+        with:
+          args: -e H2_OPTIONS='-ifNotExists -tcp -tcpAllowOthers -tcpPort 9092'
+
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
 
