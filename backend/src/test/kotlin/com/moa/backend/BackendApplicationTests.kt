@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest
 class BackendApplicationTests {
 
 	@Test
-	fun contextLoads() {
+	fun alwaysTrue() {
+
 	}
 
 }
