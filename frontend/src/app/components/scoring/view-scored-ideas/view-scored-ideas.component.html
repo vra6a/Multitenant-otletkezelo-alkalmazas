@@ -1,0 +1,7 @@
+<div *ngFor="let idea of scoredIdeas">
+  <mat-card>
+    <mat-card-header [routerLink]="'/idea/' + idea.id + '/viewScores'">
+      {{ idea.title }}
+    </mat-card-header>
+  </mat-card>
+</div>

@@ -67,6 +67,8 @@ import { IdeasToScoreComponent } from './components/scoring/ideas-to-score/ideas
 import { StarScoreComponent } from './components/scoring/score-idea-component/star-score/star-score.component';
 import { SliderScoreComponent } from './components/scoring/score-idea-component/slider-score/slider-score.component';
 import { OtherScoreComponent } from './components/scoring/score-idea-component/other-score/other-score.component';
+import { ViewScoredIdeasComponent } from './components/scoring/view-scored-ideas/view-scored-ideas.component';
+import { ViewScoresComponent } from './components/scoring/view-scores/view-scores.component';
 
 @NgModule({
   declarations: [
@@ -112,6 +114,8 @@ import { OtherScoreComponent } from './components/scoring/score-idea-component/o
     StarScoreComponent,
     SliderScoreComponent,
     OtherScoreComponent,
+    ViewScoredIdeasComponent,
+    ViewScoresComponent,
   ],
   imports: [
     FormsModule,

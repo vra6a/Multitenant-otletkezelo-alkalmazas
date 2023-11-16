@@ -340,4 +340,35 @@ class IdeaService {
             )
         )
     }
+
+    fun getScoredIdeas(): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        val ideas = ideaRepository.findAll()
+
+        ideas.forEach{ idea ->
+            val usersWhoScored: MutableList<String> = emptyList<String>().toMutableList()
+            val requiredJuries: MutableList<String> = emptyList<String>().toMutableList()
+
+            idea.requiredJuries?.forEach { user -> requiredJuries.add(user.email) }
+            idea.scoreSheets.forEach { sh ->
+                if(sh.templateFor == null) {
+                    usersWhoScored.add(sh.owner.email)
+                }
+            }
+            if(usersWhoScored.containsAll(requiredJuries)) {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
+    }
 }

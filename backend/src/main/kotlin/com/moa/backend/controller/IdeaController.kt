@@ -45,6 +45,11 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
         return ideaService.getIdeasToScore()
     }
 
+    @GetMapping("/idea/scoredIdeas")
+    fun getScoredIdeas(): ResponseEntity<*> {
+        return ideaService.getScoredIdeas()
+    }
+
     @PostMapping("/idea")
     fun createIdea(@RequestBody idea: IdeaDto): ResponseEntity<*> {
         return ideaService.createIdea(idea)

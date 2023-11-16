@@ -18,7 +18,11 @@ export class StarScoreComponent implements OnInit {
   arr: any[] = [];
   index: number = -1;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.item != null) {
+      this.index = this.item.score;
+    }
+  }
 
   onClickItem(index) {
     this.index = index;

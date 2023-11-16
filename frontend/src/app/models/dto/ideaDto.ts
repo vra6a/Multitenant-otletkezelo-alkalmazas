@@ -8,7 +8,7 @@ export interface IdeaDto {
   id?: number;
   title?: string;
   description?: string;
-  score?: ScoreSlimDto[];
+  scoreSheets?: ScoreSlimDto[];
   owner?: UserSlimDto;
   status?: string;
   creationDate?: Date;

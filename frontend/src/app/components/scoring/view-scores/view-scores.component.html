@@ -1,0 +1,39 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title>Scores for idea: {{ idea?.title }}</mat-card-title>
+
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Beérkezett pontozások</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let score of scores">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ score.owner.email }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <h3>Scores</h3>
+            <div *ngFor="let item of score.scores">
+              <p *ngIf="item.text == null">
+                {{ item.title }}: {{ item.score }} ({{ item.type }})
+              </p>
+              <p *ngIf="item.text != null">
+                {{ item.title }}: {{ item.text }} ({{ item.type }})
+              </p>
+            </div>
+          </mat-expansion-panel>
+        </div>
+        <div *ngIf="template != null">
+          <div *ngFor="let item of template.scores">
+            <div *ngIf="item.type == 'SLIDER'">
+              <app-slider-score [item]="item"> </app-slider-score>
+            </div>
+            <div *ngIf="item.type == 'STAR'">
+              <app-star-score [item]="item"></app-star-score>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>

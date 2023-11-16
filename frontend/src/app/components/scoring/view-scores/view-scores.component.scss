@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+mat-card {
+  margin: auto 0;
+  width: 800px;
+  min-width: 400px;
+
+  .item {
+    width: 90%;
+  }
+}
+
+mat-card-title {
+  text-align: center;
+}

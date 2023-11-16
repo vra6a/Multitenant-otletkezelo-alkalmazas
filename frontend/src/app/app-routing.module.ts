@@ -17,6 +17,7 @@ import { ScoringComponent } from './components/scoring/scoring.component';
 import { CreateScoreSheetComponent } from './components/scoring/create-score-sheet/create-score-sheet.component';
 import { ViewScoringTemplateComponent } from './components/idea-box-page/view-scoring-template/view-scoring-template.component';
 import { ScoreIdeaComponentComponent } from './components/scoring/score-idea-component/score-idea-component.component';
+import { ViewScoresComponent } from './components/scoring/view-scores/view-scores.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -92,6 +93,11 @@ const routes: Routes = [
   {
     path: 'idea/:id/score',
     component: ScoreIdeaComponentComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'idea/:id/viewScores',
+    component: ViewScoresComponent,
     canActivate: [AuthGuard],
   },
   {

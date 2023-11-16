@@ -34,17 +34,13 @@ Október 30. - November 5.
 
 Scoring felületen a belépett bírálónak vagy adminnak megjelennek a pontozandó ötletek, melyekre a megadott pontozási lap szerint pontozást kell leadniuk.
 
-## 10. hét
+## 10. hét - 11. hét
 
-November 6. - November 12.
+November 6. - November 19.
 
-//TODO
+Scoring teljesen működik, a bírálók a megadott szempontok szerint lepontozzák az ötletet.
 
-## 11. hét
-
-November 13. - November 19.
-
-//TODO
+A pontozások listázhatóak a Scoring tabon az adminok és a bírálók számára. Ezen a felületen látható egy átlagpontszám, illetve lehetőség arra, hogy az ötlet visszadobásra vagy elfogadásra kerüljön.
 
 ## 12. hét
 

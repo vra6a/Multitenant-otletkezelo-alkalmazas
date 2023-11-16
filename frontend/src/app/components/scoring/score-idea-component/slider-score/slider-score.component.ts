@@ -15,7 +15,11 @@ export class SliderScoreComponent implements OnInit {
 
   sliderValue = 1;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.item != null) {
+      this.sliderValue = this.item.score;
+    }
+  }
 
   sliderChange(e: number) {
     this.sliderValue = e;
