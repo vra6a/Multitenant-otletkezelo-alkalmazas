@@ -4,10 +4,13 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaBoxDto } from 'src/app/models/dto/ideaBoxDto';
 import { IdeaDto } from 'src/app/models/dto/ideaDto';
 import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
+import { UserSlimDto } from 'src/app/models/slimDto/userSlimDto';
 import { WebResponse } from 'src/app/models/webResponse';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
+import { UserService } from 'src/app/services/user.service';
 
 @UntilDestroy()
 @Component({
@@ -20,14 +23,17 @@ export class ScoreIdeaComponentComponent implements OnInit {
     private ideaService: IdeaService,
     private route: ActivatedRoute,
     private scoreSheetService: ScoreSheetService,
-    private ideaBoxService: IdeaBoxService
+    private ideaBoxService: IdeaBoxService,
+    private authService: AuthService
   ) {}
 
   scoreSheet: ScoreSheetDto = null;
   idea: IdeaDto = null;
   ideaId: string = '';
+  currentUser: UserSlimDto = null;
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getCurrentUser();
     this.ideaId = this.route.snapshot.paramMap.get('id');
     this.ideaService
       .getIdea$(this.ideaId)
@@ -44,6 +50,7 @@ export class ScoreIdeaComponentComponent implements OnInit {
               .subscribe((res: WebResponse<ScoreSheetDto>) => {
                 console.log(res);
                 this.scoreSheet = res.data;
+                this.scoreSheet.owner = this.currentUser;
               });
           });
       });

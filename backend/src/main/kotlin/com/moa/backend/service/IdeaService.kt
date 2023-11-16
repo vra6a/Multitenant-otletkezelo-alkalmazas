@@ -3,6 +3,7 @@ package com.moa.backend.service
 import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.TagMapper
 import com.moa.backend.mapper.UserMapper
+import com.moa.backend.model.ScoreSheet
 import com.moa.backend.model.Status
 import com.moa.backend.model.Tag
 import com.moa.backend.model.User
@@ -322,7 +323,12 @@ class IdeaService {
 
         ideas.forEach{ idea ->
             if(idea.requiredJuries?.contains(user) == true) {
-                response.add(ideaMapper.modelToSlimDto(idea))
+                val ownScoreSheets = idea.scoreSheets.filter { it.owner.email == user.email }
+
+                if(ownScoreSheets.isEmpty()) {
+                    response.add(ideaMapper.modelToSlimDto(idea))
+                }
+
             }
         }
 
