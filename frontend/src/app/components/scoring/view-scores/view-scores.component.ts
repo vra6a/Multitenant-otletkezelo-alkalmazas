@@ -51,27 +51,26 @@ export class ViewScoresComponent implements OnInit {
   }
 
   private calculateAverageScore() {
-    this.scores.forEach(score => {
-      let sliderCount = 0
-      let sliderValue = 0
-      let starCount = 0
-      let starValue = 0
-      let value = 0
-      let count = 0
+    this.scores.forEach((score) => {
+      let sliderCount = 0;
+      let sliderValue = 0;
+      let starCount = 0;
+      let starValue = 0;
+      let value = 0;
+      let count = 0;
 
-      score.scores.forEach(s => {
-        switch(s.type) {
+      score.scores.forEach((s) => {
+        switch (s.type) {
           case 'SLIDER':
-            sliderValue++
-            sliderCount += s.score
+            sliderValue++;
+            sliderCount += s.score;
             break;
           case 'STAR':
-            starCount++
-            starValue += s.score
+            starCount++;
+            starValue += s.score;
             break;
         }
-      })
-      this.template.scores[count].score =
-    })
+      });
+    });
   }
 }
