@@ -2,6 +2,7 @@ package com.moa.backend.mapper
 
 import com.moa.backend.model.ScoreItem
 import com.moa.backend.model.ScoreSheet
+import com.moa.backend.model.dto.ScoreItemDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
@@ -28,9 +29,9 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
 
     override fun modelToDto(entity: ScoreSheet): ScoreSheetDto {
 
-        val scores: MutableList<ScoreItemSlimDto> = emptyList<ScoreItemSlimDto>().toMutableList()
+        val scores: MutableList<ScoreItemDto> = emptyList<ScoreItemDto>().toMutableList()
         entity.scores?.forEach { score: ScoreItem ->
-            scores.add(scoreItemMapper.modelToSlimDto(score))
+            scores.add(scoreItemMapper.modelToDto(score))
         }
 
         return ScoreSheetDto(
@@ -64,8 +65,8 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
     override fun dtoToModel(domain: ScoreSheetDto): ScoreSheet {
         if(domain.id == 0L) {
             val scores: MutableList<ScoreItem> = emptyList<ScoreItem>().toMutableList()
-            domain.scores?.forEach{ scoreItem: ScoreItemSlimDto ->
-                scores.add(scoreItemMapper.slimDtoToModel(scoreItem))
+            domain.scores?.forEach{ scoreItem: ScoreItemDto ->
+                scores.add(scoreItemMapper.dtoToModel(scoreItem))
             }
 
             return ScoreSheet(

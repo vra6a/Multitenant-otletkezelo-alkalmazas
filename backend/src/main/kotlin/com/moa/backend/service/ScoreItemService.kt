@@ -1,12 +1,16 @@
 package com.moa.backend.service
 
+import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.ScoreItemMapper
 import com.moa.backend.mapper.ScoreSheetMapper
+import com.moa.backend.model.Idea
 import com.moa.backend.model.ScoreSheet
 import com.moa.backend.model.dto.ScoreItemDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
+import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.ScoreItemRepository
 import com.moa.backend.repository.ScoreSheetRepository
 import com.moa.backend.utility.WebResponse
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class ScoreItemService {
@@ -30,6 +35,12 @@ class ScoreItemService {
 
     @Autowired
     lateinit var scoreItemMapper: ScoreItemMapper
+
+    @Autowired
+    lateinit var ideaRepository: IdeaRepository
+
+    @Autowired
+    lateinit var ideaMapper: IdeaMapper
 
     private val logger = KotlinLogging.logger {}
 
@@ -79,18 +90,28 @@ class ScoreItemService {
     }
 
     fun saveScoreSheet(scoreSheet: ScoreSheetDto, id: Long): ResponseEntity<*> {
-        logger.info { "MOA-INFO: ${scoreSheet}." }
-        scoreSheet.scores?.forEach { score ->
-            scoreItemRepository.save(scoreItemMapper.slimDtoToModel(score))
-        }
+        val idea = ideaRepository.findById(scoreSheet.idea!!.id).orElse(null)
+        val ss = scoreSheet
+        val scores = scoreSheet.scores
 
-        val ss = scoreSheetRepository.findById(id).orElse(null)
+        ss.id = 0
+        ss.scores= emptyList<ScoreItemDto>().toMutableList()
+        ss.idea = ideaMapper.modelToSlimDto(idea)
+        ss.templateFor = null
+        val tmp = scoreSheetRepository.save(scoreSheetMapper.dtoToModel(ss))
+        scores?.forEach{ score ->
+            score.id = 0L
+            score.scoreSheet = scoreSheetMapper.modelToSlimDto(tmp)
+            logger.info { "score: $score" }
+            val s = scoreItemRepository.save(scoreItemMapper.dtoToModel(score))
+            ss.scores!!.add(scoreItemMapper.modelToDto(s))
+        }
 
         return ResponseEntity.ok(
             WebResponse<ScoreSheetDto>(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = scoreSheetMapper.modelToDto(ss)
+                data = scoreSheet
             )
         )
     }

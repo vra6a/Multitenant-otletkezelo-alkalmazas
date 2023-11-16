@@ -30,6 +30,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("io.mockk:mockk:1.10.4")
 	testImplementation("org.springframework.security:spring-security-test")
 	implementation("org.mapstruct:mapstruct:1.5.3.Final")
 	annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.3.Final")

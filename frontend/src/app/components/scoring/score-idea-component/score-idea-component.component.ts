@@ -58,7 +58,8 @@ export class ScoreIdeaComponentComponent implements OnInit {
   save() {
     let invalid = this.scoreSheet.scores.find((item) => item.score == null);
     if (!invalid) {
-      console.log('asd');
+      this.scoreSheet.idea = this.idea;
+      console.log(this.scoreSheet);
       this.scoreSheetService
         .saveScoreSheet(this.scoreSheet)
         .pipe(untilDestroyed(this))

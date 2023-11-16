@@ -9,7 +9,7 @@ data class ScoreSheetDto(
 
     var id: Long = 0,
 
-    var scores: MutableList<ScoreItemSlimDto>?,
+    var scores: MutableList<ScoreItemDto>?,
 
     var owner: UserSlimDto,
 
