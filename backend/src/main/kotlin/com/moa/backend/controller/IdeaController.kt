@@ -3,6 +3,7 @@ package com.moa.backend.controller
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.service.IdeaService
+import com.moa.backend.service.ScoreItemService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,6 +15,9 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
 
     @Autowired
     lateinit var ideaService: IdeaService
+
+    @Autowired
+    lateinit var scoreSheetService: ScoreItemService
 
     @GetMapping("/ideas")
     fun getIdeas(): ResponseEntity<*> {
@@ -48,6 +52,11 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     @GetMapping("/idea/scoredIdeas")
     fun getScoredIdeas(): ResponseEntity<*> {
         return ideaService.getScoredIdeas()
+    }
+
+    @GetMapping("/idea/{id}/scoreSheets")
+    fun getScoreSheetsByIdea(@PathVariable id: Long): ResponseEntity<*> {
+        return scoreSheetService.getScoreSheetsByIdea(id)
     }
 
     @PostMapping("/idea")

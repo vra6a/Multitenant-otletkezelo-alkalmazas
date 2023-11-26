@@ -6,15 +6,16 @@
 }
 
 mat-card {
-  margin: auto 0;
+  margin: 10px auto;
   width: 800px;
   min-width: 400px;
-
-  .item {
+  margin .item {
     width: 90%;
   }
 }
 
 mat-card-title {
   text-align: center;
+  font-size: 20px;
+  font-weight: 500;
 }

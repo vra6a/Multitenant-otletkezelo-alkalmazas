@@ -115,4 +115,29 @@ class ScoreItemService {
             )
         )
     }
+
+    fun getScoreSheetsByIdea(id: Long): ResponseEntity<*> {
+
+        val idea = ideaRepository.findById(id).orElse(null)
+        val scoreSheets = emptyList<ScoreSheetDto>().toMutableList()
+
+        val template = idea.ideaBox.scoreSheetTemplates[0]
+        template.scores?.forEach { score ->
+            score.score = 0
+        }
+
+        scoreSheets.add(scoreSheetMapper.modelToDto(template))
+
+        idea?.scoreSheets?.forEach { ss ->
+            scoreSheets.add(scoreSheetMapper.modelToDto(ss))
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<MutableList<ScoreSheetDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = scoreSheets
+            )
+        )
+    }
 }

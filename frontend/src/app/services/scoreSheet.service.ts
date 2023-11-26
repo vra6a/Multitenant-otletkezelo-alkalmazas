@@ -42,6 +42,14 @@ export class ScoreSheetService {
     );
   }
 
+  getScoreSheetsByIdeaId$(
+    id: number
+  ): Observable<WebResponse<ScoreSheetDto[]>> {
+    return this.http.get<WebResponse<ScoreSheetDto[]>>(
+      `${this.apiUrl}/idea/` + id + `/scoreSheets`
+    );
+  }
+
   saveScoreSheet(ss: ScoreSheetDto): Observable<WebResponse<ScoreSheetDto>> {
     console.log(ss);
     return this.http.post<WebResponse<ScoreSheetDto>>(

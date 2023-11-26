@@ -24,6 +24,7 @@ export class ViewScoresComponent implements OnInit {
   scores: ScoreSheetDto[] = [];
   ideaId: string = '';
   template: ScoreSheetDto = null;
+  scoreSheets: ScoreSheetDto[] = [];
 
   ngOnInit(): void {
     this.ideaId = this.route.snapshot.paramMap.get('id');
@@ -32,45 +33,42 @@ export class ViewScoresComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaDto>) => {
         this.idea = res.data;
-        let isFirst = true;
-        res.data.scoreSheets.forEach((sheet) => {
-          this.scoreSheetService
-            .getScoreSheetById$(sheet.id.toString())
-            .pipe(untilDestroyed(this))
-            .subscribe((res: WebResponse<ScoreSheetDto>) => {
-              this.scores.push(res.data);
-              console.log(res.data);
-              if (isFirst) {
-                this.template = res.data;
-                console.log(this.template);
+        this.scoreSheetService
+          .getScoreSheetsByIdeaId$(this.idea.id)
+          .pipe(untilDestroyed(this))
+          .subscribe((res: WebResponse<ScoreSheetDto[]>) => {
+            res.data.forEach((ss, index) => {
+              if (index != 0) {
+                this.scoreSheets.push(ss);
               }
-              isFirst = false;
             });
-        });
+
+            this.template = res.data[0];
+            this.calculateAverageScore();
+          });
       });
   }
 
   private calculateAverageScore() {
-    this.scores.forEach((score) => {
-      let sliderCount = 0;
-      let sliderValue = 0;
-      let starCount = 0;
-      let starValue = 0;
-      let value = 0;
-      let count = 0;
+    console.log(this.template);
+    console.log(this.scoreSheets);
 
-      score.scores.forEach((s) => {
-        switch (s.type) {
-          case 'SLIDER':
-            sliderValue++;
-            sliderCount += s.score;
-            break;
-          case 'STAR':
-            starCount++;
-            starValue += s.score;
-            break;
-        }
+    let values = new Map<string, number>();
+    this.template.scores.forEach((score) => {
+      values.set(score.title, 0);
+    });
+    console.log(values);
+    this.scoreSheets.forEach((sh) => {
+      sh.scores.forEach((score) => {
+        let value = values.get(score.title);
+        value += score.score;
+        values.set(score.title, value);
       });
     });
+    console.log(values);
+    this.template.scores.forEach((score) => {
+      score.score = values.get(score.title) / this.scoreSheets.length;
+    });
+    console.log(this.template);
   }
 }

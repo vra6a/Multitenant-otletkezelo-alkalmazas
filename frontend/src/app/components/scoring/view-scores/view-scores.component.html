@@ -7,7 +7,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title>Beérkezett pontozások</mat-panel-title>
         </mat-expansion-panel-header>
-        <div *ngFor="let score of scores">
+        <div *ngFor="let score of scoreSheets">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>{{ score.owner.email }}</mat-panel-title>
@@ -23,15 +23,25 @@
             </div>
           </mat-expansion-panel>
         </div>
-        <div *ngIf="template != null">
-          <div *ngFor="let item of template.scores">
-            <div *ngIf="item.type == 'SLIDER'">
-              <app-slider-score [item]="item"> </app-slider-score>
-            </div>
-            <div *ngIf="item.type == 'STAR'">
-              <app-star-score [item]="item"></app-star-score>
-            </div>
-          </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Összesített pontozás</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let item of template?.scores">
+          <mat-card>
+            <mat-card-header>
+              <h3>{{ item.title }}</h3>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                Total Score in the category {{ item.title }}:
+                {{ item.score }} out of
+                <span *ngIf="item.type == 'SLIDER'">10</span
+                ><span *ngIf="item.type == 'STAR'">5</span>
+              </p>
+            </mat-card-content>
+          </mat-card>
         </div>
       </mat-expansion-panel>
     </mat-accordion>
