@@ -41,6 +41,9 @@ jobs:
       - name: Check IP
         run: docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
 
+      - name: Print MySQL Logs
+        run: docker logs mysql
+
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
 
