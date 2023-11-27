@@ -46,9 +46,9 @@ jobs:
 
       - name: Check MySQL Connection
         run: |
-          apt-get update
-          apt-get install -y netcat
-          nc -zv 172.17.0.2 3306
+          MYSQL_PORT=$(docker inspect --format='{{(index (index .NetworkSettings.Ports "3306") 0).HostPort}}' mysql)
+          echo "MySQL Container Port: $MYSQL_PORT"
+          nc -zv 172.17.0.2 $MYSQL_PORT
 
       - name: Print MySQL Logs
         run: docker logs mysql
