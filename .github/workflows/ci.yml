@@ -37,7 +37,11 @@ jobs:
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Start MySQL Service
-        run: docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=moa_db mysql:8 && sleep 10
+        run: |
+          docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=moa_db mysql:8 && sleep 10
+          docker ps -a
+          docker inspect --format '{{.State.Status}}' mysql
+          docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
 
       - name: Check MySQL Container Status
         run: docker inspect --format '{{.State.Status}}' mysql
@@ -53,15 +57,3 @@ jobs:
 
       - name: Run Unit Tests
         run: cd backend && ./gradlew test
-
-  check-mysql-connection:
-    needs: [setup, build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check MySQL Connection
-        run: |
-          MYSQL_PORT=$(docker inspect --format='{{(index (index .NetworkSettings.Ports "3306") 0).HostPort}}' mysql)
-          MYSQL_IP=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql)
-          echo "MySQL Container IP: $MYSQL_IP"
-          echo "MySQL Container Port: $MYSQL_PORT"
-          nc -zv $MYSQL_IP $MYSQL_PORT
