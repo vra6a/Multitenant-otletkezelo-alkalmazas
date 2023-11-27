@@ -53,7 +53,7 @@ jobs:
         run: docker logs mysql
 
       - name: Check MySQL Port
-        run: echo "MySQL Container Port: $(docker inspect --format='{{(index (index .NetworkSettings.Ports "3306") 0).HostPort}}' mysql)"
+        run: docker inspect --format='{{(index (index .NetworkSettings.Ports "3306") 0).HostPort}}' mysql
 
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
