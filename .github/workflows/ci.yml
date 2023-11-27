@@ -55,5 +55,8 @@ jobs:
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
 
+      - name: Wait for MySQL to be ready
+        run: docker run --network=host -v $(pwd):/app -w /app vishnubob/wait-for-it -t 0 172.17.0.2:3306
+
       - name: Run Unit Tests
         run: cd backend && ./gradlew test
