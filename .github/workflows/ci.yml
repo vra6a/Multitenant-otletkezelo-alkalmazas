@@ -45,7 +45,7 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          while ! docker exec mysql mysqladmin ping -uroot -proot --silent; do
+          while ! nc -z 172.17.0.2 3306; do
             sleep 1
           done
 
