@@ -31,7 +31,7 @@ jobs:
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Start MySQL Service
-        run: docker run -d --name mysql-database -p 3306:3306 --network=host -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=moa_db mysql:8
+        run: docker run -d --name mysql -p 3306:3306 --network=host -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=moa_db mysql:8
 
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
