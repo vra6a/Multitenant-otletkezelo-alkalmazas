@@ -41,6 +41,15 @@ jobs:
       - name: Check IP
         run: docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
 
+      - name: Check Port
+        run: docker inspect --format '{{range .NetworkSettings.Ports}}{{.HostPort}}{{end}}' mysql
+
+      - name: Check MySQL Connection
+        run: |
+          apt-get update
+          apt-get install -y netcat
+          nc -zv 172.17.0.2 3306
+
       - name: Print MySQL Logs
         run: docker logs mysql
 
