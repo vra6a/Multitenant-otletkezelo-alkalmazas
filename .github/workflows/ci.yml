@@ -52,6 +52,9 @@ jobs:
       - name: Print MySQL Logs
         run: docker logs mysql
 
+      - name: Check MySQL Port
+        run: docker inspect --format '{{range .NetworkSettings.Ports}}{{.HostPort}}{{end}}' mysql
+
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
 
