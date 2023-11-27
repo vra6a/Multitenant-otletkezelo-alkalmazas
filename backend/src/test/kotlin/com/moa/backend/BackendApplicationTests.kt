@@ -8,7 +8,9 @@ class BackendApplicationTests {
 
 	@Test
 	fun alwaysTrue() {
-
+		System.out.println("JDBC URL: " + jdbcUrl);
+		System.out.println("Username: " + dbUsername);
+		System.out.println("Password: " + dbPassword);
 	}
 
 }
