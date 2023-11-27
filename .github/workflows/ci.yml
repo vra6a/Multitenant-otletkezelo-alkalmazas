@@ -38,6 +38,9 @@ jobs:
       - name: Check MySQL Container Status
         run: docker inspect --format '{{.State.Status}}' mysql
 
+      - name: Check IP
+        run: docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
+
       - name: Make gradlew script executable
         run: cd backend && chmod +x gradlew
 
