@@ -43,12 +43,6 @@ jobs:
           docker inspect --format '{{.State.Status}}' mysql
           docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
 
-      - name: Wait for MySQL to be ready
-        run: |
-          until docker exec mysql mysqladmin ping -uroot -proot --silent; do
-            sleep 1
-          done
-
       - name: Check MySQL Container Status
         run: docker inspect --format '{{.State.Status}}' mysql
 
