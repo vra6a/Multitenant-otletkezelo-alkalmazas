@@ -9,6 +9,7 @@ import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 import { UserService } from 'src/app/services/user.service';
 
 @UntilDestroy()
@@ -22,7 +23,8 @@ export class CreateScoreSheetComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private ideaBoxService: IdeaBoxService,
     private authService: AuthService,
-    private scoreSheetService: ScoreSheetService
+    private scoreSheetService: ScoreSheetService,
+    private snackBar: SnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,11 @@ export class CreateScoreSheetComponent implements OnInit {
           .pipe(untilDestroyed(this))
           .subscribe((res: WebResponse<String>) => {
             console.log(res.data);
+            if (res.code == 200) {
+              this.snackBar.ok(res.message);
+            } else {
+              this.snackBar.error(res.message);
+            }
           });
       });
   }

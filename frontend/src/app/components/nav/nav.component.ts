@@ -17,7 +17,12 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     this.auth.login.subscribe((user) => {
       this.currentUser = user;
-      if (user.role == 'ADMIN' || user.role == 'JURY') this.showScoring = true;
+      console.log(this.currentUser);
+      if (user.role == 'ADMIN' || user.role == 'JURY') {
+        this.showScoring = true;
+      } else {
+        this.showScoring = false;
+      }
     });
   }
 

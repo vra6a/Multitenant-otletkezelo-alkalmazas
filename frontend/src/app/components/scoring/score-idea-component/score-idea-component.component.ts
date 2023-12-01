@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 import { UserService } from 'src/app/services/user.service';
 
 @UntilDestroy()
@@ -24,7 +25,8 @@ export class ScoreIdeaComponentComponent implements OnInit {
     private route: ActivatedRoute,
     private scoreSheetService: ScoreSheetService,
     private ideaBoxService: IdeaBoxService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: SnackBarService
   ) {}
 
   scoreSheet: ScoreSheetDto = null;
@@ -72,6 +74,11 @@ export class ScoreIdeaComponentComponent implements OnInit {
         .pipe(untilDestroyed(this))
         .subscribe((res: WebResponse<ScoreSheetDto>) => {
           console.log(res);
+          if (res.code == 200) {
+            this.snackBar.ok(res.message);
+          } else {
+            this.snackBar.error(res.message);
+          }
         });
     }
   }
