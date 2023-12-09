@@ -15,19 +15,21 @@ Frontend készítésére Angular keretrendszer ajánlott. Az üzemeltetés teszt
 
 A téma diplomatervként végigvihető.
 
-## Haladási napló
+## Haladási naplók
 
 [Önálló laboratórium 2 Haladási napló](./documentation/haladasi_naplo_1.md)
 
 [Diplomatervezés 1 Haladási napló](./documentation/haladasi_naplo_2.md)
 
-## Beszámoló
+## Beszámolók
 
-[Beszámoló](./documentation/onlab_1_beszamlo_Varga_Adam.md)
+[Önálló laboratórium 2](./documentation/onlab_1_beszamlo_Varga_Adam.md)
+
+[Diplomatervezés 1](./documentation/diplomaterv_1_beszamolo_Varga_Adam.md)
 
 ## Figma
 
-https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX3aE09MxQf-1
+https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX3aE09MxQf-1 (depricated)
 
 ## Specifikáció
 
@@ -35,4 +37,4 @@ https://www.figma.com/file/fYRkoYkyi0HoXQhO3qRWQg/onlab2?node-id=0%3A1&t=WvgEIEX
 
 ## API Leírás
 
-[API v.1.2](./documentation/openapi.json)
+[API v.1.2](./documentation/openapi.json) (depricated)
