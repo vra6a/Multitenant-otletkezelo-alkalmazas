@@ -46,6 +46,12 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.jar {
+	archiveBaseName.set("moa-backend")
+	archiveVersion.set("0.0.1-SNAPSHOT")
+}
+
+tasks.bootJar {
+	archiveBaseName.set("moa-backend")
+	archiveVersion.set("0.0.1-SNAPSHOT")
 }

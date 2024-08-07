@@ -1,14 +1,14 @@
-FROM node:latest as builder
-
-RUN mkdir -p /app
+FROM node:14-alpine as build
 
 WORKDIR /app
 
-COPY . .
-
+COPY package*.json ./
 RUN npm install
-RUN npm run build
 
-EXPOSE 4200/tcp
+COPY . .
+RUN npm run build --prod
 
-CMD ["npm", "start"]
+FROM nginx:alpine
+COPY --from=build /app/dist/moa-frontend /usr/share/nginx/html
+
+EXPOSE 80
