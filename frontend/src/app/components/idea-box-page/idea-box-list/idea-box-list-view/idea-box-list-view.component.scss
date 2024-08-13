@@ -1,9 +1,8 @@
 .container {
-  padding: 5%;
-  width: 90%;
+  padding: 16px;
   transition: transform 0.2s;
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 }
 

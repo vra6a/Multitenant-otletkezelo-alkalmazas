@@ -1,55 +1,39 @@
 <div class="container">
   <div class="body">
     <h1>Welcome {{ currentUser?.firstName + " " + currentUser?.lastName }}!</h1>
-    <mat-accordion>
-      <mat-expansion-panel hideToggle expanded="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title> Idea Boxes, Ideas </mat-panel-title>
-          <mat-panel-description>
-            Manage the user's own idea boxes and ideas
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="half-divider">
-          <div class="col">
-            <h2>Own Ideas</h2>
-            <app-user-idea-list
-              [ideas]="currentUser?.ideas"
-            ></app-user-idea-list>
-          </div>
-          <div class="col">
-            <h2>Own Idea boxes</h2>
-            <app-user-idea-box-list
-              [ideaBoxes]="currentUser?.ideaBoxes"
-            ></app-user-idea-box-list>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel
-        hideToggle
-        expanded="true"
-        *ngIf="currentUser?.role === 'JURY' || currentUser?.role === 'ADMIN'"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Upcoming and juried ideas </mat-panel-title>
-          <mat-panel-description>
-            Jury the upcoming ideas and visit juried ones
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <!-- ide jon majd a listazas-->
-      </mat-expansion-panel>
-      <mat-expansion-panel
-        hideToggle
-        expanded="true"
-        *ngIf="currentUser?.role === 'ADMIN'"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> Admin editing </mat-panel-title>
-          <mat-panel-description>
-            Edit all idea boxes, ideas, scores
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+
+    <mat-tab-group>
+      <!--  Ideas  -->
+      <mat-tab label="Ideas">
+        <h2>Own Ideas</h2>
+        <app-user-idea-list
+          [ideas]="currentUser?.ideas"
+        ></app-user-idea-list>
+      </mat-tab>
+
+      <!--  Idea Boxes  -->
+      <mat-tab label="Idea Boxes">
+        <h2>Own Idea boxes</h2>
+        <app-user-idea-box-list
+          [ideaBoxes]="currentUser?.ideaBoxes"
+        ></app-user-idea-box-list>
+      </mat-tab>
+
+      <!--  Close to Deadline  -->
+      <mat-tab label="Close to deadline" *ngIf="currentUser?.role === 'JURY' || currentUser?.role === 'ADMIN'">
+        <h2>Ideas that are close to their deadline, but haven't been scored yet.</h2>
+      </mat-tab>
+
+      <!--  Juried Scored ideas  -->
+      <mat-tab label="Scored ideas" *ngIf="currentUser?.role === 'JURY' || currentUser?.role === 'ADMIN'">
+        <h2>Ideas that are already scored.</h2>
+      </mat-tab>
+
+      <!--  Admin Editing  -->
+      <mat-tab label="Edit" *ngIf="currentUser?.role === 'ADMIN'">
+        <h2>Edit site data</h2>
         <app-admin></app-admin>
-      </mat-expansion-panel>
-    </mat-accordion>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>

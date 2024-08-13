@@ -25,12 +25,6 @@ export class UserPageComponent implements OnInit {
   currentUser: User = null;
 
   ngOnInit(): void {
-    this.router.events.subscribe((val) => {
-      console.log(val);
-      if (val instanceof NavigationEnd) {
-        this.getUser();
-      }
-    });
     this.getUser();
   }
 

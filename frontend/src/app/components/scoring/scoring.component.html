@@ -1,31 +1,25 @@
 <div class="container">
   <div class="body">
     <h1>Scoring</h1>
-    <mat-accordion>
-      <mat-expansion-panel expanded="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Manage and assign scoresheets to IdeaBoxes</mat-panel-title
-          >
-        </mat-expansion-panel-header>
-        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-          <mat-tab label="Creating Score Sheets">
-            <app-create-score-sheet></app-create-score-sheet>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-expansion-panel>
-      <mat-expansion-panel expanded="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>Score Idea Boxes</mat-panel-title>
-        </mat-expansion-panel-header>
+
+    <mat-tab-group>
+      <!--  Create Score Sheets  -->
+      <mat-tab label="Create Score Sheet">
+        <h2>Create Score Sheet for idea Boxes</h2>
+        <app-create-score-sheet></app-create-score-sheet>
+      </mat-tab>
+
+      <!--  Score Idea Boxes  -->
+      <mat-tab label="Score Idea Boxes">
+        <h2>Score Idea boxes according to the defined scoresheet</h2>
         <app-ideas-to-score></app-ideas-to-score>
-      </mat-expansion-panel>
-      <mat-expansion-panel expanded="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>View Scored Idea Boxes</mat-panel-title>
-        </mat-expansion-panel-header>
+      </mat-tab>
+
+      <!--  View Scored Idea Boxes  -->
+      <mat-tab label="View Scored Idea Boxes">
+        <h2>View already scored idea boxes</h2>
         <app-view-scored-ideas></app-view-scored-ideas>
-      </mat-expansion-panel>
-    </mat-accordion>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>

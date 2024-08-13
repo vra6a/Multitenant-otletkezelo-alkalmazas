@@ -1,8 +1,11 @@
 <div class="scroll-container">
-  <div class="idea" *ngFor="let box of ideaBoxes">
-    <app-idea-box-list-view
-      [ideaBox]="box"
-      [routerLink]="'/idea-boxes/' + box?.id"
-    ></app-idea-box-list-view>
+  <div *ngIf='ideaBoxes.length == 0'>You Dont have any idea Boxes!</div>
+  <div *ngIf='ideaBoxes.length > 0'>
+    <div class="idea" *ngFor="let box of ideaBoxes">
+      <app-idea-box-list-view
+        [ideaBox]="box"
+        [routerLink]="'/idea-boxes/' + box?.id"
+      ></app-idea-box-list-view>
+    </div>
   </div>
 </div>
