@@ -10,3 +10,54 @@ mat-card {
     transform: scale(1.02);
   }
 }
+
+.idea {
+  padding: 16px;
+  background-color: #f4f5f7;
+  border-radius: 16px;
+  margin-top: 12px;
+}
+
+.container {
+  display: flex;
+}
+
+.left-div {
+  width: 30%;
+  padding: 22px;
+}
+
+.right-div {
+  width: 70%;
+  padding: 22px;
+}
+
+.idea:hover {
+  background-color: #f0f0f0; /* Light grey on hover */
+}
+
+.idea.selected {
+  background-color: #9e9e9e;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  
+}
+
+.button-container-button {
+  background-color: #262626;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  width: 70%;
+  margin: 10px auto;
+  align-self: center;
+  cursor: pointer;
+}
+

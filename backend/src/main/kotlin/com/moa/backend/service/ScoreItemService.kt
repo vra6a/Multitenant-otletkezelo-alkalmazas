@@ -13,11 +13,13 @@ import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.ScoreItemRepository
 import com.moa.backend.repository.ScoreSheetRepository
+import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -41,6 +43,9 @@ class ScoreItemService {
 
     @Autowired
     lateinit var ideaMapper: IdeaMapper
+
+    @Autowired
+    lateinit var userRepository: UserRepository
 
     private val logger = KotlinLogging.logger {}
 
@@ -90,7 +95,20 @@ class ScoreItemService {
     }
 
     fun saveScoreSheet(scoreSheet: ScoreSheetDto, id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+
         val idea = ideaRepository.findById(scoreSheet.idea!!.id).orElse(null)
+        if(idea.scoreSheets.find { sh -> sh.owner.id == user.id } != null) {
+            return ResponseEntity.ok(
+                WebResponse<ScoreSheetDto>(
+                    code = HttpStatus.METHOD_NOT_ALLOWED.value(),
+                    message = "Jury already scored this idea!",
+                    data = null
+                )
+            )
+        }
+
         val ss = scoreSheet
         val scores = scoreSheet.scores
 

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ScoreItemDto } from 'src/app/models/dto/scoreItemDto';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @Component({
   selector: 'app-slider-score',
@@ -7,7 +8,7 @@ import { ScoreItemDto } from 'src/app/models/dto/scoreItemDto';
   styleUrls: ['./slider-score.component.scss'],
 })
 export class SliderScoreComponent implements OnInit {
-  constructor() {}
+  constructor(private snackBar: SnackBarService,) {}
 
   @Input() item: ScoreItemDto = null;
   @Input() scored: boolean = false;
@@ -16,6 +17,7 @@ export class SliderScoreComponent implements OnInit {
   sliderValue = 1;
 
   ngOnInit(): void {
+    this.sliderValue = 1;
     if (this.item != null) {
       this.sliderValue = this.item.score;
     }
@@ -27,5 +29,6 @@ export class SliderScoreComponent implements OnInit {
 
   saveItem() {
     this.save.emit(this.sliderValue);
+    this.snackBar.ok("Item is scored!");
   }
 }

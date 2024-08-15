@@ -1,5 +1,5 @@
-<h1>{{ item.title }}</h1>
 <div>
+  <span>0</span>
   <mat-slider
     [max]="10"
     [min]="0"
@@ -8,9 +8,9 @@
   >
     <input matSliderThumb />
   </mat-slider>
+  <span>10</span>
   <p>Score: {{ sliderValue }}</p>
 </div>
 <div class="container">
   <button (click)="saveItem()">Save</button>
 </div>
-<p *ngIf="scored">item is scored</p>

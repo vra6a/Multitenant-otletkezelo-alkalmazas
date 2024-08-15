@@ -1,2 +1,70 @@
-<h1>Ideas To Score:</h1>
+<div class="container">
+    <div class="left-div">
+        <mat-accordion>
+            <mat-expansion-panel hideToggle *ngFor="let item of ideasToScore">
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ item.ideaBox.name }} </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div 
+                class="idea" 
+                *ngFor="let idea of item.ideas" 
+                [class.selected]="idea?.id === selectedIdea?.id"
+                (click)="ideaClicked(idea)" >
+                {{ idea.title}}
+                
+              </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="right-div">
+        <div *ngIf="selectedIdea == null">
+            <h1>No idea Selected!</h1>
+        </div>
+        <div *ngIf="selectedIdea != null">
+            <h1>Details - {{ selectedIdea?.title }}</h1>
+            <p>{{ selectedIdea?.description }}</p>
+            <p>{{ selectedIdea?.creationDate }}</p>
+            
+            <mat-stepper orientation="vertical">
+                <mat-step *ngFor="let item of scoreSheet?.scores; let i = index">
+                    <ng-template matStepLabel>
+                        {{ item?.title }}
+                        <span *ngIf="item?.score != null">
+                            <mat-icon>
+                                <span>check</span>
+                            </mat-icon>
+                        </span>
+                    </ng-template>
+                    <ng-template matStepContent>
+                        <div *ngIf="item.type == 'STAR'">
+                            <mat-card class="item">
+                              <app-star-score
+                                [scored]="item.score != null"
+                                (save)="saveItem($event, item.id)"
+                                [item]="item"
+                              ></app-star-score>
+                            </mat-card>
+                          </div>
+                          <div *ngIf="item.type == 'SLIDER'">
+                            <mat-card class="item">
+                              <app-slider-score
+                                [scored]="item.score != null"
+                                (save)="saveItem($event, item.id)"
+                                [item]="item"
+                              >
+                              </app-slider-score>
+                            </mat-card>
+                          </div>
+                    
+                        <button *ngIf="i > 0" mat-button matStepperPrevious>Back</button>
+                        <button *ngIf="i < scoreSheet?.scores?.length-1" mat-button matStepperNext>Next</button>
+                    </ng-template>
+                </mat-step>
+            </mat-stepper>
+            <div class="button-container">
+                <button class="button-container-button" (click)="save()" [disabled]="invalid">Save</button>
+              </div>
+        </div>
+    </div>
+</div>
 

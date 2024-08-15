@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -18,6 +18,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTreeModule } from '@angular/material/tree';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -71,6 +74,7 @@ import { ViewScoredIdeasComponent } from './components/scoring/view-scored-ideas
 import { ViewScoresComponent } from './components/scoring/view-scores/view-scores.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
+
 
 
 @NgModule({
@@ -146,6 +150,12 @@ import * as echarts from 'echarts';
     MatDialogModule,
     MatSliderModule,
     NgxEchartsModule.forRoot({ echarts }),
+    MatTreeModule,
+    CdkTreeModule,
+    MatStepperModule,
+  ],
+  schemas: [
+    NO_ERRORS_SCHEMA
   ],
   providers: [
     {
