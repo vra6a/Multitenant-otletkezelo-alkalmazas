@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaDto } from 'src/app/models/dto/ideaDto';
 import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
+import { BulkIdeaDto } from 'src/app/models/dto/utility/BulkIdeaDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { IdeaService } from 'src/app/services/idea.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
@@ -15,14 +16,15 @@ import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
 export class IdeasToScoreComponent implements OnInit {
   constructor(private ideaService: IdeaService) {}
 
-  ideasToScore: IdeaDto[] = [];
+  ideasToScore: BulkIdeaDto[] = [];
 
   ngOnInit(): void {
     this.ideaService
-      .getIdeasToScore$()
+      .getBulkIdeas$()
       .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse<IdeaDto[]>) => {
+      .subscribe((res: WebResponse<BulkIdeaDto[]>) => {
         this.ideasToScore = res.data;
+        console.log(res)
       });
   }
 }

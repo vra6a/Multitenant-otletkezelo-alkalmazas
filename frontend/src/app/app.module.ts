@@ -69,6 +69,9 @@ import { SliderScoreComponent } from './components/scoring/score-idea-component/
 import { OtherScoreComponent } from './components/scoring/score-idea-component/other-score/other-score.component';
 import { ViewScoredIdeasComponent } from './components/scoring/view-scored-ideas/view-scored-ideas.component';
 import { ViewScoresComponent } from './components/scoring/view-scores/view-scores.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
+
 
 @NgModule({
   declarations: [
@@ -142,6 +145,7 @@ import { ViewScoresComponent } from './components/scoring/view-scores/view-score
     MatTableModule,
     MatDialogModule,
     MatSliderModule,
+    NgxEchartsModule.forRoot({ echarts }),
   ],
   providers: [
     {

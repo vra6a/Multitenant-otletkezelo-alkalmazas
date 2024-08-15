@@ -37,6 +37,7 @@ class SecurityConfiguration {
                 .antMatchers("/api/scoreSheet/{id}/save").hasAnyAuthority("JURY","ADMIN")
                 .antMatchers("/api//idea/ideasToScore").hasAnyAuthority("JURY","ADMIN")
                 .antMatchers("/api/idea/{id}/scoreSheets").hasAnyAuthority("JURY","ADMIN")
+                .antMatchers("/api/score/getIdeas").hasAnyAuthority("JURY","ADMIN")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

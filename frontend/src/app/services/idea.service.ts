@@ -8,6 +8,7 @@ import { WebResponse } from '../models/webResponse';
 import { IdeaSlimDto } from '../models/slimDto/ideaSlimDto';
 import { ScoreDto } from '../models/dto/scoreDto';
 import { UserSlimDto } from '../models/slimDto/userSlimDto';
+import { BulkIdeaDto } from '../models/dto/utility/BulkIdeaDto';
 
 @Injectable({
   providedIn: 'root',
@@ -91,5 +92,11 @@ export class IdeaService {
     return this.http.get<WebResponse<IdeaDto[]>>(
       `${this.apiUrl}/idea/scoredIdeas`
     );
+  }
+
+  getBulkIdeas$(): Observable<WebResponse<BulkIdeaDto[]>> {
+    return this.http.get<WebResponse<BulkIdeaDto[]>>(
+      `${this.apiUrl}/score/getIdeas`
+    )
   }
 }

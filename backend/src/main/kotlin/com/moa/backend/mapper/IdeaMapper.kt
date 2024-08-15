@@ -111,6 +111,14 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
         return idToModel(domain.id)
     }
 
+    fun ModelListToSlimDto(modelList: List<Idea>): MutableList<IdeaSlimDto> {
+        val list: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        modelList.forEach { model ->
+            list.add(modelToSlimDto(model))
+        }
+        return list
+    }
+
     private fun idToModel(id: Long): Idea {
         val idea = ideaRepository.findById(id).orElse(null)
 
