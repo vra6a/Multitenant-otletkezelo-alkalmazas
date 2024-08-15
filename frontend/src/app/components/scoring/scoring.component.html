@@ -16,7 +16,7 @@
       </mat-tab>
 
       <!--  View Scored Idea Boxes  -->
-      <mat-tab label="View Scored Idea Boxes">
+      <mat-tab label="View Scored Idea Boxes" *ngIf="currentUser?.role == 'ADMIN'">
         <h2>View already scored idea boxes</h2>
         <app-view-scored-ideas></app-view-scored-ideas>
       </mat-tab>

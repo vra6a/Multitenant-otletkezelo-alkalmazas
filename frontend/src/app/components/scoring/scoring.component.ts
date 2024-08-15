@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UserSlimDto } from 'src/app/models/slimDto/userSlimDto';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-scoring',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScoringComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+  ) { }
 
+  currentUser: UserSlimDto = null
   ngOnInit(): void {
+    this.currentUser =  this.authService.getCurrentUser();
   }
 
 }
