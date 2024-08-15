@@ -211,4 +211,14 @@ class IdeaBoxService {
             )
         )
     }
+
+    fun getScoredIdeaCountByIdeaBox(id: Long): ResponseEntity<*> {
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = ideaBoxRepository.countScoredIdeasByIdeaBoxId(id).toString()
+            )
+        )
+    }
 }

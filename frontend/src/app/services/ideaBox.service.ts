@@ -57,6 +57,10 @@ export class IdeaBoxService {
     return this.http.get<WebResponse<number>>(`${this.apiUrl}/idea-box-count`);
   }
 
+  getScoredIdeaCountByIdeaBox$(id: string): Observable<WebResponse<number>> {
+    return this.http.get<WebResponse<number>>(`${this.apiUrl}/idea-box/` + id + `/scored`)
+  }
+
   createIdeaBox$(ideaBox: IdeaBoxDto): Observable<WebResponse<IdeaBoxDto>> {
     return this.http.post<WebResponse<IdeaBoxDto>>(
       `${this.apiUrl}/idea-box`,

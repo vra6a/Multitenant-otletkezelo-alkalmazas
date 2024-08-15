@@ -90,7 +90,7 @@ export class IdeasToScoreComponent implements OnInit {
       this.scoreSheet.idea = this.selectedIdea;
       console.log(this.scoreSheet);
       this.scoreSheetService
-        .saveScoreSheet(this.scoreSheet)
+        .saveScoreSheet$(this.scoreSheet)
         .pipe(untilDestroyed(this))
         .subscribe((res: WebResponse<ScoreSheetDto>) => {
           console.log(res);

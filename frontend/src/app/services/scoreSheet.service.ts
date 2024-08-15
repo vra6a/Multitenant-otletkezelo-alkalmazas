@@ -50,11 +50,18 @@ export class ScoreSheetService {
     );
   }
 
-  saveScoreSheet(ss: ScoreSheetDto): Observable<WebResponse<ScoreSheetDto>> {
+  saveScoreSheet$(ss: ScoreSheetDto): Observable<WebResponse<ScoreSheetDto>> {
     console.log(ss);
     return this.http.post<WebResponse<ScoreSheetDto>>(
       `${this.apiUrl}/scoreSheet/` + ss.id + `/save`,
       ss
     );
   }
+
+  getScoredIdeaBoxes$(): Observable<WebResponse<IdeaBoxSlimDto[]>> {
+    return this.http.get<WebResponse<IdeaBoxSlimDto[]>>(
+      `${this.apiUrl}/score/getScoredIdeaBoxes`
+    );
+  }
+
 }

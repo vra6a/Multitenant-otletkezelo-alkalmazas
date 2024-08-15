@@ -1,7 +1,36 @@
-<div *ngFor="let idea of scoredIdeas">
-  <mat-card>
-    <mat-card-header [routerLink]="'/idea/' + idea.id + '/viewScores'">
-      {{ idea.title }}
-    </mat-card-header>
-  </mat-card>
+<div class="container">
+  <div class="left-div">
+    <mat-card 
+      *ngFor="let ideaBox of scoredIdeaBoxes"
+      [class.selected]="ideaBox?.id === selectedIdeaBox?.id"
+      (click)="ideaBoxClicked(ideaBox)"
+      >
+        {{ ideaBox.name }}
+    </mat-card>
+  </div>
+  <div class="right-div">
+    <div *ngIf="selectedIdeaBox == null">
+      <h1>No idea Selected!</h1>
+    </div>
+    <div *ngIf="selectedIdeaBox != null">
+      <div class="container">
+        <div class="details-left-div">
+          <h1>{{ selectedIdeaBox?.name }}</h1>
+          <div class="tag-list">
+            <p class="title">Juries:</p>
+            <mat-chip-list aria-label="Juries">
+              <mat-chip *ngFor="let jury of selectedIdeaBox.defaultRequiredJuries">
+                {{ jury.firstName + " " + jury.lastName }}
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+          <p>Ideas: {{ selectedIdeaBox.ideas.length }}</p>
+          <p>Scored Ideas: {{ ScoredIdeaCountByIdeaBox }}</p>
+        </div>
+        <div class="details-right-div" *ngIf="option != null">
+          <div echarts [options]="option" ></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

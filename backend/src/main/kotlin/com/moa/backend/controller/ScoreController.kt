@@ -23,4 +23,10 @@ class ScoreController {
     fun getIdeas(): ResponseEntity<*> {
         return scoreService.getIdeas()
     }
+
+    @GetMapping("score/getScoredIdeaBoxes")
+    fun getScoredIdeaBoxes(): ResponseEntity<*> {
+        return scoreService.getScoredIdeaBoxes()
+    }
+
 }

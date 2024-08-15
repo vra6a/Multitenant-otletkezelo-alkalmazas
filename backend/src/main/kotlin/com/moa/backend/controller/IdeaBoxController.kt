@@ -53,6 +53,11 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
         return  ideaBoxService.getIdeaBox(id)
     }
 
+    @GetMapping("/idea-box/{id}/scored")
+    fun getScoredIdeaCountByIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
+        return  ideaBoxService.getScoredIdeaCountByIdeaBox(id)
+    }
+
     @GetMapping("/idea-box/slim/{id}")
     fun getIdeaBoxSlim(@PathVariable id: Long): ResponseEntity<*> {
         return  ideaBoxService.getIdeaBoxSlim(id)

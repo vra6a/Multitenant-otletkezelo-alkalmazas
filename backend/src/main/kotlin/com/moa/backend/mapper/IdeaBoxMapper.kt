@@ -97,6 +97,14 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
         return idToModel(domain.id)
     }
 
+    fun ModelListToSlimDto(modelList: List<IdeaBox>): MutableList<IdeaBoxSlimDto> {
+        val list: MutableList<IdeaBoxSlimDto> = emptyList<IdeaBoxSlimDto>().toMutableList()
+        modelList.forEach { model ->
+            list.add(modelToSlimDto(model))
+        }
+        return list
+    }
+
     private fun idToModel(id: Long): IdeaBox {
         val ideaBox = ideaBoxRepository.findById(id).orElse(null)
 
