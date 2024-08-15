@@ -65,7 +65,7 @@ export class IdeasToScoreComponent implements OnInit {
       console.log(this.selectedIdea)
 
       this.ideaBoxService
-          .getIdeaBox$(this.selectedIdea.id.toString())
+          .getIdeaBox$(this.selectedIdea.ideaBox.id.toString())
           .pipe(untilDestroyed(this))
           .subscribe((res: WebResponse<IdeaBoxDto>) => {
             this.scoreSheetService
