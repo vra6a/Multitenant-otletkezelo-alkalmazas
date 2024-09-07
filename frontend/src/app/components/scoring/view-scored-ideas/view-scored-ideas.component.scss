@@ -19,12 +19,12 @@ h2 {
 }
 
 .details-left-div {
-  width: 40%;
+  width: 60%;
   padding: 22px;
 }
 
 .details-right-div {
-  width: 60%;
+  width: 40%;
   padding: 22px;
 }
 
@@ -38,5 +38,13 @@ mat-card:hover {
 
 mat-card.selected {
   background-color: #9e9e9e;
+}
+
+.title {
+  font-size: 16px;
+  margin: 16px 0 0 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 

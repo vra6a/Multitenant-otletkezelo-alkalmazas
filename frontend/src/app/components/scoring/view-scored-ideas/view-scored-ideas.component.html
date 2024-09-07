@@ -10,12 +10,12 @@
   </div>
   <div class="right-div">
     <div *ngIf="selectedIdeaBox == null">
-      <h1>No idea Selected!</h1>
+      <h2>No idea Selected!</h2>
     </div>
     <div *ngIf="selectedIdeaBox != null">
       <div class="container">
         <div class="details-left-div">
-          <h1>{{ selectedIdeaBox?.name }}</h1>
+          <h2>{{ selectedIdeaBox?.name }}</h2>
           <div class="tag-list">
             <p class="title">Juries:</p>
             <mat-chip-list aria-label="Juries">
