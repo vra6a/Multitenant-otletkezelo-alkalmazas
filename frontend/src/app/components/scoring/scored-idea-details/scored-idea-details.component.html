@@ -1,0 +1,35 @@
+<div *ngIf="selectedIdeaBox == null">
+    <h2>No idea Selected!</h2>
+  </div>
+  <div *ngIf="selectedIdeaBox != null">
+    <div class="container">
+      <h2>
+        {{ selectedIdeaBox?.name }}
+      </h2>
+      <mat-icon *ngIf="isReadyToClose"><span>check</span></mat-icon>
+      <mat-icon *ngIf="!isReadyToClose"><span>close</span></mat-icon>
+    </div>
+    <div class="container">
+      <div class="details-left-div">
+        <div class="tag-list">
+          <p>Juries:</p>
+          <mat-chip-list>
+            <mat-chip *ngFor="let jury of selectedIdeaBox.defaultRequiredJuries">
+              {{ jury.firstName + " " + jury.lastName }}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+        <p>Idea count: {{ selectedIdeaBox.ideas.length }}</p>
+        <p>Scored Ideas: {{ ScoredIdeaCountByIdeaBox }}</p>
+        <p>End date: {{ selectedIdeaBox.endDate | date }}</p>
+
+        <div class="container">
+          <button (click)="moreInfo()">More Information</button>
+          <button [disabled]="!isReadyToClose">close</button>
+        </div>
+      </div>
+      <div class="details-right-div" *ngIf="option != null">
+        <div echarts [options]="option" ></div>
+      </div>
+    </div>
+  </div>

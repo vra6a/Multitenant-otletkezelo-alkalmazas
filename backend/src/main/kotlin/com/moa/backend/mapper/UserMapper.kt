@@ -105,6 +105,14 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
         return idToModel(domain.id)
     }
 
+    fun ModelListToSlimDto(modelList: List<User>): MutableList<UserSlimDto> {
+        val list: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        modelList.forEach { model ->
+            list.add(modelToSlimDto(model))
+        }
+        return list
+    }
+
     private fun idToModel(id: Long): User {
         val user = userRepository.findById(id).orElse(null)
 

@@ -92,4 +92,11 @@ export class IdeaBoxService {
       `${this.apiUrl}/idea-box/${id.toString()}`
     );
   }
+
+
+  checkIfIdeaBoxHasAllRequiredScoreSheets$(id: number): Observable<WebResponse<Boolean>> {
+    return this.http.get<WebResponse<Boolean>>(
+      `${this.apiUrl}/idea-box/${id}/checkScoreSheets`
+    )
+  }
 }

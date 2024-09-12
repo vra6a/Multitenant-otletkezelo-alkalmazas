@@ -1,5 +1,6 @@
 h2 {
-  margin-top: 20px;
+  margin: 0;
+  padding: 0;
   font-size: 20px;
   font-weight: 400;
 }
@@ -42,9 +43,43 @@ mat-card.selected {
 
 .title {
   font-size: 16px;
-  margin: 16px 0 0 16px;
+  margin-top: 8px 0;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.tag-list {
+  margin: 0px;
+}
+
+mat-icon {
+  margin-left: 8px;
+  margin-top: 4px;
+}
+
+button {
+  background-color: #262626;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  width: 100%;
+  margin: 10px 20px;
+  align-self: center;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #313131;
+  color: #ffffff;
+}
+
+button:disabled,
+button[disabled]{
+  background-color: #a3a3a3;
+  color: #262626;
+  cursor: default
 }
 

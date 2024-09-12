@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EChartsOption } from 'echarts';
 import { pipe } from 'rxjs';
@@ -18,13 +19,12 @@ import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
 })
 export class ViewScoredIdeasComponent implements OnInit {
   constructor(
-    private ideaService: IdeaService,
     private scoreSheetService: ScoreSheetService,
-    private ideaBoxService: IdeaBoxService,
+    private router: Router
   ) {}
 
   scoredIdeaBoxes: IdeaBoxSlimDto[] = [];
-  selectedIdeaBox: IdeaBoxDto = null;
+  selectedId = null
   ScoredIdeaCountByIdeaBox: number = null
   option: EChartsOption = null;
 
@@ -39,63 +39,7 @@ export class ViewScoredIdeasComponent implements OnInit {
   }
 
   ideaBoxClicked(ideaBox: IdeaBoxSlimDto): void {
-    this.ideaBoxService
-      .getIdeaBox$(ideaBox.id.toString())
-      .pipe(untilDestroyed(this))
-      .subscribe((res: WebResponse<IdeaBoxDto>) => {
-        this.selectedIdeaBox = res.data
-
-        this.ideaBoxService
-          .getScoredIdeaCountByIdeaBox$(this.selectedIdeaBox.id.toString())
-          .pipe(untilDestroyed(this))
-          .subscribe((res: WebResponse<number>) => {
-            this.ScoredIdeaCountByIdeaBox = res.data
-            this.createDiagram()
-          })
-      })
+    this.router.navigate(["scoring","details",ideaBox.id])
+    this.selectedId = ideaBox.id
   }
-
-  createDiagram() {
-    this.option = {
-      tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        top: '5%',
-        left: 'center'
-      },
-      series: [
-        {
-          name: 'Access From',
-          type: 'pie',
-          radius: ['20%', '70%'],
-          avoidLabelOverlap: true,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 3
-          },
-          label: {
-            show: false,
-            position: 'center'
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 40,
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: [
-            { value: this.selectedIdeaBox.ideas.length, name: 'Scored ideas' },
-            { value: this.ScoredIdeaCountByIdeaBox, name: 'Not scored ideas' },
-          ]
-        }
-      ]
-    };
-  }
-
 }

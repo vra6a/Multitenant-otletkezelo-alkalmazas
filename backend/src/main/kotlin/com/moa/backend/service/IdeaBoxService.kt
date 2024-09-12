@@ -2,6 +2,8 @@ package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaBoxMapper
 import com.moa.backend.mapper.ScoreSheetMapper
+import com.moa.backend.mapper.UserMapper
+import com.moa.backend.model.IdeaBox
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
@@ -31,6 +33,9 @@ class IdeaBoxService {
 
     @Autowired
     lateinit var scoreSheetMapper: ScoreSheetMapper
+
+    @Autowired
+    lateinit var userMapper: UserMapper
 
     private val logger = KotlinLogging.logger {}
 
@@ -220,5 +225,54 @@ class IdeaBoxService {
                 data = ideaBoxRepository.countScoredIdeasByIdeaBoxId(id).toString()
             )
         )
+    }
+
+    fun findRequiredJuriesByIdeaBoxId(id: Long): ResponseEntity<*> {
+        return ResponseEntity.ok(
+            WebResponse(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = userMapper.ModelListToSlimDto(ideaBoxRepository.findRequiredJuriesByIdeaBoxId(id))
+            )
+        )
+    }
+
+    fun checkIfIdeaBoxHasAllRequiredScoreSheets(id: Long): ResponseEntity<*> {
+
+        var data = false
+        val ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            data = areAllIdeasScoredByRequiredJuries(ideaBox)
+        } else {
+            //error
+        }
+
+
+
+
+
+        return ResponseEntity.ok(
+            WebResponse<Boolean>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = data
+            )
+        )
+    }
+
+    fun areAllIdeasScoredByRequiredJuries(ideaBox: IdeaBox): Boolean {
+        val ideas = ideaBox.ideas
+        ideas.forEach { idea ->
+            val requiredJuries = idea.requiredJuries
+            val scoresheets = idea.scoreSheets
+
+            requiredJuries?.forEach { jury ->
+                val juryHasScoreSheet = scoresheets.any{ it.owner.id == jury.id}
+                if(!juryHasScoreSheet) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }

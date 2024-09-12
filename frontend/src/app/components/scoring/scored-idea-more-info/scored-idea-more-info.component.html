@@ -1,0 +1,19 @@
+<div class="container">
+    <h2>
+      {{ selectedIdeaBox?.name }}
+    </h2>
+    <mat-icon *ngIf="isReadyToClose"><span>check</span></mat-icon>
+    <mat-icon *ngIf="!isReadyToClose"><span>close</span></mat-icon>
+</div>
+<div class="container">
+    <div class="scores">
+        <p>scores</p>
+    </div>
+    <div class="ideas">
+        <p>ideas</p>
+    </div>
+    <div class="details">
+        <p>details</p>
+    </div>
+</div>
+

@@ -18,6 +18,8 @@ import { CreateScoreSheetComponent } from './components/scoring/create-score-she
 import { ViewScoringTemplateComponent } from './components/idea-box-page/view-scoring-template/view-scoring-template.component';
 import { ScoreIdeaComponentComponent } from './components/scoring/score-idea-component/score-idea-component.component';
 import { ViewScoresComponent } from './components/scoring/view-scores/view-scores.component';
+import { ScoredIdeaMoreInfoComponent } from './components/scoring/scored-idea-more-info/scored-idea-more-info.component';
+import { ScoredIdeaDetailsComponent } from './components/scoring/scored-idea-details/scored-idea-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -106,8 +108,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'createScoreSheet',
-        component: CreateScoreSheetComponent,
+        path: 'info/:id',
+        component: ScoredIdeaMoreInfoComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'details/:id',
+        component: ScoredIdeaDetailsComponent,
         canActivate: [AuthGuard],
       },
     ],

@@ -82,4 +82,9 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     fun deleteIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
         return ideaBoxService.deleteIdeaBox(id)
     }
+
+    @GetMapping("/idea-box/{id}/checkScoreSheets")
+    fun checkIfIdeaBoxHasAllRequiredScoreSheets(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaBoxService.checkIfIdeaBoxHasAllRequiredScoreSheets(id)
+    }
 }

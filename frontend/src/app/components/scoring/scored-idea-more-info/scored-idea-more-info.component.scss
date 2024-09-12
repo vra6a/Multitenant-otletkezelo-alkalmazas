@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+}
+
+.scores {
+    width: 32%;
+    padding: 22px;
+}
+
+.ideas {
+    width: 32%;
+    padding: 22px;
+}
+
+.details {
+    width: 36%;
+    padding: 22px;
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.title {
+    font-size: 16px;
+    margin-top: 8px 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+mat-icon {
+    margin-left: 8px;
+    margin-top: 4px;
+  }
