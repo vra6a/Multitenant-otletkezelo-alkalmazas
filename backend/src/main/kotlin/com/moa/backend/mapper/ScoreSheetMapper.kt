@@ -84,6 +84,14 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
         return idToModel(domain.id)
     }
 
+    fun modelListToDto(modelList: List<ScoreSheet>): MutableList<ScoreSheetDto> {
+        val list: MutableList<ScoreSheetDto> = emptyList<ScoreSheetDto>().toMutableList()
+        modelList.forEach { model ->
+            list.add(modelToDto(model))
+        }
+        return list
+    }
+
     private fun idToModel(id: Long): ScoreSheet {
         val scoreSheet = scoreSheetRepository.findById(id).orElse(null)
 

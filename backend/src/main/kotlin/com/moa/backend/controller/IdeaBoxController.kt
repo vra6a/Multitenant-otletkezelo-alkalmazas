@@ -87,4 +87,9 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     fun checkIfIdeaBoxHasAllRequiredScoreSheets(@PathVariable id: Long): ResponseEntity<*> {
         return ideaBoxService.checkIfIdeaBoxHasAllRequiredScoreSheets(id)
     }
+
+    @GetMapping("/idea-box/scoreSheets/{ideaBoxId}")
+    fun getAverageScoresForIdeaBoxByScore(@PathVariable ideaBoxId: Long): ResponseEntity<*> {
+        return ideaBoxService.getAverageScoresForIdeaBoxByScore(ideaBoxId)
+    }
 }

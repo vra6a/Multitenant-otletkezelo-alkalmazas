@@ -1,6 +1,7 @@
 package com.moa.backend.service
 
 import com.moa.backend.mapper.IdeaBoxMapper
+import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.IdeaBox
@@ -8,9 +9,9 @@ import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
-import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
+import com.moa.backend.utility.IdeaScoreSheets
 import com.moa.backend.utility.WebResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class IdeaBoxService {
+
+    @Autowired
+    private lateinit var ideaMapper: IdeaMapper
 
     @Autowired
     lateinit var ideaBoxRepository: IdeaBoxRepository
@@ -247,10 +251,6 @@ class IdeaBoxService {
             //error
         }
 
-
-
-
-
         return ResponseEntity.ok(
             WebResponse<Boolean>(
                 code = HttpStatus.OK.value(),
@@ -274,5 +274,22 @@ class IdeaBoxService {
             }
         }
         return true
+    }
+
+    fun getAverageScoresForIdeaBoxByScore(ideaBoxId: Long): ResponseEntity<*> {
+        val response: MutableList<IdeaScoreSheets> = emptyList<IdeaScoreSheets>().toMutableList()
+
+        val ideaBox = ideaBoxRepository.findById(ideaBoxId).orElse(null)
+
+        ideaBox?.ideas?.forEach { idea ->
+            response.add(IdeaScoreSheets(ideaMapper.modelToSlimDto(idea), scoreSheetMapper.modelListToDto(idea.scoreSheets)))
+        }
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaScoreSheets>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
+            )
+        )
     }
 }

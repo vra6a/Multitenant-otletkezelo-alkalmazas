@@ -21,6 +21,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTreeModule } from '@angular/material/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -157,6 +158,7 @@ import { ScoredIdeaDetailsComponent } from './components/scoring/scored-idea-det
     MatTreeModule,
     CdkTreeModule,
     MatStepperModule,
+    MatSlideToggleModule,
   ],
   schemas: [
     NO_ERRORS_SCHEMA
