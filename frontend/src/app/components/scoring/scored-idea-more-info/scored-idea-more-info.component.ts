@@ -193,4 +193,8 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
   handleBarClick(category: string, value: string) {
     console.log(`Category: ${category}, Value: ${value}`);
   }
+
+  backClicked() {
+    this.router.navigate(["scoring","details", this.id])
+  }
 }

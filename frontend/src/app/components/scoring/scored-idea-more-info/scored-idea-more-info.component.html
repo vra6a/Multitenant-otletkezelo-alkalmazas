@@ -5,7 +5,7 @@
     </h2>
     <mat-icon *ngIf="isReadyToClose"><span>check</span></mat-icon>
     <mat-icon *ngIf="!isReadyToClose"><span>close</span></mat-icon>
-    <mat-icon *ngIf="!isReadyToClose"><span>arrow_back</span></mat-icon>
+    <mat-icon (click)="backClicked()"><span>arrow_back</span></mat-icon>
     <mat-slide-toggle [checked]="viewNumbers" (change)="toggleViewNumbers($event)">View numbers</mat-slide-toggle>
 </div>
 <div class="container">
