@@ -25,7 +25,7 @@
 
         <div class="container">
           <button (click)="moreInfo()">More Information</button>
-          <button [disabled]="!isReadyToClose">close</button>
+          <button (click)="closeIdeaBox()" [disabled]="!isReadyToClose">close</button>
         </div>
       </div>
       <div class="details-right-div" *ngIf="option != null">

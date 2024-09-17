@@ -33,7 +33,7 @@ export class ViewScoredIdeasComponent implements OnInit {
       .getScoredIdeaBoxes$()
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaBoxSlimDto[]>) => {
-        this.scoredIdeaBoxes = res.data;
+        this.scoredIdeaBoxes = res.data.filter( box => box.isSclosed != true)
         console.log(res)
       });
   }

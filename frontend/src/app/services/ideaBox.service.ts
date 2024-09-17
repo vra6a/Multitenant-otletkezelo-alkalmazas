@@ -105,4 +105,16 @@ export class IdeaBoxService {
       `${this.apiUrl}/idea-box/scoreSheets/${id}`
     )
   }
+
+  isIdeaBoxReadyToClose$(id: number): Observable<WebResponse<boolean>> {
+    return this.http.get<WebResponse<boolean>>(
+      `${this.apiUrl}/idea-box/${id}/isReadyToClose`
+    )
+  }
+
+  closeIdeaBox$(id: number): Observable<WebResponse<string>> {
+    return this.http.post<WebResponse<string>>(
+      `${this.apiUrl}/idea-box/${id}/close`, {}
+    )
+  }
 }

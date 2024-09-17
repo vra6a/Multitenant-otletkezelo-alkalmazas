@@ -5,6 +5,7 @@ import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.IdeaBox
+import com.moa.backend.model.Judgement
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
@@ -19,6 +20,11 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Service
 class IdeaBoxService {
@@ -291,5 +297,60 @@ class IdeaBoxService {
                 data = response
             )
         )
+    }
+
+    fun ideaBoxReadyToClose(id: Long): ResponseEntity<*> {
+        val currentLocalDate = LocalDate.now()
+        val ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            if(ideaBox.endDate.after(localDateToDate(currentLocalDate))) {
+                return ResponseEntity.ok(
+                    WebResponse<Boolean>(
+                        code = HttpStatus.OK.value(),
+                        message = "IdeaBox is not ready to close",
+                        data = false
+                    )
+                )
+            }
+            ideaBox.ideas.forEach { idea ->
+                if(idea.judgement == Judgement.NOT_JUDGED) {
+                    return ResponseEntity.ok(
+                        WebResponse<Boolean>(
+                            code = HttpStatus.OK.value(),
+                            message = "IdeaBox is not ready to close",
+                            data = false
+                        )
+                    )
+                }
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<Boolean>(
+                code = HttpStatus.OK.value(),
+                message = "IdeaBox ready to close",
+                data = true
+            )
+        )
+    }
+
+    fun closeIdeaBox(id: Long): ResponseEntity<*> {
+        var ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            ideaBox.isSclosed = true
+            ideaBoxRepository.saveAndFlush(ideaBox)
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "IdeaBox was closed successfully",
+                data = "Success!"
+            )
+        )
+    }
+
+    fun localDateToDate(localDate: LocalDate): Date {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
     }
 }

@@ -92,4 +92,14 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     fun getAverageScoresForIdeaBoxByScore(@PathVariable ideaBoxId: Long): ResponseEntity<*> {
         return ideaBoxService.getAverageScoresForIdeaBoxByScore(ideaBoxId)
     }
+
+    @GetMapping("/idea-box/{id}/isReadyToClose")
+    fun ideaBoxReadyToClose(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaBoxService.ideaBoxReadyToClose(id)
+    }
+
+    @PostMapping("/idea-box/{id}/close")
+    fun closeIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaBoxService.closeIdeaBox(id)
+    }
 }

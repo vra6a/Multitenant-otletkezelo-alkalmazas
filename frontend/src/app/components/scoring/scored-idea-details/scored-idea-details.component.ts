@@ -8,6 +8,7 @@ import { WebResponse } from 'src/app/models/webResponse';
 import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @UntilDestroy()
 @Component({
@@ -20,7 +21,8 @@ export class ScoredIdeaDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private ideaBoxService: IdeaBoxService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: SnackBarService
   ) { }
 
   routeSub: Subscription
@@ -34,6 +36,12 @@ export class ScoredIdeaDetailsComponent implements OnInit, OnDestroy {
     this.routeSub = this.route.params.subscribe(params => {
       this.id = params['id']
       this.ideaBoxService
+        .isIdeaBoxReadyToClose$(this.id)
+        .pipe(untilDestroyed(this))
+        .subscribe((res: WebResponse<boolean>) => {
+          this.isReadyToClose = res.data
+        })
+      this.ideaBoxService
       .getIdeaBox$(this.id.toString())
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaBoxDto>) => {
@@ -45,15 +53,21 @@ export class ScoredIdeaDetailsComponent implements OnInit, OnDestroy {
             this.ScoredIdeaCountByIdeaBox = res.data
             this.createDiagram()
           })
-        this.ideaBoxService
-          .checkIfIdeaBoxHasAllRequiredScoreSheets$(this.selectedIdeaBox.id)
-          .pipe(untilDestroyed(this))
-          .subscribe((res: WebResponse<Boolean>) => {
-            this.isReadyToClose = res.data && new Date(this.selectedIdeaBox.endDate) < new Date()
-            //TODO isClosed
-          })
       })
     });
+  }
+
+  closeIdeaBox() {
+    this.ideaBoxService
+      .closeIdeaBox$(this.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<string>) => {
+        if (res.code == 200) {
+          this.snackBar.ok(res.message);
+        } else {
+          this.snackBar.error(res.message);
+        }
+      })
   }
 
   moreInfo() {
