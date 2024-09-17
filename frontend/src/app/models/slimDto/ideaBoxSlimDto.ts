@@ -4,4 +4,5 @@ export interface IdeaBoxSlimDto {
   startDate?: Date;
   endDate?: Date;
   draft?: boolean;
+  isSclosed?: boolean;
 }

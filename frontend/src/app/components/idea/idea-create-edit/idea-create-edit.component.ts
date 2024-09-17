@@ -5,6 +5,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, filter, map, startWith } from 'rxjs';
 import { IdeaDto } from 'src/app/models/dto/ideaDto';
 import { TagDto } from 'src/app/models/dto/tagDto';
+import { Judgement } from 'src/app/models/judgement';
 import { IdeaBoxSlimDto } from 'src/app/models/slimDto/ideaBoxSlimDto';
 import { IdeaSlimDto } from 'src/app/models/slimDto/ideaSlimDto';
 import { TagSlimDto } from 'src/app/models/slimDto/tagSlimDto';
@@ -94,6 +95,7 @@ export class IdeaCreateEditComponent implements OnInit {
     idea.owner = this.user;
     idea.status = 'SUBMITTED';
     idea.creationDate = '';
+    idea.judgement = Judgement.NOT_JUDGED
     idea.ideaBox = this.ideaBox;
     idea.tags = this.selectedTags;
     idea.requiredJuries = this.selectedJuries;

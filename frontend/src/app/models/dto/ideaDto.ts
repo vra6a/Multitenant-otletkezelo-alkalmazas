@@ -1,3 +1,4 @@
+import { Judgement } from '../judgement';
 import { CommentSlimDto } from '../slimDto/commentSlimDto';
 import { IdeaBoxSlimDto } from '../slimDto/ideaBoxSlimDto';
 import { ScoreSlimDto } from '../slimDto/scoreSlimDto';
@@ -17,4 +18,5 @@ export interface IdeaDto {
   ideaBox?: IdeaBoxSlimDto;
   likes?: UserSlimDto[];
   requiredJuries?: UserSlimDto[];
+  judgement?: Judgement;
 }

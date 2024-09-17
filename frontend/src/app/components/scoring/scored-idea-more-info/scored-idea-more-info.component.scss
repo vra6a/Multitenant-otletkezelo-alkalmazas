@@ -3,17 +3,17 @@
 }
 
 .scores {
-    width: 32%;
+    width: 35%;
     padding: 22px;
 }
 
 .ideas {
-    width: 32%;
+    width: 35%;
     padding: 22px;
 }
 
 .details {
-    width: 36%;
+    width: 30%;
     padding: 22px;
 }
 
@@ -40,4 +40,32 @@ mat-icon {
 mat-slide-toggle {
     margin-top: 4px;
     margin-left: 30px;
+}
+
+button {
+    background-color: #262626;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    margin: 10px 20px;
+    align-self: center;
+    cursor: pointer;
+}
+
+button:disabled,
+button[disabled]{
+  background-color: #a3a3a3;
+  color: #262626;
+  cursor: default
+}
+
+.approve {
+    background-color: #43A047;
+}
+
+.deny {
+    background-color: #F44336;
 }

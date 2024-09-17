@@ -12,4 +12,5 @@ export interface IdeaBoxDto {
   ideas?: IdeaSlimDto[];
   defaultRequiredJuries?: UserSlimDto[];
   scoreSheetTemplates?: ScoreSheetDto[];
+  isSclosed?: boolean;
 }

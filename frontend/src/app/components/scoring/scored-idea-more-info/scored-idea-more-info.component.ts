@@ -4,11 +4,14 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ECharts, EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { IdeaBoxDto } from 'src/app/models/dto/ideaBoxDto';
+import { IdeaDto } from 'src/app/models/dto/ideaDto';
 import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
 import { IdeaScoreSheets } from 'src/app/models/dto/utility/ideaScoreSheets';
 import { WebResponse } from 'src/app/models/webResponse';
+import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
+import { SnackBarService } from 'src/app/services/snackBar.service';
 
 @UntilDestroy()
 @Component({
@@ -21,8 +24,10 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
   constructor(
     private ideaBoxService: IdeaBoxService,
     private scoreSheetService: ScoreSheetService,
+    private ideaService: IdeaService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: SnackBarService
   ) { }
 
   routeSub: Subscription
@@ -37,7 +42,8 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
   selectedScoreId = null
   chartInstance: ECharts
   viewNumbers = true
-  
+  selectedFullIdea: IdeaDto = null
+  juries = [4, 6, 7]
 
 
   ngOnInit(): void {
@@ -84,6 +90,13 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaScoreSheets[]>) => {
           this.ideaOption =  this.generateIdeaOptions(res.data, event.value.id)
+      })
+    this.ideaService
+      .getIdea$(event.value.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<IdeaDto>) => {
+        this.selectedFullIdea = res.data
+        console.log(res.data)
       })
   }
 
@@ -159,7 +172,7 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
         data: juries
       },
       radar: {
-        radius: '50%',
+        radius: '60%',
         indicator: indicators
       },
       series: [
@@ -173,7 +186,6 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
         }
       ]
     };
-    console.log(option)
     return option
   }
 
@@ -196,5 +208,33 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
 
   backClicked() {
     this.router.navigate(["scoring","details", this.id])
+  }
+
+  approveIdea() {
+    this.ideaService
+    .approveIdea$(this.selectedFullIdea.id)
+    .pipe(untilDestroyed(this))
+    .subscribe((res: WebResponse<IdeaDto>) => {
+      if (res.code == 200) {
+        this.snackBar.ok(res.message);
+        this.selectedFullIdea = res.data
+      } else {
+        this.snackBar.error(res.message);
+      }
+    })
+  }
+
+  denyIdea() {
+    this.ideaService
+    .denyIdea$(this.selectedFullIdea.id)
+    .pipe(untilDestroyed(this))
+    .subscribe((res: WebResponse<IdeaDto>) => {
+      if (res.code == 200) {
+        this.snackBar.ok(res.message);
+        this.selectedFullIdea = res.data
+      } else {
+        this.snackBar.error(res.message);
+      }
+    })
   }
 }

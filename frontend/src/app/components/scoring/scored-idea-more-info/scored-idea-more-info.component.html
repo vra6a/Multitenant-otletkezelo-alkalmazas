@@ -29,7 +29,29 @@
         <div echarts [options]="ideaOption"></div>
     </div>
     <div class="details">
-        <p>details</p>
+        
+        <div *ngIf="selectedFullIdea">
+            <h2>Details - {{ selectedFullIdea?.title }}</h2>
+            <P *ngIf="selectedFullIdea.judgement.toString() == 'APPROVED'">Idea was approved</P>
+            <P *ngIf="selectedFullIdea.judgement.toString() == 'DENIED'">Idea was denied</P>
+            <p>Creator: {{ selectedFullIdea?.owner.firstName + " " + selectedFullIdea?.owner.lastName }}</p>
+            <p>Creation Date: {{ selectedFullIdea?.creationDate | date }}</p>
+            <p>Description: {{ selectedFullIdea.description }}</p>
+            <p>Juries:</p>
+            <mat-chip-list>
+                <mat-chip *ngFor="let jury of selectedFullIdea.requiredJuries">
+                  {{ jury.firstName + " " + jury.lastName }}
+                </mat-chip>
+            </mat-chip-list>
+            <button disabled="selectedFullIdea.judgement.toString() != 'NOT_JUDGED'" class="approve" (click)="approveIdea()">Approve Idea</button>
+            <button disabled="selectedFullIdea.judgement.toString() != 'NOT_JUDGED'" class="deny" (click)="denyIdea()">Deny Idea</button>
+        </div>
+        
+        <div *ngIf="!selectedFullIdea">
+            <h2>No idea selected</h2>
+            <p>Select an idea!</p>
+        </div>
+        
     </div>
 </div>
 

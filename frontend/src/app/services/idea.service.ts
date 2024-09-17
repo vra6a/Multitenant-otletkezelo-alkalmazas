@@ -99,4 +99,16 @@ export class IdeaService {
       `${this.apiUrl}/score/getIdeas`
     )
   }
+
+  approveIdea$(id: number): Observable<WebResponse<IdeaDto>> {
+    return this.http.post<WebResponse<IdeaDto>>(
+      `${this.apiUrl}/idea/${id}/approve`, {}
+    )
+  }
+
+  denyIdea$(id: number): Observable<WebResponse<IdeaDto>> {
+    return this.http.post<WebResponse<IdeaDto>>(
+      `${this.apiUrl}/idea/${id}/deny`, {}
+    )
+  }
 }
