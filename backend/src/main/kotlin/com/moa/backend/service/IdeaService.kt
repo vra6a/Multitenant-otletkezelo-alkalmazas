@@ -3,10 +3,7 @@ package com.moa.backend.service
 import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.TagMapper
 import com.moa.backend.mapper.UserMapper
-import com.moa.backend.model.ScoreSheet
-import com.moa.backend.model.Status
-import com.moa.backend.model.Tag
-import com.moa.backend.model.User
+import com.moa.backend.model.*
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
@@ -149,15 +146,18 @@ class IdeaService {
     }
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
-        val data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(ideaMapper.dtoToModel(idea)))
+        val saveIdea = ideaMapper.dtoToModel(idea)
+        saveIdea.judgement = Judgement.NOT_JUDGED
+        ideaRepository.saveAndFlush(saveIdea)
 
-        logger.info { "MOA-INFO: Idea created with id: ${data.id}. Idea: $data" }
+
+        logger.info { "MOA-INFO: Idea created with id: ${saveIdea.id}." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
                 message = "Idea successfully created!",
-                data = data
+                data = ideaMapper.modelToDto(saveIdea)
             )
         )
     }
@@ -368,6 +368,64 @@ class IdeaService {
                 code = HttpStatus.OK.value(),
                 message = "",
                 data = response
+            )
+        )
+    }
+
+    fun approveIdea(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        var idea: Idea? = null
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during Approving." }
+        } else {
+            if(user.role != Role.ADMIN) {
+                logger.info { "MOA-INFO: Authentication error during Approving. User has no Admin role" }
+            } else {
+                idea = this.ideaRepository.findById(id).orElse(null)
+                if(idea == null) {
+                    logger.info { "MOA-INFO: No idea Found." }
+                } else {
+                    idea.judgement = Judgement.APPROVED
+                    ideaRepository.save(idea)
+                }
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<IdeaDto>(
+                code = HttpStatus.OK.value(),
+                message = "Idea Was approved successfully",
+                data = idea?.let { ideaMapper.modelToDto(it) }
+            )
+        )
+    }
+
+    fun denyIdea(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        var idea: Idea? = null
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during Approving." }
+        } else {
+            if(user.role != Role.ADMIN) {
+                logger.info { "MOA-INFO: Authentication error during Approving. User has no Admin role" }
+            } else {
+                idea = this.ideaRepository.findById(id).orElse(null)
+                if(idea == null) {
+                    logger.info { "MOA-INFO: No idea Found." }
+                } else {
+                    idea.judgement = Judgement.DENIED
+                    ideaRepository.save(idea)
+                }
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<IdeaDto>(
+                code = HttpStatus.OK.value(),
+                message = "Idea Was denied successfully",
+                data = idea?.let { ideaMapper.modelToDto(it) }
             )
         )
     }

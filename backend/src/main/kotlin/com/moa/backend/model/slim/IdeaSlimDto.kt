@@ -1,5 +1,6 @@
 package com.moa.backend.model.slim
 
+import com.moa.backend.model.Judgement
 import com.moa.backend.model.Status
 
 data class IdeaSlimDto (
@@ -9,4 +10,6 @@ data class IdeaSlimDto (
     var title: String,
 
     var status: Status,
+
+    var judgement: Judgement,
 )

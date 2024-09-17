@@ -83,4 +83,14 @@ class IdeaController(private val ideaRepository: IdeaRepository) {
     fun dislikeIdea(@PathVariable id: Long): ResponseEntity<*> {
         return ideaService.dislikeIdea(id)
     }
+
+    @PostMapping("/idea/{id}/approve")
+    fun approveIdea(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.approveIdea(id)
+    }
+
+    @PostMapping("/idea/{id}/deny")
+    fun denyIdea(@PathVariable id: Long): ResponseEntity<*> {
+        return ideaService.denyIdea(id)
+    }
 }

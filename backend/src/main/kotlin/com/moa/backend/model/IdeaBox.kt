@@ -35,4 +35,6 @@ data class IdeaBox (
 
     @OneToMany(mappedBy = "templateFor", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var scoreSheetTemplates: MutableList<ScoreSheet>,
+
+    var isSclosed: Boolean,
 )

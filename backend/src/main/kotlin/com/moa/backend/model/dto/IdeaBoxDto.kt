@@ -25,4 +25,6 @@ data class IdeaBoxDto (
     var defaultRequiredJuries: MutableList<UserSlimDto>?,
 
     var scoreSheetTemplates: MutableList<ScoreSheetSlimDto>?,
+
+    var isSclosed: Boolean,
 )

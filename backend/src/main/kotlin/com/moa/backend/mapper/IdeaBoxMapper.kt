@@ -53,7 +53,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             creator = userMapper.modelToSlimDto(entity.creator),
             ideas = ideas,
             defaultRequiredJuries = requiredJuries,
-            scoreSheetTemplates = scoreSheetTemplates
+            scoreSheetTemplates = scoreSheetTemplates,
+            isSclosed = entity.isSclosed,
         )
     }
 
@@ -63,7 +64,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             name = entity.name,
             startDate = entity.startDate,
             endDate = entity.endDate,
-            draft = entity.scoreSheetTemplates.isEmpty()
+            draft = entity.scoreSheetTemplates.isEmpty(),
+            isSclosed = entity.isSclosed,
         )
     }
 
@@ -87,7 +89,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
                     creator = userMapper.slimDtoToModel(domain.creator),
                     ideas = emptyList<Idea>().toMutableList(),
                     defaultRequiredJuries = defaultRequiredJuries,
-                    scoreSheetTemplates = scoreSheetTemplates
+                    scoreSheetTemplates = scoreSheetTemplates,
+                    isSclosed = domain.isSclosed,
             )
         }
         return idToModel(domain.id)
@@ -117,7 +120,8 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             creator = ideaBox.creator,
             ideas = ideaBox.ideas,
             defaultRequiredJuries = ideaBox.defaultRequiredJuries,
-            scoreSheetTemplates = ideaBox.scoreSheetTemplates
+            scoreSheetTemplates = ideaBox.scoreSheetTemplates,
+            isSclosed = ideaBox.isSclosed,
         )
     }
 }
