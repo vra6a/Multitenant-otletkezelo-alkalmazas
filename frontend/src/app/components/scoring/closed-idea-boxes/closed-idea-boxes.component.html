@@ -1,1 +1,31 @@
-<p>closed-idea-boxes works!</p>
+<div class="container">
+    <div class="left-div">
+        <mat-card 
+            *ngFor="let ideaBox of ideaBoxes"
+            [class.selected]="ideaBox?.id === selectedIdeaBox?.id"
+            (click)="ideaBoxClicked(ideaBox)"
+            >
+                {{ ideaBox.name }}
+      </mat-card>
+    </div>
+    <div class="right-div">
+        <div class="container">
+            <div class="divider">
+                <div echarts [options]="option"></div>
+            </div>
+            <div class="divider">
+                <h2>Approved ideas:</h2>
+                <mat-accordion>
+                    <mat-expansion-panel hideToggle *ngFor="let idea of approvedIdeas" (click)="clicked(idea)">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>{{ idea.title }}</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <p>Description: {{ selectedIdea?.description }}</p>
+                        <p>Creation Date: {{ selectedIdea?.creationDate | date }}</p>
+                        <p>Creator: {{ selectedIdea?.owner.firstName + " " + selectedIdea?.owner.lastName }}</p>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+    </div>
+</div>

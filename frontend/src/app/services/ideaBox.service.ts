@@ -117,4 +117,10 @@ export class IdeaBoxService {
       `${this.apiUrl}/idea-box/${id}/close`, {}
     )
   }
+
+  getClosedIdeaBoxes$(): Observable<WebResponse<IdeaBoxDto[]>> {
+    return this.http.get<WebResponse<IdeaBoxDto[]>>(
+      `${this.apiUrl}/idea-box/closedIdeaBoxes`, {}
+    )
+  }
 }
