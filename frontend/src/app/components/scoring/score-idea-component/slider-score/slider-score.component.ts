@@ -29,6 +29,5 @@ export class SliderScoreComponent implements OnInit {
 
   saveItem() {
     this.save.emit(this.sliderValue);
-    this.snackBar.ok("Item is scored!");
   }
 }

@@ -133,7 +133,7 @@ class ScoreItemService {
         return ResponseEntity.ok(
             WebResponse<ScoreSheetDto>(
                 code = HttpStatus.OK.value(),
-                message = "",
+                message = "Scoring is saved successfully!",
                 data = scoreSheet
             )
         )

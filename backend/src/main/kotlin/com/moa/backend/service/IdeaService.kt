@@ -167,13 +167,13 @@ class IdeaService {
             )
         } else {
             val currentLocalDate = LocalDate.now()
-            if(ideaBox.endDate.before(functions.localDateToDate(currentLocalDate))) {
+            if(ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
                 ideaRepository.saveAndFlush(saveIdea)
             } else {
                 return ResponseEntity.ok(
                     WebResponse<IdeaDto>(
                         code = HttpStatus.METHOD_NOT_ALLOWED.value(),
-                        message = "IdeaBox no longer accepts ideas!",
+                        message = "IdeaBox no longer accepts ideas! ${ideaBox.endDate.toString()}, ${currentLocalDate}",
                         data = null
                     )
                 )
