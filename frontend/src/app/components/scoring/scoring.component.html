@@ -20,6 +20,12 @@
         <h2>View already scored idea boxes</h2>
         <app-view-scored-ideas></app-view-scored-ideas>
       </mat-tab>
+
+      <!--  View closed Idea Boxes  -->
+      <mat-tab label="View Closed Idea Boxes" *ngIf="currentUser?.role != 'USER'">
+        <h2>View Closed Idea Boxes</h2>
+        <app-closed-idea-boxes></app-closed-idea-boxes>
+      </mat-tab>
     </mat-tab-group>
   </div>
 </div>

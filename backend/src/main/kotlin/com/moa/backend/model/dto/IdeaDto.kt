@@ -29,6 +29,4 @@ data class IdeaDto (
     var requiredJuries: MutableList<UserSlimDto>?,
 
     var scoreSheets: MutableList<ScoreSheetSlimDto>?,
-
-    var judgement: Judgement,
 )

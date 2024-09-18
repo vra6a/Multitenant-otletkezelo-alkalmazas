@@ -10,6 +10,4 @@ data class IdeaSlimDto (
     var title: String,
 
     var status: Status,
-
-    var judgement: Judgement,
 )

@@ -60,8 +60,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             ideaBox = ideaBoxMapper.modelToSlimDto(entity.ideaBox),
             likes = likes,
             requiredJuries = juries,
-            scoreSheets = scoreSheets,
-            judgement = entity.judgement,
+            scoreSheets = scoreSheets
         )
     }
 
@@ -69,8 +68,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
         return IdeaSlimDto(
             id = entity.id,
             status = entity.status,
-            title = entity.title,
-            judgement = entity.judgement
+            title = entity.title
         )
     }
 
@@ -104,7 +102,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     likes = emptyList<User>().toMutableList(),
                     requiredJuries = juries,
                     scoreSheets = scoreSheets,
-                    judgement = domain.judgement
             )
         }
         return idToModel(domain.id)
@@ -138,7 +135,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             likes = idea.likes,
             requiredJuries = idea.requiredJuries,
             scoreSheets = idea.scoreSheets,
-            judgement = idea.judgement
         )
     }
 }

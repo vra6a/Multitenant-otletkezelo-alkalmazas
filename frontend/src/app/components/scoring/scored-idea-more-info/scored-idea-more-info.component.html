@@ -32,8 +32,8 @@
         
         <div *ngIf="selectedFullIdea">
             <h2>Details - {{ selectedFullIdea?.title }}</h2>
-            <P *ngIf="selectedFullIdea.judgement.toString() == 'APPROVED'">Idea was approved</P>
-            <P *ngIf="selectedFullIdea.judgement.toString() == 'DENIED'">Idea was denied</P>
+            <P *ngIf="selectedFullIdea.status == 'APPROVED'">Idea was approved</P>
+            <P *ngIf="selectedFullIdea.status == 'DENIED'">Idea was denied</P>
             <p>Creator: {{ selectedFullIdea?.owner.firstName + " " + selectedFullIdea?.owner.lastName }}</p>
             <p>Creation Date: {{ selectedFullIdea?.creationDate | date }}</p>
             <p>Description: {{ selectedFullIdea.description }}</p>
@@ -43,8 +43,8 @@
                   {{ jury.firstName + " " + jury.lastName }}
                 </mat-chip>
             </mat-chip-list>
-            <button disabled="selectedFullIdea.judgement.toString() != 'NOT_JUDGED'" class="approve" (click)="approveIdea()">Approve Idea</button>
-            <button disabled="selectedFullIdea.judgement.toString() != 'NOT_JUDGED'" class="deny" (click)="denyIdea()">Deny Idea</button>
+            <button [disabled]="selectedFullIdea.status == 'APPROVED' || selectedFullIdea.status == 'DENIED'" class="approve" (click)="approveIdea()">Approve Idea</button>
+            <button [disabled]="selectedFullIdea.status == 'APPROVED' || selectedFullIdea.status == 'DENIED'" class="deny" (click)="denyIdea()">Deny Idea</button>
         </div>
         
         <div *ngIf="!selectedFullIdea">

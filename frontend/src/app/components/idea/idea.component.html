@@ -62,6 +62,18 @@
           [ngStyle]="{ 'margin-top': canEdit ? '6px' : '62px' }"
         >
           <p class="title">Scores:</p>
+          <mat-accordion>
+            <mat-expansion-panel hideToggle *ngFor="let scoreSheet of scoreSheets">
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ scoreSheet.owner.firstName + " " + scoreSheet.owner.lastName }} </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="scoreBox" *ngFor="let score of scoreSheet.scores">
+                <p>title: {{ score.title }}</p>
+                <p>type: {{ score.type }}</p>
+                <p>score: {{ score.score }}</p>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
       </div>
     </div>

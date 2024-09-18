@@ -102,4 +102,9 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
     fun closeIdeaBox(@PathVariable id: Long): ResponseEntity<*> {
         return ideaBoxService.closeIdeaBox(id)
     }
+
+    @GetMapping("/idea-box/closedIdeaBoxes")
+    fun getClosedIdeaBoxes(): ResponseEntity<*> {
+        return ideaBoxService.getClosedIdeaBoxes()
+    }
 }

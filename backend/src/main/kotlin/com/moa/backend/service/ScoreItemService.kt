@@ -5,6 +5,7 @@ import com.moa.backend.mapper.ScoreItemMapper
 import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.model.Idea
 import com.moa.backend.model.ScoreSheet
+import com.moa.backend.model.Status
 import com.moa.backend.model.dto.ScoreItemDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
@@ -124,6 +125,10 @@ class ScoreItemService {
             val s = scoreItemRepository.save(scoreItemMapper.dtoToModel(score))
             ss.scores!!.add(scoreItemMapper.modelToDto(s))
         }
+
+
+        idea.status = Status.REVIEWED
+        ideaRepository.saveAndFlush(idea)
 
         return ResponseEntity.ok(
             WebResponse<ScoreSheetDto>(

@@ -23,4 +23,6 @@ interface IdeaBoxRepository : JpaRepository<IdeaBox, Long> {
 
     @Query("SELECT ib.defaultRequiredJuries FROM IdeaBox ib WHERE ib.id = :ideaBoxId")
     fun findRequiredJuriesByIdeaBoxId(@Param("ideaBoxId") ideaBoxId: Long): List<User>
+
+    fun findAllByIsSclosedTrue(): List<IdeaBox>
 }

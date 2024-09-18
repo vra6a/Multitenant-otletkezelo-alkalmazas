@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { IdeaDto } from 'src/app/models/dto/ideaDto';
+import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
 import { UserSlimDto } from 'src/app/models/slimDto/userSlimDto';
 import { WebResponse } from 'src/app/models/webResponse';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaService } from 'src/app/services/idea.service';
+import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
 import { SnackBarService } from 'src/app/services/snackBar.service';
 import Utils from 'src/app/utility/utils';
 
@@ -20,10 +22,12 @@ export class IdeaComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: SnackBarService,
     private auth: AuthService,
-    private ideaService: IdeaService
+    private ideaService: IdeaService,
+    private scoreSheetService: ScoreSheetService,
   ) {}
 
   idea: IdeaDto = null;
+  scoreSheets: ScoreSheetDto[] = []
   id: string = '';
   likeText: string = '';
   isLiked: boolean = false;
@@ -71,6 +75,7 @@ export class IdeaComponent implements OnInit {
       .subscribe((res: WebResponse<IdeaDto>) => {
         if (res.code == 200) {
           this.idea = res.data;
+          this.getScoreSheets()
           this.createLikeText();
           this.checkIfLiked();
           this.checkCanEdit();
@@ -82,6 +87,16 @@ export class IdeaComponent implements OnInit {
 
   private createLikeText() {
     this.likeText = Utils.createLikeText(this.idea.likes, this.user.id);
+  }
+
+  private getScoreSheets() {
+    this.scoreSheetService
+      .getScoreSheetsByIdeaId$(this.idea.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: WebResponse<ScoreSheetDto[]>) =>{
+        this.scoreSheets = res.data
+        this.scoreSheets.shift()
+      })
   }
 
   private checkIfLiked() {

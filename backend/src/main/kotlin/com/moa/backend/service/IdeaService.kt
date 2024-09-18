@@ -147,7 +147,6 @@ class IdeaService {
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
         val saveIdea = ideaMapper.dtoToModel(idea)
-        saveIdea.judgement = Judgement.NOT_JUDGED
         ideaRepository.saveAndFlush(saveIdea)
 
 
@@ -386,7 +385,8 @@ class IdeaService {
                 if(idea == null) {
                     logger.info { "MOA-INFO: No idea Found." }
                 } else {
-                    idea.judgement = Judgement.APPROVED
+
+                    idea.status = Status.APPROVED
                     ideaRepository.save(idea)
                 }
             }
@@ -415,7 +415,7 @@ class IdeaService {
                 if(idea == null) {
                     logger.info { "MOA-INFO: No idea Found." }
                 } else {
-                    idea.judgement = Judgement.DENIED
+                    idea.status = Status.DENIED
                     ideaRepository.save(idea)
                 }
             }

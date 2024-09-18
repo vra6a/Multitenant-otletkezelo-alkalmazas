@@ -6,6 +6,7 @@ import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.IdeaBox
 import com.moa.backend.model.Judgement
+import com.moa.backend.model.Status
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
@@ -307,21 +308,20 @@ class IdeaBoxService {
                 return ResponseEntity.ok(
                     WebResponse<Boolean>(
                         code = HttpStatus.OK.value(),
-                        message = "IdeaBox is not ready to close",
+                        message = "IdeaBox is not ready to close because the date",
                         data = false
                     )
                 )
             }
-            ideaBox.ideas.forEach { idea ->
-                if(idea.judgement == Judgement.NOT_JUDGED) {
-                    return ResponseEntity.ok(
-                        WebResponse<Boolean>(
-                            code = HttpStatus.OK.value(),
-                            message = "IdeaBox is not ready to close",
-                            data = false
-                        )
+            val error = ideaBox.ideas.filter { idea -> idea.status == Status.REVIEWED || idea.status == Status.SUBMITTED }
+            if(error.isNotEmpty()) {
+                return ResponseEntity.ok(
+                    WebResponse<Boolean>(
+                        code = HttpStatus.OK.value(),
+                        message = "IdeaBox is not ready to close because status",
+                        data = false
                     )
-                }
+                )
             }
         }
 
@@ -335,6 +335,9 @@ class IdeaBoxService {
     }
 
     fun closeIdeaBox(id: Long): ResponseEntity<*> {
+        if(ideaBoxReadyToClose(id).) {
+
+        }
         var ideaBox = ideaBoxRepository.findById(id).orElse(null)
         if(ideaBox != null) {
             ideaBox.isSclosed = true
@@ -350,7 +353,17 @@ class IdeaBoxService {
         )
     }
 
-    fun localDateToDate(localDate: LocalDate): Date {
+    fun getClosedIdeaBoxes(): ResponseEntity<*> {
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaBoxDto>>(
+                code = HttpStatus.OK.value(),
+                message = "IdeaBoxes",
+                data = ideaBoxMapper.modelListToDto(ideaBoxRepository.findAllByIsSclosedTrue())
+            )
+        )
+    }
+
+    private fun localDateToDate(localDate: LocalDate): Date {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
     }
 }

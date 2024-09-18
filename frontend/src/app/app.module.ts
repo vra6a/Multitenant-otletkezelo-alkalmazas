@@ -77,6 +77,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { ScoredIdeaMoreInfoComponent } from './components/scoring/scored-idea-more-info/scored-idea-more-info.component';
 import { ScoredIdeaDetailsComponent } from './components/scoring/scored-idea-details/scored-idea-details.component';
+import { ClosedIdeaBoxesComponent } from './components/scoring/closed-idea-boxes/closed-idea-boxes.component';
 
 
 
@@ -128,6 +129,7 @@ import { ScoredIdeaDetailsComponent } from './components/scoring/scored-idea-det
     ViewScoresComponent,
     ScoredIdeaMoreInfoComponent,
     ScoredIdeaDetailsComponent,
+    ClosedIdeaBoxesComponent,
   ],
   imports: [
     FormsModule,

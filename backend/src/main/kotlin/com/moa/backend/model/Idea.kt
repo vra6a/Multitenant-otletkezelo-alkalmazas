@@ -53,8 +53,6 @@ data class Idea (
     var likes: MutableList<User>?,
 
     @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var scoreSheets: MutableList<ScoreSheet>,
-
-    var judgement: Judgement
+    var scoreSheets: MutableList<ScoreSheet>
 
 )
