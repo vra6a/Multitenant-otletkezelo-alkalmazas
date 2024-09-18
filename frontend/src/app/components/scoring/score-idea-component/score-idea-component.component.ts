@@ -50,7 +50,6 @@ export class ScoreIdeaComponentComponent implements OnInit {
               .getScoreSheetById$(res.data.scoreSheetTemplates[0].id.toString())
               .pipe(untilDestroyed(this))
               .subscribe((res: WebResponse<ScoreSheetDto>) => {
-                console.log(res);
                 this.scoreSheet = res.data;
                 this.scoreSheet.owner = this.currentUser;
               });
@@ -59,9 +58,7 @@ export class ScoreIdeaComponentComponent implements OnInit {
   }
 
   saveItem(event: number, id: number) {
-    console.log(event, id);
     this.scoreSheet.scores.find((item) => item.id == id).score = event;
-    console.log(this.scoreSheet.scores.find((item) => item.id == id));
   }
 
   save() {
