@@ -67,7 +67,7 @@ export class IdeaBoxListComponent implements OnInit {
       .getIdeaBoxes$(search, sort, page, items)
       .pipe(untilDestroyed(this))
       .subscribe((res: WebResponse<IdeaBoxSlimDto[]>): void => {
-        this.ideaBoxes = res.data;
+        this.ideaBoxes = res.data.filter(ideaBox => !ideaBox.isSclosed)
       });
   }
 
