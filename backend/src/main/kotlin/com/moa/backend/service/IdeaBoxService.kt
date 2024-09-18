@@ -13,6 +13,7 @@ import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
+import com.moa.backend.utility.Functions
 import com.moa.backend.utility.IdeaScoreSheets
 import com.moa.backend.utility.WebResponse
 import mu.KotlinLogging
@@ -47,6 +48,9 @@ class IdeaBoxService {
 
     @Autowired
     lateinit var userMapper: UserMapper
+
+    @Autowired
+    lateinit var functions: Functions
 
     private val logger = KotlinLogging.logger {}
 
@@ -304,7 +308,7 @@ class IdeaBoxService {
         val currentLocalDate = LocalDate.now()
         val ideaBox = ideaBoxRepository.findById(id).orElse(null)
         if(ideaBox != null) {
-            if(ideaBox.endDate.after(localDateToDate(currentLocalDate))) {
+            if(ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
                 return ResponseEntity.ok(
                     WebResponse<Boolean>(
                         code = HttpStatus.OK.value(),
@@ -335,9 +339,6 @@ class IdeaBoxService {
     }
 
     fun closeIdeaBox(id: Long): ResponseEntity<*> {
-        if(ideaBoxReadyToClose(id).) {
-
-        }
         var ideaBox = ideaBoxRepository.findById(id).orElse(null)
         if(ideaBox != null) {
             ideaBox.isSclosed = true

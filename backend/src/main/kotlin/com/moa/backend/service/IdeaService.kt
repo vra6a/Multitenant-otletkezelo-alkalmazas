@@ -8,8 +8,10 @@ import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
+import com.moa.backend.utility.Functions
 import com.moa.backend.utility.WebResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,9 +19,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class IdeaService {
+
+    @Autowired
+    private lateinit var ideaBoxRepository: IdeaBoxRepository
 
     @Autowired
     lateinit var ideaRepository: IdeaRepository
@@ -35,6 +41,9 @@ class IdeaService {
 
     @Autowired
     lateinit var tagMapper: TagMapper
+
+    @Autowired
+    lateinit var functions: Functions
 
     private val logger = KotlinLogging.logger {}
 
@@ -147,7 +156,29 @@ class IdeaService {
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
         val saveIdea = ideaMapper.dtoToModel(idea)
-        ideaRepository.saveAndFlush(saveIdea)
+        val ideaBox = ideaBoxRepository.findById(saveIdea.ideaBox.id).orElse(null)
+        if(ideaBox == null) {
+            return ResponseEntity.ok(
+                WebResponse<IdeaDto>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "IdeaBox Not found!",
+                    data = null
+                )
+            )
+        } else {
+            val currentLocalDate = LocalDate.now()
+            if(ideaBox.endDate.before(functions.localDateToDate(currentLocalDate))) {
+                ideaRepository.saveAndFlush(saveIdea)
+            } else {
+                return ResponseEntity.ok(
+                    WebResponse<IdeaDto>(
+                        code = HttpStatus.METHOD_NOT_ALLOWED.value(),
+                        message = "IdeaBox no longer accepts ideas!",
+                        data = null
+                    )
+                )
+            }
+        }
 
 
         logger.info { "MOA-INFO: Idea created with id: ${saveIdea.id}." }

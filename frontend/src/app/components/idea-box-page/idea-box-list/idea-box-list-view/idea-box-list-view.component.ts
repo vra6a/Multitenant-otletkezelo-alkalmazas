@@ -12,4 +12,12 @@ export class IdeaBoxListViewComponent implements OnInit {
   @Input() ideaBox: IdeaBoxSlimDto;
 
   ngOnInit(): void {}
+
+  isOverdue() {
+    if(new Date(this.ideaBox.endDate) < new Date()) {
+      return true
+    } else {
+      return false
+    }
+  }
 }
