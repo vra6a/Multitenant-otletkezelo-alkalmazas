@@ -77,4 +77,25 @@ open class User (
         return true
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is User) return false
+
+        return id == other.id &&
+                firstName == other.firstName &&
+                lastName == other.lastName &&
+                email == other.email &&
+                role == other.role &&
+                password == other.password
+
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + firstName.hashCode()
+        result = 31 * result + lastName.hashCode()
+        result = 31 * result + email.hashCode()
+        return result
+    }
+
 }

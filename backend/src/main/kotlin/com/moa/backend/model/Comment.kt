@@ -33,4 +33,14 @@ data class Comment (
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
     var likes: MutableList<User>
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Comment) return false
+
+        return id == other.id &&
+                creationDate == other.creationDate &&
+                text == other.text &&
+                isEdited == other.isEdited
+    }
+}

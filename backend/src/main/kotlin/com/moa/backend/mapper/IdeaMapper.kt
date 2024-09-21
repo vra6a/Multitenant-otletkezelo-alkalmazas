@@ -119,7 +119,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
         return list
     }
 
-    private fun idToModel(id: Long): Idea {
+    fun idToModel(id: Long): Idea {
         val idea = ideaRepository.findById(id).orElse(null)
 
         return  Idea(

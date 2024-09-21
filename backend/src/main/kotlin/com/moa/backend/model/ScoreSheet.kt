@@ -23,4 +23,15 @@ data class ScoreSheet(
     @ManyToOne
     @JoinColumn(name = "ideaBox_id")
     var templateFor: IdeaBox?
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ScoreSheet) return false
+
+        return id == other.id &&
+                owner == other.owner &&
+                idea == other.idea &&
+                templateFor == other.templateFor
+
+    }
+}
