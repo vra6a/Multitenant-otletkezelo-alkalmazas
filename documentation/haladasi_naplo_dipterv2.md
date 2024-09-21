@@ -13,7 +13,7 @@ Az otletdobozon belul grafikonok segitsegevel ossze lehet hasonlitani a kapott p
 
 ## 3. hét
 
-Hibajavítások...
+Hibák osszegyujtese, javitasok. Backend tesztek irasa (mappers). Jacoco test coverage reporting beuzemelese.
 
 ## 4. hét
 
