@@ -15,9 +15,38 @@ Az otletdobozon belul grafikonok segitsegevel ossze lehet hasonlitani a kapott p
 
 Hibák osszegyujtese, javitasok. Backend tesztek irasa (mappers). Jacoco test coverage reporting beuzemelese.
 
+kesz tesztek:
+
+#### Service
+
+- IdeaService
+- UserService
+
+### Mappers
+
+- IdeaMapper
+- ScoreSheetMapper
+- TagMapper
+- IdeaBoxMapper
+- UserMapper
+- CommentMapper
+- ScoreItemMapper
+
+### Controller
+
+- UserController
+- TagController
+- IdeaController
+- ErrorController
+- IdeaBoxController
+- ScoreSheetController
+- CommentController
+- ScoreController
+- UtilityController
+
 ## 4. hét
 
-
+tesztek irasa, bugfixek
 
 ## 5. hét
 
