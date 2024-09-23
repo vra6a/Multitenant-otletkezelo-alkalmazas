@@ -17,7 +17,7 @@ Hibák osszegyujtese, javitasok. Backend tesztek irasa (mappers). Jacoco test co
 
 kesz tesztek:
 
-#### Service
+### Service
 
 - IdeaService
 - UserService
