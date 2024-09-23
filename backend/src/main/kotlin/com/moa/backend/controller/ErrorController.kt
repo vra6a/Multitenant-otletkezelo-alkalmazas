@@ -43,7 +43,7 @@ class ErrorController {
 
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(value = [AuthenticationException::class])
-    fun unAuthorizedHandler(authenticationException: AuthenticationException): WebResponse<Nothing>{
+    fun unAuthorizedHandler(authenticationException: javax.naming.AuthenticationException): WebResponse<Nothing>{
         return WebResponse(
             code = HttpStatus.UNAUTHORIZED.value(),
             message = authenticationException.message.orEmpty()

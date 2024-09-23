@@ -1,4 +1,4 @@
-package com.moa.backend.Controllers
+package com.moa.backend.Services
 
 import TestUtility
 import com.moa.backend.mapper.IdeaMapper
@@ -10,7 +10,6 @@ import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
-import com.moa.backend.service.IdeaService
 import com.moa.backend.service.UserService
 import com.moa.backend.utility.Functions
 import com.moa.backend.utility.WebResponse
@@ -31,20 +30,9 @@ import java.util.*
 @SpringBootTest
 @ExtendWith(MockKExtension::class)
 class UserServiceTest {
-    @Autowired
-    private lateinit var functions: Functions
-
-    @MockkBean
-    lateinit var ideaRepository: IdeaRepository
-
-    @MockkBean
-    lateinit var ideaBoxRepository: IdeaBoxRepository
 
     @MockkBean
     lateinit var userRepository: UserRepository
-
-    @MockkBean
-    lateinit var ideaMapper: IdeaMapper
 
     @MockkBean
     lateinit var userMapper: UserMapper
