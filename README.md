@@ -21,6 +21,8 @@ A téma diplomatervként végigvihető.
 
 [Diplomatervezés 1 Haladási napló](./documentation/haladasi_naplo_2.md)
 
+[Diplomatervezés 2 Haladási napló](./documentation/haladasi_naplo_dipterv2.md)
+
 ## Beszámolók
 
 [Önálló laboratórium 2](./documentation/onlab_1_beszamlo_Varga_Adam.md)
