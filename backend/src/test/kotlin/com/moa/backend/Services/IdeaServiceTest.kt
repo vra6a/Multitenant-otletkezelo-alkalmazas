@@ -1,4 +1,4 @@
-package com.moa.backend.Controllers
+package com.moa.backend.Services
 
 import TestUtility
 import com.moa.backend.mapper.IdeaMapper
