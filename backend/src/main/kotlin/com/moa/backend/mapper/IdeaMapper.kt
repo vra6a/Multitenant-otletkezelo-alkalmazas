@@ -3,6 +3,7 @@ package com.moa.backend.mapper
 import com.moa.backend.model.*
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.*
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -87,7 +88,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
         domain.scoreSheets?.forEach{ scoreSheet: ScoreSheetSlimDto ->
             scoreSheets.add(scoreSheetMapper.slimDtoToModel(scoreSheet))
         }
-
+        val currentTenant = TenantContext.getCurrentTenant().orEmpty()
         if(domain.id == 0L) {
             return Idea(
                     id = domain .id,
@@ -102,6 +103,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     likes = emptyList<User>().toMutableList(),
                     requiredJuries = juries,
                     scoreSheets = scoreSheets,
+                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -135,6 +137,7 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             likes = idea.likes,
             requiredJuries = idea.requiredJuries,
             scoreSheets = idea.scoreSheets,
+            tenantId = idea.tenantId
         )
     }
 }

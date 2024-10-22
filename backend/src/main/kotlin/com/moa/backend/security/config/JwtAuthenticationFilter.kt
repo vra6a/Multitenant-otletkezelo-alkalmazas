@@ -1,5 +1,6 @@
 package com.moa.backend.security.config
 
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.utility.ErrorException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required

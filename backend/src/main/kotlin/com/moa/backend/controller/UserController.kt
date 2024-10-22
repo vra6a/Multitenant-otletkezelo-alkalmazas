@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.stream.Collectors
 import mu.KotlinLogging
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"])
@@ -62,14 +63,14 @@ class UserController(private val userRepository: UserRepository) {
     }
 
     @PostMapping("/auth/register")
-    fun register(@RequestBody request: RegisterRequest): WebResponse<AuthenticationResponse> {
+    fun register(@RequestBody request: RegisterRequest, httpServletRequest: HttpServletRequest): WebResponse<AuthenticationResponse> {
         if(userRepository.findByEmail(request.email).isPresent) {
             throw ErrorException("Email address is already registered!")
         }
         return WebResponse(
             code = HttpStatus.OK.value(),
             message = "User Successfully registered!",
-            data = authService.register(request)
+            data = authService.register(request, httpServletRequest)
         )
     }
 

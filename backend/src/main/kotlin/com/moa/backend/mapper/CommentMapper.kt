@@ -7,6 +7,7 @@ import com.moa.backend.model.dto.CommentDto
 import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.CommentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -52,6 +53,7 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
 
     override fun dtoToModel(domain: CommentDto): Comment {
         if(domain.id == 0L) {
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return Comment(
                     id = domain.id,
                     creationDate = Date(),
@@ -59,7 +61,8 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
                     owner = userMapper.slimDtoToModel(domain.owner),
                     idea = ideaMapper.slimDtoToModel(domain.idea),
                     likes = emptyList<User>().toMutableList(),
-                    isEdited = false
+                    isEdited = false,
+                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -79,7 +82,8 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
             owner = comment.owner,
             idea = comment.idea,
             likes = comment.likes,
-            isEdited = comment.isEdited
+            isEdited = comment.isEdited,
+            tenantId = comment.tenantId
         )
     }
 }

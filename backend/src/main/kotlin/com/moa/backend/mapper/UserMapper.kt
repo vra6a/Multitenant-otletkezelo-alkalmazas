@@ -6,6 +6,7 @@ import com.moa.backend.model.slim.CommentSlimDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -81,6 +82,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
 
     override fun dtoToModel(domain: UserDto): User {
         if(domain.id == 0L) {
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return User(
                     id = domain.id,
                     firstName = domain.firstName,
@@ -95,7 +97,8 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
                     comments = emptyList<Comment>().toMutableList(),
                     ideasToJury = emptyList<Idea>().toMutableList(),
                     requiredToJury = emptyList<IdeaBox>().toMutableList(),
-                    scoreSheets = emptyList<ScoreSheet>().toMutableList()
+                    scoreSheets = emptyList<ScoreSheet>().toMutableList(),
+                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -131,6 +134,7 @@ class UserMapper: Mapper<UserDto, UserSlimDto, User, > {
             ideasToJury = user.ideasToJury,
             requiredToJury = user.requiredToJury,
             scoreSheets = user.scoreSheets,
+            tenantId = user.tenantId
         )
     }
 }

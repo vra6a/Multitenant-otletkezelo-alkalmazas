@@ -11,6 +11,7 @@ import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
 import com.moa.backend.utility.Functions
@@ -27,6 +28,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Service
 class IdeaBoxService {
@@ -54,10 +57,19 @@ class IdeaBoxService {
 
     private val logger = KotlinLogging.logger {}
 
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
+
 
     fun getIdeaBox(id: Long): ResponseEntity<*> {
-        val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
-        if(ideaBox == null) {
+        // Get the EntityManager from the TenantContext
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        // Use the currentEntityManager to find the IdeaBox
+        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
+
+        if (ideaBox == null) {
             logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
@@ -105,15 +117,25 @@ class IdeaBoxService {
         )
     }
 
-    fun getIdeaBoxes(s: String, pageable: Pageable): ResponseEntity<*> {
-        val ideaBoxes = ideaBoxRepository.search(s, pageable)
-        val response: MutableList<IdeaBoxSlimDto> = emptyList<IdeaBoxSlimDto>().toMutableList()
+    fun getIdeaBoxes(searchTerm: String, pageable: Pageable): ResponseEntity<*> {
+        // Get the EntityManager from the TenantContext
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        for (ideaBox in ideaBoxes) {
-            ideaBox.let {
-                val ideaBoxSlimDto = ideaBoxMapper.modelToSlimDto(ideaBox)
-                ideaBoxSlimDto.draft = ideaBox.scoreSheetTemplates.isEmpty()
-                response.add(ideaBoxSlimDto)
+        // Use the currentEntityManager to perform the search
+        val ideaBoxes = currentEntityManager.createQuery(
+            "SELECT ib FROM IdeaBox ib WHERE ib.name LIKE :searchTerm",
+            IdeaBox::class.java
+        )
+            .setParameter("searchTerm", "%$searchTerm%")
+            .setFirstResult(pageable.offset.toInt())
+            .setMaxResults(pageable.pageSize)
+            .resultList
+
+        // Map the results to IdeaBoxSlimDto
+        val response = ideaBoxes.map { ideaBox ->
+            ideaBoxMapper.modelToSlimDto(ideaBox).apply {
+                draft = ideaBox.scoreSheetTemplates.isEmpty() // Set draft based on score sheet templates
             }
         }
 
@@ -123,7 +145,7 @@ class IdeaBoxService {
             WebResponse<MutableList<IdeaBoxSlimDto>>(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = response
+                data = response.toMutableList() // Return mutable list
             )
         )
     }
