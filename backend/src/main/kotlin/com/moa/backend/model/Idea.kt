@@ -4,22 +4,28 @@ import java.util.Date
 import javax.persistence.*
 
 @Entity
-data class Idea (
+@Table(name = "idea")
+open class Idea (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @Column(name = "id")
+    open var id: Long = 0,
 
-    var title: String,
+    @Column(name = "title")
+    open var title: String,
 
-    var description: String,
+    @Column(name = "description")
+    open var description: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var owner: User,
+    open var owner: User,
 
     @Enumerated(EnumType.STRING)
-    var status: Status,
+    @Column(name = "status")
+    open var status: Status,
 
-    var creationDate: Date,
+    @Column(name = "creation_date")
+    open var creationDate: Date,
 
     @ManyToMany
     @JoinTable(
@@ -27,7 +33,7 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
-    var tags: MutableList<Tag>?,
+    open var tags: MutableList<Tag>?,
 
     @ManyToMany
     @JoinTable(
@@ -35,14 +41,14 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var requiredJuries: MutableList<User>?,
+    open var requiredJuries: MutableList<User>?,
 
     @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var comments: MutableList<Comment>?,
+    open var comments: MutableList<Comment>?,
 
     @ManyToOne
-    @JoinColumn(name = "ideaBox_id")
-    var ideaBox: IdeaBox,
+    @JoinColumn(name = "idea_box_id")
+    open var ideaBox: IdeaBox,
 
     @ManyToMany
     @JoinTable(
@@ -50,9 +56,9 @@ data class Idea (
         joinColumns = [JoinColumn(name = "idea_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var likes: MutableList<User>?,
+    open var likes: MutableList<User>?,
 
     @OneToMany(mappedBy = "idea", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var scoreSheets: MutableList<ScoreSheet>
+    open var scoreSheets: MutableList<ScoreSheet>
 
 )

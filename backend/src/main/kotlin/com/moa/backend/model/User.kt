@@ -6,20 +6,27 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
+@Table(name = "user")
 open class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     open var id: Long = 0,
 
+    @Column(name = "firstName")
     open var firstName: String,
 
+    @Column(name = "lastName")
     open var lastName: String,
 
+    @Column(name = "email")
     open var email: String,
 
+    @Column(name = "password")
     private var password: String,
 
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     open var role: Role,
 

@@ -6,25 +6,30 @@ import javax.persistence.*
 
 
 @Entity
-data class Comment (
+@Table(name = "comment")
+open class Comment (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @Column(name = "id")
+    open var id: Long = 0,
 
-    var creationDate: Date,
+    @Column(name = "creation_date")
+    open var creationDate: Date,
 
-    var text: String,
+    @Column(name = "text")
+    open var text: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var owner: User,
+    open var owner: User,
 
     @ManyToOne
     @JoinColumn(name = "idea_id")
-    var idea: Idea,
+    open var idea: Idea,
 
-    var isEdited: Boolean,
+    @Column(name = "is_edited")
+    open var isEdited: Boolean,
 
     @ManyToMany
     @JoinTable(
@@ -32,7 +37,7 @@ data class Comment (
         joinColumns = [JoinColumn(name = "comment_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var likes: MutableList<User>
+    open var likes: MutableList<User>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

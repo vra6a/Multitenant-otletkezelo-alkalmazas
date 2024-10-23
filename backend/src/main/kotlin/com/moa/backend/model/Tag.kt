@@ -3,16 +3,16 @@ package com.moa.backend.model
 import javax.persistence.*
 
 @Entity
-data class Tag (
+open class Tag (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    open var id: Long = 0,
 
-    var name: String,
+    open var name: String,
 
     @ManyToMany(mappedBy = "tags")
-    var taggedIdeas: MutableList<Idea>?
+    open var taggedIdeas: MutableList<Idea>?
 
 
 )

@@ -1,5 +1,6 @@
 package com.moa.backend.security.config
 
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.utility.ErrorException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
@@ -28,20 +29,35 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-
         val authHeader: String? = request.getHeader("Authorization")
-        val jwt: String
-        val userEmail: String
-        if(authHeader == null || !authHeader.startsWith("Bearer")) {
+        val jwt: String?
+        val userEmail: String?
+
+        val tenant: String? = request.getHeader("X-Tenant-Id")
+        if (tenant != null) {
+            TenantContext.setCurrentTenant(tenant)
+        }
+
+        val currentTenant = TenantContext.getCurrentTenant()
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response)
             return
         }
+
         jwt = authHeader.substring(7)
         userEmail = jwtService.extractUsername(jwt)
-        if(userEmail != null && SecurityContextHolder.getContext().authentication == null) {
+
+        if (userEmail != null && SecurityContextHolder.getContext().authentication == null) {
+            if (currentTenant == null) {
+                throw ErrorException("Tenant identifier is missing!")
+            }
+
+            logger.info("Attempting to load user by email: $userEmail for tenant: $currentTenant")
             val userDetails: UserDetails = userDetailsService.loadUserByUsername(userEmail)
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                val authToken: UsernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
+                val authToken = UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
                     userDetails.authorities

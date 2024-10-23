@@ -3,22 +3,28 @@ package com.moa.backend.model
 import javax.persistence.*
 
 @Entity
-data class ScoreItem (
+@Table(name = "score_item")
+open class ScoreItem (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @Column(name = "id")
+    open var id: Long = 0,
 
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    var type: ScoreType,
+    open var type: ScoreType,
 
     @ManyToOne
-    @JoinColumn(name = "scoreSheet_id")
-    var scoreSheet: ScoreSheet,
+    @JoinColumn(name = "score_sheet_id")
+    open var scoreSheet: ScoreSheet,
 
-    var title: String,
+    @Column(name = "title")
+    open var title: String,
 
-    var score: Int?,
+    @Column(name = "score")
+    open var score: Int?,
 
-    var text: String?,
+    @Column(name = "text")
+    open var text: String?,
 )
