@@ -8,7 +8,6 @@ import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
 import com.moa.backend.model.slim.UserSlimDto
-import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.UserRepository
@@ -21,8 +20,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Service
 class IdeaService {
@@ -50,27 +47,21 @@ class IdeaService {
 
     private val logger = KotlinLogging.logger {}
 
-    @PersistenceContext
-    lateinit var entityManager: EntityManager
-
     fun getIdea(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
-        val idea = currentEntityManager.find(Idea::class.java, id)
-            ?: run {
-                logger.info { "MOA-INFO: Idea with id: $id not found." }
-                return ResponseEntity(
-                    WebResponse(
-                        code = HttpStatus.NOT_FOUND.value(),
-                        message = "Cannot find Idea with this id $id!",
-                        data = null
-                    ),
-                    HttpStatus.NOT_FOUND
-                )
-            }
-
-        logger.info { "MOA-INFO: Idea with id: $id found." }
+        logger.info { "MOA-INFO: Idea with id: ${id} found." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
@@ -82,23 +73,20 @@ class IdeaService {
     }
 
     fun getIdeaSlim(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
-        val idea = currentEntityManager.find(Idea::class.java, id)
-            ?: run {
-                logger.info { "MOA-INFO: Idea with id: $id not found." }
-                return ResponseEntity(
-                    WebResponse(
-                        code = HttpStatus.NOT_FOUND.value(),
-                        message = "Cannot find Idea with this id $id!",
-                        data = null
-                    ),
-                    HttpStatus.NOT_FOUND
-                )
-            }
-
-        logger.info { "MOA-INFO: Idea with id: $id found." }
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} found." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaSlimDto>(
@@ -110,13 +98,16 @@ class IdeaService {
     }
 
     fun getIdeas(): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val ideas = ideaRepository.findAll()
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
 
-        val ideas = currentEntityManager.createQuery("SELECT i FROM Idea i", Idea::class.java).resultList
-        val response: MutableList<IdeaSlimDto> = ideas.map { ideaMapper.modelToSlimDto(it) }.toMutableList()
+        for( idea in ideas ) {
+            idea.let {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
 
-        logger.info { "MOA-INFO: Ideas found." }
+        logger.info { "MOA-INFO: IdeaBoxes found." }
 
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaSlimDto>>(
@@ -128,19 +119,16 @@ class IdeaService {
     }
 
     fun getDefaultJuries(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val juries = userRepository.getJuriesByIdeaBoxId(id)
 
-        val juries = currentEntityManager.createQuery(
-            "SELECT u FROM User u JOIN u.ideas i WHERE i.ideaBox.id = :ideaBoxId", User::class.java
-        )
-            .setParameter("ideaBoxId", id)
-            .resultList
-
-        val response: MutableList<UserSlimDto> = juries.map { userMapper.modelToSlimDto(it) }.toMutableList()
-
+        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        for( jury in juries ) {
+            jury.let {
+                response.add(userMapper.modelToSlimDto(jury))
+            }
+        }
         return ResponseEntity.ok(
-            WebResponse<MutableList<UserSlimDto>>(
+            WebResponse<MutableList<UserSlimDto>> (
                 code = HttpStatus.OK.value(),
                 message = "",
                 data = response
@@ -149,17 +137,14 @@ class IdeaService {
     }
 
     fun getReviewedIdeas(): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val ideas = ideaRepository.getReviewedIdeas()
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
 
-        val ideas = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i WHERE i.status = :status", Idea::class.java
-        )
-            .setParameter("status", Status.REVIEWED)
-            .resultList
-
-        val response: MutableList<IdeaSlimDto> = ideas.map { ideaMapper.modelToSlimDto(it) }.toMutableList()
-
+        for( idea in ideas ) {
+            idea.let {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaSlimDto>>(
                 code = HttpStatus.OK.value(),
@@ -171,32 +156,30 @@ class IdeaService {
 
     fun createIdea(idea: IdeaDto): ResponseEntity<*> {
         val saveIdea = ideaMapper.dtoToModel(idea)
-
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
         val ideaBox = ideaBoxRepository.findById(saveIdea.ideaBox.id).orElse(null)
-            ?: return ResponseEntity.ok(
+        if(ideaBox == null) {
+            return ResponseEntity.ok(
                 WebResponse<IdeaDto>(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "IdeaBox Not found!",
                     data = null
                 )
             )
-
-        val currentLocalDate = LocalDate.now()
-        if (ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
-            currentEntityManager.persist(saveIdea)
-            currentEntityManager.flush()
         } else {
-            return ResponseEntity.ok(
-                WebResponse<IdeaDto>(
-                    code = HttpStatus.METHOD_NOT_ALLOWED.value(),
-                    message = "IdeaBox no longer accepts ideas! End Date: ${ideaBox.endDate}, Current Date: $currentLocalDate",
-                    data = null
+            val currentLocalDate = LocalDate.now()
+            if(ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
+                ideaRepository.saveAndFlush(saveIdea)
+            } else {
+                return ResponseEntity.ok(
+                    WebResponse<IdeaDto>(
+                        code = HttpStatus.METHOD_NOT_ALLOWED.value(),
+                        message = "IdeaBox no longer accepts ideas! ${ideaBox.endDate.toString()}, ${currentLocalDate}",
+                        data = null
+                    )
                 )
-            )
+            }
         }
+
 
         logger.info { "MOA-INFO: Idea created with id: ${saveIdea.id}." }
 
@@ -210,31 +193,38 @@ class IdeaService {
     }
 
     fun updateIdea(id: Long, idea: IdeaDto): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val originalIdea = ideaRepository.findById(id).orElse(null)
+        if(originalIdea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
-        val originalIdea = currentEntityManager.find(Idea::class.java, id)
-            ?: run {
-                logger.info { "MOA-INFO: Idea with id: $id not found." }
-                return ResponseEntity(
-                    WebResponse(
-                        code = HttpStatus.NOT_FOUND.value(),
-                        message = "Cannot find Idea with this id $id!",
-                        data = null
-                    ),
-                    HttpStatus.NOT_FOUND
-                )
-            }
+        if(!originalIdea.title.isNullOrEmpty() && originalIdea.title != idea.title) {
+            originalIdea.title = idea.title
+        }
 
-        originalIdea.title = idea.title.takeIf { !it.isNullOrEmpty() && it != originalIdea.title } ?: originalIdea.title
-        originalIdea.description = idea.description.takeIf { !it.isNullOrEmpty() && it != originalIdea.description } ?: originalIdea.description
-        originalIdea.status = idea.status.takeIf { it != originalIdea.status } ?: originalIdea.status
+        if(!originalIdea.description.isNullOrEmpty() && originalIdea.description != idea.description) {
+            originalIdea.description = idea.description
+        }
 
-        originalIdea.tags = idea.tags?.map { tagMapper.slimDtoToModel(it) }?.toMutableList() ?: mutableListOf()
+        if(originalIdea.status != idea.status) {
+            originalIdea.status = idea.status
+        }
 
-        currentEntityManager.merge(originalIdea)
+        val tags: MutableList<Tag> = emptyList<Tag>().toMutableList()
+        idea.tags?.forEach{ tag: TagSlimDto ->
+            tags.add(tagMapper.slimDtoToModel(tag))
+        }
+        originalIdea.tags = tags
 
-        val data = ideaMapper.modelToDto(originalIdea)
+        val data = ideaMapper.modelToDto(ideaRepository.saveAndFlush(originalIdea))
         logger.info { "MOA-INFO: Idea edited with id: ${data.id}. Idea: $data" }
 
         return ResponseEntity.ok(
@@ -247,60 +237,48 @@ class IdeaService {
     }
 
     fun deleteIdea(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val idea = currentEntityManager.find(Idea::class.java, id)
-        return if (idea != null) {
-            currentEntityManager.remove(idea)
-            logger.info { "MOA-INFO: Idea with id: $id deleted." }
-            ResponseEntity.ok(
-                WebResponse<String>(
-                    code = HttpStatus.OK.value(),
-                    message = "Idea successfully deleted!",
-                    data = "Idea successfully deleted!"
-                )
-            )
-        } else {
-            logger.info { "MOA-INFO: Idea with id: $id not found." }
-            ResponseEntity(
+        kotlin.runCatching {
+            ideaRepository.deleteById(id)
+        }.onFailure {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
+            return ResponseEntity(
                 WebResponse<String>(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Nothing to delete! No Idea exists with the id $id!",
                     data = null
                 ),
-                HttpStatus.NOT_FOUND
-            )
+                HttpStatus.NOT_FOUND)
         }
+
+        logger.info { "MOA-INFO: Idea with id: ${id} deleted." }
+
+        return ResponseEntity.ok(
+            WebResponse<String>(
+                code = HttpStatus.OK.value(),
+                message = "Idea successfully deleted!",
+                data = "Idea successfully deleted!"
+            )
+        )
     }
 
     fun likeIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        ).setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
-
-        if (user == null) {
-            logger.info { "MOA-INFO: Authentication error during liking idea. Idea id: $id." }
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
             return ResponseEntity(
                 WebResponse(
-                    code = HttpStatus.UNAUTHORIZED.value(),
+                    code = HttpStatus.NOT_FOUND.value(),
                     message = "Authentication error!",
                     data = null
                 ),
-                HttpStatus.UNAUTHORIZED
+                HttpStatus.NOT_FOUND
             )
         }
 
-        val idea = currentEntityManager.find(Idea::class.java, id)
-        if (idea == null) {
-            logger.info { "MOA-INFO: Idea with id: $id not found." }
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -312,8 +290,8 @@ class IdeaService {
         }
 
         idea.likes?.add(user)
-        currentEntityManager.merge(idea)
-        logger.info { "MOA-INFO: Idea with id: ${idea.id} liked by user $userEmail." }
+        ideaRepository.saveAndFlush(idea)
+        logger.info { "MOA-INFO: Idea with id: ${idea.id} liked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -326,31 +304,22 @@ class IdeaService {
 
     fun dislikeIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        ).setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
-
-        if (user == null) {
-            logger.info { "MOA-INFO: Authentication error during disliking idea. Idea id: $id." }
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during comment editing. Comment id: ${id}." }
             return ResponseEntity(
                 WebResponse(
-                    code = HttpStatus.UNAUTHORIZED.value(),
+                    code = HttpStatus.NOT_FOUND.value(),
                     message = "Authentication error!",
                     data = null
                 ),
-                HttpStatus.UNAUTHORIZED
+                HttpStatus.NOT_FOUND
             )
         }
 
-        val idea = currentEntityManager.find(Idea::class.java, id)
-        if (idea == null) {
-            logger.info { "MOA-INFO: Idea with id: $id not found." }
+        val idea = ideaRepository.findById(id).orElse(null)
+        if(idea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -362,8 +331,8 @@ class IdeaService {
         }
 
         idea.likes?.remove(user)
-        currentEntityManager.merge(idea)
-        logger.info { "MOA-INFO: Idea with id: ${idea.id} disliked by user $userEmail." }
+        ideaRepository.saveAndFlush(idea)
+        logger.info { "MOA-INFO: Idea with id: ${idea.id} disliked by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -376,233 +345,118 @@ class IdeaService {
 
     fun getIdeasToScore(): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
 
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        ).setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
 
-        if (user == null) {
-            logger.info { "MOA-INFO: Authentication error. User not found." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.UNAUTHORIZED.value(),
-                    message = "User not authenticated!",
-                    data = null
-                ),
-                HttpStatus.UNAUTHORIZED
-            )
-        }
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        val ideas = ideaRepository.findAll()
 
-        val ideas = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i", Idea::class.java
-        ).resultList
+        ideas.forEach{ idea ->
+            if(idea.requiredJuries?.contains(user) == true) {
+                val ownScoreSheets = idea.scoreSheets.filter { it.owner.email == user.email }
 
-        val ideasToScore: MutableList<IdeaSlimDto> = ideas.filter { idea ->
-            idea.requiredJuries?.contains(user) == true &&
-                    idea.scoreSheets.none { it.owner.email == userEmail }
-        }.map { ideaMapper.modelToSlimDto(it) }.toMutableList()
+                if(ownScoreSheets.isEmpty()) {
+                    response.add(ideaMapper.modelToSlimDto(idea))
+                }
 
-        logger.info { "MOA-INFO: Found ${ideasToScore.size} ideas to score for user $userEmail." }
-
-        return ResponseEntity.ok(
-            WebResponse<MutableList<IdeaSlimDto>>(
-                code = HttpStatus.OK.value(),
-                message = "Ideas ready for scoring retrieved successfully.",
-                data = ideasToScore
-            )
-        )
-    }
-
-    fun getScoredIdeas(): ResponseEntity<*> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        ).setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
-
-        if (user == null) {
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.UNAUTHORIZED.value(),
-                    message = "User not authenticated!",
-                    data = null
-                ),
-                HttpStatus.UNAUTHORIZED
-            )
-        }
-
-        val scoredIdeas: MutableList<IdeaSlimDto> = mutableListOf()
-
-        val ideas = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i", Idea::class.java
-        ).resultList
-
-        ideas.forEach { idea ->
-            val requiredJuryEmails = idea.requiredJuries?.map { it.email } ?: emptyList()
-            val usersWhoScored = idea.scoreSheets
-                .filter { it.templateFor == null }
-                .map { it.owner.email }
-
-            if (usersWhoScored.containsAll(requiredJuryEmails)) {
-                scoredIdeas.add(ideaMapper.modelToSlimDto(idea))
             }
         }
 
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaSlimDto>>(
                 code = HttpStatus.OK.value(),
-                message = "Scored ideas retrieved successfully.",
-                data = scoredIdeas
+                message = "",
+                data = response
+            )
+        )
+    }
+
+    fun getScoredIdeas(): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
+        val ideas = ideaRepository.findAll()
+
+        ideas.forEach{ idea ->
+            val usersWhoScored: MutableList<String> = emptyList<String>().toMutableList()
+            val requiredJuries: MutableList<String> = emptyList<String>().toMutableList()
+
+            idea.requiredJuries?.forEach { user -> requiredJuries.add(user.email) }
+            idea.scoreSheets.forEach { sh ->
+                if(sh.templateFor == null) {
+                    usersWhoScored.add(sh.owner.email)
+                }
+            }
+            if(usersWhoScored.containsAll(requiredJuries)) {
+                response.add(ideaMapper.modelToSlimDto(idea))
+            }
+        }
+
+        return ResponseEntity.ok(
+            WebResponse<MutableList<IdeaSlimDto>>(
+                code = HttpStatus.OK.value(),
+                message = "",
+                data = response
             )
         )
     }
 
     fun approveIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        )
-            .setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
-
-        if (user == null) {
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        var idea: Idea? = null
+        if(user == null) {
             logger.info { "MOA-INFO: Authentication error during Approving." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.UNAUTHORIZED.value(),
-                    message = "User not authenticated.",
-                    data = null
-                ),
-                HttpStatus.UNAUTHORIZED
-            )
+        } else {
+            if(user.role != Role.ADMIN) {
+                logger.info { "MOA-INFO: Authentication error during Approving. User has no Admin role" }
+            } else {
+                idea = this.ideaRepository.findById(id).orElse(null)
+                if(idea == null) {
+                    logger.info { "MOA-INFO: No idea Found." }
+                } else {
+
+                    idea.status = Status.APPROVED
+                    ideaRepository.save(idea)
+                }
+            }
         }
-
-        if (user.role != Role.ADMIN) {
-            logger.info { "MOA-INFO: Authentication error during Approving. User has no Admin role." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.FORBIDDEN.value(),
-                    message = "You do not have permission to approve ideas.",
-                    data = null
-                ),
-                HttpStatus.FORBIDDEN
-            )
-        }
-
-        val idea = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i WHERE i.id = :id", Idea::class.java
-        )
-            .setParameter("id", id)
-            .resultList
-            .firstOrNull()
-
-        if (idea == null) {
-            logger.info { "MOA-INFO: No idea found with id: $id." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "Cannot find Idea with this id $id!",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-        }
-
-        idea.status = Status.APPROVED
-        currentEntityManager.merge(idea)
-
-        logger.info { "MOA-INFO: Idea with id: ${idea.id} approved by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
-                message = "Idea was approved successfully.",
-                data = ideaMapper.modelToDto(idea)
+                message = "Idea Was approved successfully",
+                data = idea?.let { ideaMapper.modelToDto(it) }
             )
         )
     }
 
     fun denyIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val userEmail = authentication.name
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val user = currentEntityManager.createQuery(
-            "SELECT u FROM User u WHERE u.email = :email", User::class.java
-        )
-            .setParameter("email", userEmail)
-            .resultList
-            .firstOrNull()
-
-        if (user == null) {
-            logger.info { "MOA-INFO: Authentication error during Denying." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.UNAUTHORIZED.value(),
-                    message = "User not authenticated.",
-                    data = null
-                ),
-                HttpStatus.UNAUTHORIZED
-            )
+        val user = userRepository.findByEmail(authentication.name).orElse(null)
+        var idea: Idea? = null
+        if(user == null) {
+            logger.info { "MOA-INFO: Authentication error during Approving." }
+        } else {
+            if(user.role != Role.ADMIN) {
+                logger.info { "MOA-INFO: Authentication error during Approving. User has no Admin role" }
+            } else {
+                idea = this.ideaRepository.findById(id).orElse(null)
+                if(idea == null) {
+                    logger.info { "MOA-INFO: No idea Found." }
+                } else {
+                    idea.status = Status.DENIED
+                    ideaRepository.save(idea)
+                }
+            }
         }
-
-        if (user.role != Role.ADMIN) {
-            logger.info { "MOA-INFO: Authentication error during Denying. User has no Admin role." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.FORBIDDEN.value(),
-                    message = "You do not have permission to deny ideas.",
-                    data = null
-                ),
-                HttpStatus.FORBIDDEN
-            )
-        }
-
-        val idea = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i WHERE i.id = :id", Idea::class.java
-        )
-            .setParameter("id", id)
-            .resultList
-            .firstOrNull()
-
-        if (idea == null) {
-            logger.info { "MOA-INFO: No idea found with id: $id." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "Cannot find Idea with this id $id!",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-        }
-
-        idea.status = Status.DENIED
-        currentEntityManager.merge(idea)
-
-        logger.info { "MOA-INFO: Idea with id: ${idea.id} denied by user ${user.email}." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaDto>(
                 code = HttpStatus.OK.value(),
-                message = "Idea was denied successfully.",
-                data = ideaMapper.modelToDto(idea)
+                message = "Idea Was denied successfully",
+                data = idea?.let { ideaMapper.modelToDto(it) }
             )
         )
     }

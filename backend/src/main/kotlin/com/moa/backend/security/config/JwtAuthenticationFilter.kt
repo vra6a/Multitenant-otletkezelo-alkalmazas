@@ -2,10 +2,8 @@ package com.moa.backend.security.config
 
 import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.utility.ErrorException
-import com.moa.backend.utility.WebResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
@@ -67,28 +65,12 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken
             } else {
-                returnUnauthorizedResponse(response, "JWT Token is invalid!")
-                return
+                throw ErrorException("Access token is invalid!")
             }
         } else {
-            returnUnauthorizedResponse(response, "JWT Token is invalid!")
-            return
+            throw ErrorException("Access token is invalid!")
         }
 
         filterChain.doFilter(request, response)
-    }
-
-    private fun returnUnauthorizedResponse(response: HttpServletResponse, message: String) {
-        response.status = HttpStatus.UNAUTHORIZED.value()
-        response.contentType = "application/json"
-        val webResponse = WebResponse<String>(
-            code = HttpStatus.UNAUTHORIZED.value(),
-            message = message,
-            data = null
-        )
-
-        // Convert WebResponse to JSON and write it to the response
-        val objectMapper = ObjectMapper()
-        response.writer.write(objectMapper.writeValueAsString(webResponse))
     }
 }

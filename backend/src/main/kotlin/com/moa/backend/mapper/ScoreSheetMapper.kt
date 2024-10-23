@@ -60,7 +60,6 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
             owner = userMapper.slimDtoToModel(ss.owner),
             scores = null,
             templateFor = ss.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) },
-            tenantId = currentTenant
         )
     }
 
@@ -77,7 +76,6 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
                 owner = userMapper.slimDtoToModel(domain.owner),
                 scores = scores,
                 templateFor = domain.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) },
-                tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -104,7 +102,6 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
             owner = scoreSheet.owner,
             scores = scoreSheet.scores,
             templateFor = scoreSheet.templateFor,
-            tenantId = scoreSheet.tenantId
         )
     }
 

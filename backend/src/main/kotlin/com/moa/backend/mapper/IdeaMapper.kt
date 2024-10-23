@@ -103,7 +103,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
                     likes = emptyList<User>().toMutableList(),
                     requiredJuries = juries,
                     scoreSheets = scoreSheets,
-                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -137,7 +136,6 @@ class IdeaMapper: Mapper<IdeaDto, IdeaSlimDto, Idea> {
             likes = idea.likes,
             requiredJuries = idea.requiredJuries,
             scoreSheets = idea.scoreSheets,
-            tenantId = idea.tenantId
         )
     }
 }

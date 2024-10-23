@@ -48,7 +48,6 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
                 id = domain.id,
                 name = domain.name,
                 taggedIdeas = emptyList<Idea>().toMutableList(),
-                tenantId = currentTenant,
             )
         }
         return idToModel(domain.id)
@@ -65,7 +64,6 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
             id = tag.id,
             name = tag.name,
             taggedIdeas = tag.taggedIdeas,
-            tenantId = tag.tenantId,
         )
     }
 }

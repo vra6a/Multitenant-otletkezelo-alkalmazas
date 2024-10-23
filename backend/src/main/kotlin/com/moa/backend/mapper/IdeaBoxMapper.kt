@@ -93,7 +93,6 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
                     defaultRequiredJuries = defaultRequiredJuries,
                     scoreSheetTemplates = scoreSheetTemplates,
                     isSclosed = domain.isSclosed,
-                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -133,7 +132,6 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             defaultRequiredJuries = ideaBox.defaultRequiredJuries,
             scoreSheetTemplates = ideaBox.scoreSheetTemplates,
             isSclosed = ideaBox.isSclosed,
-            tenantId = ideaBox.tenantId
         )
     }
 }

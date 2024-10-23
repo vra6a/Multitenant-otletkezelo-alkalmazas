@@ -62,7 +62,6 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
                     idea = ideaMapper.slimDtoToModel(domain.idea),
                     likes = emptyList<User>().toMutableList(),
                     isEdited = false,
-                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -83,7 +82,6 @@ class CommentMapper: Mapper<CommentDto, CommentSlimDto, Comment> {
             idea = comment.idea,
             likes = comment.likes,
             isEdited = comment.isEdited,
-            tenantId = comment.tenantId
         )
     }
 }

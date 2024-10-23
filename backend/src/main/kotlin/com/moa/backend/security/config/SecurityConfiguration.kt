@@ -1,6 +1,5 @@
 package com.moa.backend.security.config
 
-import com.moa.backend.multitenancy.TenantFilter
 import com.moa.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -23,9 +22,6 @@ class SecurityConfiguration {
     lateinit var jwtAuthFilter: JwtAuthenticationFilter
 
     @Autowired
-    lateinit var tenantFilter: TenantFilter
-
-    @Autowired
     lateinit var authenticationProvider: AuthenticationProvider
 
     @Bean
@@ -35,20 +31,19 @@ class SecurityConfiguration {
             .and()
             .csrf().disable()
             .authorizeHttpRequests()
-                .antMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                .antMatchers("/api/scoreSheet/{id}").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api/scoreSheet/create/{id}").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api/scoreSheet/{id}/save").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api//idea/ideasToScore").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api/idea/{id}/scoreSheets").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api/score/getIdeas").hasAnyAuthority("JURY","ADMIN")
-                .antMatchers("/api/score/getScoredIdeaBoxes").hasAnyAuthority("ADMIN")
+            .antMatchers("/api/auth/register", "/api/auth/login").permitAll()
+            .antMatchers("/api/scoreSheet/{id}").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/scoreSheet/create/{id}").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/scoreSheet/{id}/save").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api//idea/ideasToScore").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/idea/{id}/scoreSheets").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/score/getIdeas").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/score/getScoredIdeaBoxes").hasAnyAuthority("ADMIN")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(tenantFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
 
 

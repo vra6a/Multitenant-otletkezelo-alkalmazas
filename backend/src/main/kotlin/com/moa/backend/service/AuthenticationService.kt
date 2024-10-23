@@ -1,7 +1,6 @@
 package com.moa.backend.service
 
 import com.moa.backend.model.*
-import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.security.auth.AuthenticationRequest
 import com.moa.backend.security.auth.AuthenticationResponse
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import javax.servlet.http.HttpServletRequest
 
 @Service
 class AuthenticationService {
@@ -26,9 +24,7 @@ class AuthenticationService {
     @Autowired
     lateinit var authManager: AuthenticationManager
 
-    fun register(request: RegisterRequest, httpServletRequest: HttpServletRequest): AuthenticationResponse {
-        val tenantId = httpServletRequest.getHeader("X-Tenant-Id") ?: throw IllegalArgumentException("Tenant ID is missing")
-
+    fun register(request: RegisterRequest): AuthenticationResponse {
         val user = User(
             id = 0L,
             firstName = request.firstName,
@@ -44,7 +40,6 @@ class AuthenticationService {
             ideasToJury = emptyList<Idea>().toMutableList(),
             requiredToJury = emptyList<IdeaBox>().toMutableList(),
             scoreSheets = emptyList<ScoreSheet>().toMutableList(),
-            tenantId = tenantId
         )
         userRepository.saveAndFlush(user)
         val jwtToken = jwtService.generateToken(user)
@@ -54,8 +49,7 @@ class AuthenticationService {
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-            role = user.role,
-            tenantId = user.tenantId
+            role = user.role
         )
     }
 
@@ -74,8 +68,7 @@ class AuthenticationService {
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-            role = user.role,
-            tenantId = user.tenantId
+            role = user.role
         )
     }
 

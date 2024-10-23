@@ -29,7 +29,7 @@ class ErrorController {
             code = HttpStatus.NOT_FOUND.value(),
             message = noHandlerFoundException.message.orEmpty(),
 
-        )
+            )
     }
 
     @ResponseStatus(value = HttpStatus.EXPECTATION_FAILED)

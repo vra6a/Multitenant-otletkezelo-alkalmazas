@@ -4,12 +4,13 @@ import com.moa.backend.mapper.IdeaBoxMapper
 import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.mapper.UserMapper
-import com.moa.backend.model.*
+import com.moa.backend.model.IdeaBox
+import com.moa.backend.model.Judgement
+import com.moa.backend.model.Status
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
-import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
 import com.moa.backend.utility.Functions
@@ -26,8 +27,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Service
 class IdeaBoxService {
@@ -55,17 +54,10 @@ class IdeaBoxService {
 
     private val logger = KotlinLogging.logger {}
 
-    @PersistenceContext
-    lateinit var entityManager: EntityManager
-
 
     fun getIdeaBox(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-
-        if (ideaBox == null) {
+        val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox == null) {
             logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse(
@@ -89,15 +81,11 @@ class IdeaBoxService {
     }
 
     fun getIdeaBoxSlim(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-
-        if (ideaBox == null) {
-            logger.info { "MOA-INFO: IdeaBox with id: $id not found." }
+        val ideaBox =  ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox == null) {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
             return ResponseEntity(
-                WebResponse<IdeaBoxSlimDto>(
+                WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Idea Box with this id $id!",
                     data = null
@@ -106,7 +94,7 @@ class IdeaBoxService {
             )
         }
 
-        logger.info { "MOA-INFO: IdeaBox with id: $id found." }
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} found." }
 
         return ResponseEntity.ok(
             WebResponse<IdeaBoxSlimDto>(
@@ -117,22 +105,15 @@ class IdeaBoxService {
         )
     }
 
-    fun getIdeaBoxes(searchTerm: String, pageable: Pageable): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+    fun getIdeaBoxes(s: String, pageable: Pageable): ResponseEntity<*> {
+        val ideaBoxes = ideaBoxRepository.search(s, pageable)
+        val response: MutableList<IdeaBoxSlimDto> = emptyList<IdeaBoxSlimDto>().toMutableList()
 
-        val ideaBoxes = currentEntityManager.createQuery(
-            "SELECT ib FROM IdeaBox ib WHERE ib.name LIKE :searchTerm",
-            IdeaBox::class.java
-        )
-            .setParameter("searchTerm", "%$searchTerm%")
-            .setFirstResult(pageable.offset.toInt())
-            .setMaxResults(pageable.pageSize)
-            .resultList
-
-        val response = ideaBoxes.map { ideaBox ->
-            ideaBoxMapper.modelToSlimDto(ideaBox).apply {
-                draft = ideaBox.scoreSheetTemplates.isEmpty()
+        for (ideaBox in ideaBoxes) {
+            ideaBox.let {
+                val ideaBoxSlimDto = ideaBoxMapper.modelToSlimDto(ideaBox)
+                ideaBoxSlimDto.draft = ideaBox.scoreSheetTemplates.isEmpty()
+                response.add(ideaBoxSlimDto)
             }
         }
 
@@ -142,38 +123,23 @@ class IdeaBoxService {
             WebResponse<MutableList<IdeaBoxSlimDto>>(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = response.toMutableList()
+                data = response
             )
         )
     }
 
     fun getIdeaBoxCount(): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val query = currentEntityManager.createQuery("SELECT COUNT(ib) FROM IdeaBox ib")
-        val count = query.singleResult as Long
-
         return ResponseEntity.ok(
             WebResponse<Int>(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = count.toInt()
+                data = ideaBoxRepository.findAll().size
             )
         )
     }
 
     fun createIdeaBox(box: IdeaBoxDto): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBoxEntity = ideaBoxMapper.dtoToModel(box)
-
-        currentEntityManager.transaction.begin()
-        currentEntityManager.persist(ideaBoxEntity)
-        currentEntityManager.transaction.commit()
-
-        val data = ideaBoxMapper.modelToDto(ideaBoxEntity)
+        val data = ideaBoxMapper.modelToDto(ideaBoxRepository.save(ideaBoxMapper.dtoToModel(box)))
 
         logger.info { "MOA-INFO: IdeaBox created with id: ${data.id}. IdeaBox: $data" }
 
@@ -187,13 +153,9 @@ class IdeaBoxService {
     }
 
     fun updateIdeaBox(id: Long, box: IdeaBoxDto): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val originalBox = currentEntityManager.find(IdeaBox::class.java, id)
-
-        if (originalBox == null) {
-            logger.info { "MOA-INFO: IdeaBox with id: $id not found" }
+        val originalBox = ideaBoxRepository.findById(id).orElse(null)
+        if(originalBox == null) {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found" }
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -204,17 +166,23 @@ class IdeaBoxService {
             )
         }
 
-        originalBox.name = box.name.takeIf { !it.isNullOrEmpty() } ?: originalBox.name
-        originalBox.description = box.description.takeIf { !it.isNullOrEmpty() } ?: originalBox.description
-        originalBox.startDate = box.startDate ?: originalBox.startDate
-        originalBox.endDate = box.endDate ?: originalBox.endDate
+        if(!originalBox.name.isNullOrEmpty() && originalBox.name != box.name) {
+            originalBox.name = box.name
+        }
 
-        currentEntityManager.transaction.begin()
-        currentEntityManager.merge(originalBox)
-        currentEntityManager.transaction.commit()
+        if(!originalBox.description.isNullOrEmpty() && originalBox.description != box.description) {
+            originalBox.description = box.description
+        }
 
-        val data = ideaBoxMapper.modelToDto(originalBox)
+        if(originalBox.startDate != box.startDate) {
+            originalBox.startDate = box.startDate
+        }
 
+        if(originalBox.endDate != box.endDate) {
+            originalBox.endDate = box.endDate
+        }
+
+        val data = ideaBoxMapper.modelToDto(ideaBoxRepository.save(originalBox))
         logger.info { "MOA-INFO: IdeaBox edited with id: ${data.id}. IdeaBox: $data" }
 
         return ResponseEntity.ok(
@@ -227,40 +195,20 @@ class IdeaBoxService {
     }
 
     fun deleteIdeaBox(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-
-        if (ideaBox == null) {
-            logger.info { "MOA-INFO: IdeaBox with id: $id not found." }
+        kotlin.runCatching {
+            ideaBoxRepository.deleteById(id)
+        }.onFailure {
+            logger.info { "MOA-INFO: IdeaBox with id: ${id} not found." }
             return ResponseEntity(
                 WebResponse<String>(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Nothing to delete! No Idea Box exists with the id $id!",
                     data = null
                 ),
-                HttpStatus.NOT_FOUND
-            )
+                HttpStatus.NOT_FOUND)
         }
 
-        kotlin.runCatching {
-            currentEntityManager.transaction.begin()
-            currentEntityManager.remove(ideaBox)
-            currentEntityManager.transaction.commit()
-        }.onFailure {
-            logger.error { "MOA-ERROR: Failed to delete IdeaBox with id: $id." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    message = "Failed to delete Idea Box with id $id!",
-                    data = null
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-
-        logger.info { "MOA-INFO: IdeaBox with id: $id deleted." }
+        logger.info { "MOA-INFO: IdeaBox with id: ${id} deleted." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -272,121 +220,47 @@ class IdeaBoxService {
     }
 
     fun createScoreSheetTemplate(scoreSheet: ScoreSheetDto): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        val scoreSheetEntity = scoreSheetMapper.initializeScoreSheet(scoreSheet)
-
-        kotlin.runCatching {
-            currentEntityManager.transaction.begin()
-            currentEntityManager.persist(scoreSheetEntity)
-            currentEntityManager.transaction.commit()
-        }.onFailure {
-            logger.error { "MOA-ERROR: Failed to create ScoreSheet." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    message = "Failed to create ScoreSheet!",
-                    data = null
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-
-        logger.info { "MOA-INFO: Empty ScoreSheet created with id: ${scoreSheetEntity.id}" }
-
+        val ss = this.scoreSheetRepository.saveAndFlush(scoreSheetMapper.initializeScoreSheet(scoreSheet))
+        logger.info { "MOA-INFO: Empty ScoreSheet created with id: ${ss.id}" }
         return ResponseEntity.ok(
             WebResponse<ScoreSheetSlimDto>(
                 code = HttpStatus.OK.value(),
                 message = "ScoreSheet Created, ready to be filled",
-                data = scoreSheetMapper.modelToSlimDto(scoreSheetEntity)
+                data = scoreSheetMapper.modelToSlimDto(ss)
             )
         )
     }
 
     fun getScoredIdeaCountByIdeaBox(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val count = kotlin.runCatching {
-            currentEntityManager.createQuery(
-                "SELECT COUNT(i) FROM Idea i WHERE i.ideaBox.id = :ideaBoxId AND i.scoreSheets IS NOT EMPTY",
-                Long::class.java
-            )
-                .setParameter("ideaBoxId", id)
-                .singleResult
-        }.getOrElse {
-            logger.error { "MOA-ERROR: Error retrieving scored idea count for IdeaBox with id: $id." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    message = "Error retrieving scored idea count.",
-                    data = null
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-
-        logger.info { "MOA-INFO: Scored idea count for IdeaBox with id: $id is $count." }
-
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = count.toString()
+                data = ideaBoxRepository.countScoredIdeasByIdeaBoxId(id).toString()
             )
         )
     }
 
     fun findRequiredJuriesByIdeaBoxId(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val requiredJuries = kotlin.runCatching {
-            currentEntityManager.createQuery(
-                "SELECT u FROM User u JOIN u.ideaBoxes ib WHERE ib.id = :ideaBoxId AND u.role = 'JURY'",
-                User::class.java
-            )
-                .setParameter("ideaBoxId", id)
-                .resultList
-        }.getOrElse {
-            logger.error { "MOA-ERROR: Error retrieving required juries for IdeaBox with id: $id." }
-            return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    message = "Error retrieving required juries.",
-                    data = null
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-
-        logger.info { "MOA-INFO: Found ${requiredJuries.size} required juries for IdeaBox with id: $id." }
-
         return ResponseEntity.ok(
             WebResponse(
                 code = HttpStatus.OK.value(),
                 message = "",
-                data = userMapper.ModelListToSlimDto(requiredJuries)
+                data = userMapper.ModelListToSlimDto(ideaBoxRepository.findRequiredJuriesByIdeaBoxId(id))
             )
         )
     }
 
     fun checkIfIdeaBoxHasAllRequiredScoreSheets(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-            ?: return ResponseEntity(
-                WebResponse<Boolean>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "IdeaBox with id $id not found.",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-
-        val data = areAllIdeasScoredByRequiredJuries(ideaBox)
+        var data = false
+        val ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            data = areAllIdeasScoredByRequiredJuries(ideaBox)
+        } else {
+            //error
+        }
 
         return ResponseEntity.ok(
             WebResponse<Boolean>(
@@ -398,21 +272,14 @@ class IdeaBoxService {
     }
 
     fun areAllIdeasScoredByRequiredJuries(ideaBox: IdeaBox): Boolean {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideas = currentEntityManager.createQuery(
-            "SELECT i FROM Idea i WHERE i.ideaBox.id = :ideaBoxId",
-            Idea::class.java
-        ).setParameter("ideaBoxId", ideaBox.id).resultList
-
-        for (idea in ideas) {
+        val ideas = ideaBox.ideas
+        ideas.forEach { idea ->
             val requiredJuries = idea.requiredJuries
             val scoresheets = idea.scoreSheets
 
             requiredJuries?.forEach { jury ->
-                val juryHasScoreSheet = scoresheets.any { it.owner.id == jury.id }
-                if (!juryHasScoreSheet) {
+                val juryHasScoreSheet = scoresheets.any{ it.owner.id == jury.id}
+                if(!juryHasScoreSheet) {
                     return false
                 }
             }
@@ -421,25 +288,13 @@ class IdeaBoxService {
     }
 
     fun getAverageScoresForIdeaBoxByScore(ideaBoxId: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+        val response: MutableList<IdeaScoreSheets> = emptyList<IdeaScoreSheets>().toMutableList()
 
-        val response: MutableList<IdeaScoreSheets> = mutableListOf()
+        val ideaBox = ideaBoxRepository.findById(ideaBoxId).orElse(null)
 
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, ideaBoxId)
-            ?: return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "Idea Box with id $ideaBoxId not found.",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-
-        ideaBox.ideas.forEach { idea ->
+        ideaBox?.ideas?.forEach { idea ->
             response.add(IdeaScoreSheets(ideaMapper.modelToSlimDto(idea), scoreSheetMapper.modelListToDto(idea.scoreSheets)))
         }
-
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaScoreSheets>>(
                 code = HttpStatus.OK.value(),
@@ -451,68 +306,44 @@ class IdeaBoxService {
 
     fun ideaBoxReadyToClose(id: Long): ResponseEntity<*> {
         val currentLocalDate = LocalDate.now()
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-            ?: return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "IdeaBox with id $id not found.",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-
-        if (ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
-            return ResponseEntity.ok(
-                WebResponse<Boolean>(
-                    code = HttpStatus.OK.value(),
-                    message = "IdeaBox is not ready to close because the end date has not been reached.",
-                    data = false
+        val ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            if(ideaBox.endDate.after(functions.localDateToDate(currentLocalDate))) {
+                return ResponseEntity.ok(
+                    WebResponse<Boolean>(
+                        code = HttpStatus.OK.value(),
+                        message = "IdeaBox is not ready to close because the date",
+                        data = false
+                    )
                 )
-            )
-        }
-
-        val errorIdeas = ideaBox.ideas.filter { idea ->
-            idea.status == Status.REVIEWED || idea.status == Status.SUBMITTED
-        }
-
-        if (errorIdeas.isNotEmpty()) {
-            return ResponseEntity.ok(
-                WebResponse<Boolean>(
-                    code = HttpStatus.OK.value(),
-                    message = "IdeaBox is not ready to close because there are ideas with status REVIEWED or SUBMITTED.",
-                    data = false
+            }
+            val error = ideaBox.ideas.filter { idea -> idea.status == Status.REVIEWED || idea.status == Status.SUBMITTED }
+            if(error.isNotEmpty()) {
+                return ResponseEntity.ok(
+                    WebResponse<Boolean>(
+                        code = HttpStatus.OK.value(),
+                        message = "IdeaBox is not ready to close because status",
+                        data = false
+                    )
                 )
-            )
+            }
         }
 
         return ResponseEntity.ok(
             WebResponse<Boolean>(
                 code = HttpStatus.OK.value(),
-                message = "IdeaBox is ready to close.",
+                message = "IdeaBox ready to close",
                 data = true
             )
         )
     }
 
     fun closeIdeaBox(id: Long): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val ideaBox = currentEntityManager.find(IdeaBox::class.java, id)
-            ?: return ResponseEntity(
-                WebResponse<String>(
-                    code = HttpStatus.NOT_FOUND.value(),
-                    message = "IdeaBox with id $id not found.",
-                    data = null
-                ),
-                HttpStatus.NOT_FOUND
-            )
-
-        ideaBox.isSclosed = true
-        currentEntityManager.persist(ideaBox)
+        var ideaBox = ideaBoxRepository.findById(id).orElse(null)
+        if(ideaBox != null) {
+            ideaBox.isSclosed = true
+            ideaBoxRepository.saveAndFlush(ideaBox)
+        }
 
         return ResponseEntity.ok(
             WebResponse<String>(
@@ -524,19 +355,11 @@ class IdeaBoxService {
     }
 
     fun getClosedIdeaBoxes(): ResponseEntity<*> {
-        val currentEntityManager = TenantContext.getEntityManager()
-            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
-
-        val closedIdeaBoxes = currentEntityManager.createQuery(
-            "SELECT ib FROM IdeaBox ib WHERE ib.isSclosed = true",
-            IdeaBox::class.java
-        ).resultList
-
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaBoxDto>>(
                 code = HttpStatus.OK.value(),
                 message = "IdeaBoxes",
-                data = ideaBoxMapper.modelListToDto(closedIdeaBoxes)
+                data = ideaBoxMapper.modelListToDto(ideaBoxRepository.findAllByIsSclosedTrue())
             )
         )
     }

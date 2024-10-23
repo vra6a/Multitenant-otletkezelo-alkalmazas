@@ -15,8 +15,6 @@ open class ScoreSheet(
     @Column(name = "id")
     open var id: Long = 0,
 
-    @Column(name = "tenant_id", nullable = false)
-    var tenantId: String,
 
     @OneToMany(mappedBy = "scoreSheet", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var scores: MutableList<ScoreItem>?,

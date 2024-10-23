@@ -50,7 +50,6 @@ class ScoreItemMapper: Mapper<ScoreItemDto, ScoreItemSlimDto, ScoreItem> {
                 text = domain.text,
                 title = domain.title,
                 type = domain.type,
-                tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -70,7 +69,6 @@ class ScoreItemMapper: Mapper<ScoreItemDto, ScoreItemSlimDto, ScoreItem> {
             text = scoreItem.text,
             title = scoreItem.title,
             type = scoreItem.type,
-            tenantId = scoreItem.tenantId
         )
     }
 
