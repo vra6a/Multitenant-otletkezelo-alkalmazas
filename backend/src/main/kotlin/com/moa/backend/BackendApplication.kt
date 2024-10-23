@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication//(exclude = [DataSourceAutoConfiguration::class])
 @EnableJpaAuditing
-@EntityScan("com.moa.backend*")
+@EntityScan("com.moa.backend")
 class BackendApplication
 
 fun main(args: Array<String>) {

@@ -7,29 +7,28 @@ import org.hibernate.annotations.ParamDef
 import javax.persistence.*
 
 @Entity
-@FilterDef(name = "tenantFilter", parameters = [ParamDef(name = "tenantId", type = "string")])
-@Filters(
-    Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
-)
-data class ScoreItem (
+@Table(name = "score_item")
+open class ScoreItem (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @Column(name = "id")
+    open var id: Long = 0,
 
-    @Column(name = "tenant_id", nullable = false)
-    var tenantId: String,
-
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    var type: ScoreType,
+    open var type: ScoreType,
 
     @ManyToOne
-    @JoinColumn(name = "scoreSheet_id")
-    var scoreSheet: ScoreSheet,
+    @JoinColumn(name = "score_sheet_id")
+    open var scoreSheet: ScoreSheet,
 
-    var title: String,
+    @Column(name = "title")
+    open var title: String,
 
-    var score: Int?,
+    @Column(name = "score")
+    open var score: Int?,
 
-    var text: String?,
+    @Column(name = "text")
+    open var text: String?,
 )

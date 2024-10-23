@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -9,12 +9,13 @@ import { WebResponse } from 'src/app/models/webResponse';
 import { WebData } from '../models/webData';
 import { UserSlimDto } from '../models/slimDto/userSlimDto';
 import { Role } from '../models/role';
+import { TenantService } from './multitenancy/tenantService';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tenantService: TenantService) {}
 
   apiUrl = `${environment.apiUrl}`;
 
@@ -39,16 +40,28 @@ export class UserService {
   }
 
   registerUser$(user: RegisterModel): Observable<WebResponse<WebData>> {
+    let tenant = this.tenantService.getTenantId()
+    const headers = new HttpHeaders({
+      'X-Tenant-Id': tenant
+    });
+    
     return this.http.post<WebResponse<WebData>>(
       `${this.apiUrl}/auth/register`,
-      user
+      user,
+      {headers}
     );
   }
 
   loginUser$(user: LoginModel): Observable<WebResponse<WebData>> {
+    let tenant = this.tenantService.getTenantId()
+    const headers = new HttpHeaders({
+      'X-Tenant-Id': tenant
+    });
+
     return this.http.post<WebResponse<WebData>>(
       `${this.apiUrl}/auth/login`,
-      user
+      user,
+      {headers}
     );
   }
 

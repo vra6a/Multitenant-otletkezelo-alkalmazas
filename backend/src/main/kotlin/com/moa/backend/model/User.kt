@@ -10,27 +10,27 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-@FilterDef(name = "tenantFilter", parameters = [ParamDef(name = "tenantId", type = "string")])
-@Filters(
-    Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
-)
-open class User(
+@Table(name = "user")
+open class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     open var id: Long = 0,
 
-    @Column(name = "tenant_id", nullable = false)
-    open var tenantId: String,  // No change needed here
-
+    @Column(name = "firstName")
     open var firstName: String,
 
+    @Column(name = "lastName")
     open var lastName: String,
 
+    @Column(name = "email")
     open var email: String,
 
+    @Column(name = "password")
     private var password: String,
 
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     open var role: Role,
 

@@ -1,5 +1,6 @@
 package com.moa.backend.multitenancy
 
+import com.moa.backend.multitenancy.TenantInterceptor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry

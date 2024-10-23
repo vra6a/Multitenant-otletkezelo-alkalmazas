@@ -15,15 +15,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class ApplicationConfig(
-) {
+class ApplicationConfig {
+
     @Autowired
     lateinit var userRepository: UserRepository
 
     @Bean
     fun userDetailsService(): UserDetailsService {
-        return UserDetailsService {
-            val user = userRepository.findByEmail(email = it).get()
+        return UserDetailsService { email ->
+            val userOptional = userRepository.findByEmail(email)
+
+            val user = userOptional.orElseThrow {
+                UsernameNotFoundException("User not found with email: $email")
+            }
+
             return@UserDetailsService user
         }
     }
@@ -45,5 +50,4 @@ class ApplicationConfig(
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
 }

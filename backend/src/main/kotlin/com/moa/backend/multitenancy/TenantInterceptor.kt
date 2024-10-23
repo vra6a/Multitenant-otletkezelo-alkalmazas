@@ -1,26 +1,22 @@
 package com.moa.backend.multitenancy
 
-import org.hibernate.Session
 import org.springframework.stereotype.Component
-import javax.persistence.EntityManagerFactory
 import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.springframework.beans.factory.annotation.Autowired
 
 @Component
-class TenantInterceptor(
-    @Autowired private val entityManagerFactory: EntityManagerFactory
-) : HandlerInterceptor {
+class TenantInterceptor : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val tenantId = TenantContext.getCurrentTenant()
-        println("TenantId: $tenantId from TenantInterceptor")
+        val tenantId = request.getHeader("X-Tenant-Id")
+        println("Incoming Headers: ${request.headerNames.toList().joinToString(", ") { "${it}: ${request.getHeader(it)}" }}")
+
         if (tenantId != null) {
-            val entityManager = entityManagerFactory.createEntityManager()
-            val session = entityManager.unwrap(Session::class.java)
-            session.enableFilter("tenantFilter").setParameter("tenantId", tenantId)
-            TenantContext.setEntityManager(entityManager)
+            TenantContext.setCurrentTenant(tenantId)
+            println("TenantId: $tenantId from TenantInterceptor")
+        } else {
+            println("No TenantId found in request headers.")
         }
         return true
     }

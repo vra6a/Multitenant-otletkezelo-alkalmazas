@@ -8,44 +8,44 @@ import java.util.Date
 import javax.persistence.*
 
 @Entity
-@FilterDef(name = "tenantFilter", parameters = [ParamDef(name = "tenantId", type = "string")])
-@Filters(
-    Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
-)
-data class IdeaBox (
+@Table(name = "ideabox")
+open class IdeaBox (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @Column(name = "id")
+    open var id: Long = 0,
 
-    @Column(name = "tenant_id", nullable = false)
-    var tenantId: String,
+    @Column(name = "name")
+    open var name: String,
 
-    var name: String,
+    @Column(name = "description")
+    open var description: String,
 
-    var description: String,
+    @Column(name = "start_date")
+    open var startDate: Date,
 
-    var startDate: Date,
-
-    var endDate: Date,
+    @Column(name = "end_date")
+    open var endDate: Date,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var creator: User,
+    open var creator: User,
 
     @OneToMany(mappedBy = "ideaBox", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var ideas: MutableList<Idea>,
+    open var ideas: MutableList<Idea>,
 
     @ManyToMany
     @JoinTable(
         name = "required_juries",
-        joinColumns = [JoinColumn(name = "ideaBox_id")],
+        joinColumns = [JoinColumn(name = "idea_box_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    var defaultRequiredJuries: MutableList<User>?,
+    open var defaultRequiredJuries: MutableList<User>?,
 
     @OneToMany(mappedBy = "templateFor", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var scoreSheetTemplates: MutableList<ScoreSheet>,
+    open var scoreSheetTemplates: MutableList<ScoreSheet>,
 
-    var isSclosed: Boolean,
+    @Column(name = "is_sclosed")
+    open var isSclosed: Boolean,
 )

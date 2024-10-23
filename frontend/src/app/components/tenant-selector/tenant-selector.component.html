@@ -1,0 +1,6 @@
+<mat-form-field>
+    <mat-label>Select a tenant!</mat-label>
+    <mat-select (selectionChange)="changeTenant($event)">
+        <mat-option *ngFor="let tenant of tenants" [value]="tenant.value">{{tenant.viewValue}}</mat-option>
+    </mat-select>
+</mat-form-field>

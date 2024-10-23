@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/dto/userDto';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { TenantService } from 'src/app/services/multitenancy/tenantService';
 
 @Component({
   selector: 'app-nav',
@@ -9,7 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router, private tenantService: TenantService) {}
 
   currentUser: User;
   showScoring: boolean = false;
@@ -29,5 +30,7 @@ export class NavComponent implements OnInit {
   logout() {
     this.auth.logOut();
     this.router.navigate(['/login']);
+    this.tenantService.clearTenantId()
+
   }
 }
