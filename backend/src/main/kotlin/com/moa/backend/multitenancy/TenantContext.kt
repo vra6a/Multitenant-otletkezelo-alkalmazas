@@ -13,9 +13,8 @@ object TenantContext {
     fun getCurrentTenant(): String? = currentTenant.get()
 
     fun clear() {
-        // Clear both tenant ID and EntityManager
         currentTenant.remove()
-        entityManagerThreadLocal.get()?.close()  // Close the EntityManager if it was created
+        entityManagerThreadLocal.get()?.close()
         entityManagerThreadLocal.remove()
     }
 

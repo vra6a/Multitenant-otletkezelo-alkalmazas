@@ -1,13 +1,16 @@
 package com.moa.backend.controller
 
+import com.moa.backend.model.Idea
 import com.moa.backend.model.Role
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.security.auth.AuthenticationRequest
 import com.moa.backend.security.auth.AuthenticationResponse
 import com.moa.backend.security.auth.RegisterRequest
+import com.moa.backend.security.config.JwtService
 import com.moa.backend.service.AuthenticationService
 import com.moa.backend.service.UserService
 import com.moa.backend.utility.ErrorException
@@ -34,6 +37,9 @@ class UserController(private val userRepository: UserRepository) {
 
     @Autowired
     lateinit var authService: AuthenticationService
+
+    @Autowired
+    lateinit var jwtService: JwtService
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
@@ -75,16 +81,29 @@ class UserController(private val userRepository: UserRepository) {
     }
 
     @PostMapping("/auth/login")
-    fun login(@RequestBody request: AuthenticationRequest): WebResponse<AuthenticationResponse> {
-        if(!userRepository.findByEmail(request.email).isPresent) {
-            throw ErrorException("Email address is not found!")
+    fun login(@RequestBody request: AuthenticationRequest, requestHeaders: HttpServletRequest): WebResponse<AuthenticationResponse> {
+        val user = userRepository.findByEmail(request.email)
+        val tenantId = requestHeaders.getHeader("X-Tenant-Id")
+        if(!user.isPresent) {
+            return WebResponse(
+                code = HttpStatus.NOT_FOUND.value(),
+                message = "Email Not found!",
+                data = null
+            )
+        } else if(user.get().tenantId != tenantId) {
+            return WebResponse(
+                code = HttpStatus.UNAUTHORIZED.value(),
+                message = "Email Not found",
+                data = null
+            )
+        } else {
+            logger.info { "MOA-INFO: User with email: ${request.email} tried logging in." }
+            return WebResponse(
+                code = HttpStatus.OK.value(),
+                message = "Login was successfull!",
+                data = authService.authenticate(request)
+            )
         }
-        logger.info { "MOA-INFO: User with email: ${request.email} tried logging in." }
-        return WebResponse(
-            code = HttpStatus.OK.value(),
-            message = "Login was successfull!",
-            data = authService.authenticate(request)
-        )
     }
 
     @PostMapping("/user/{id}/permission")

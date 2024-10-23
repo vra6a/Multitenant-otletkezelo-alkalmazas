@@ -11,6 +11,7 @@ import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaRepository
 import com.moa.backend.repository.ScoreItemRepository
 import com.moa.backend.repository.ScoreSheetRepository
@@ -23,6 +24,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Service
 class ScoreItemService {
@@ -50,41 +53,83 @@ class ScoreItemService {
 
     private val logger = KotlinLogging.logger {}
 
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
+
     fun AddScoreItemToScoreSheetTemplate(id: Long, scoreItem: ScoreItemSlimDto): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        val scoreSheetTemplate: ScoreSheet = scoreSheetRepository.findById(id).orElse(null)
+        val scoreSheetTemplate = currentEntityManager.createQuery(
+            "SELECT s FROM ScoreSheet s WHERE s.id = :id", ScoreSheet::class.java
+        )
+            .setParameter("id", id)
+            .resultList
+            .firstOrNull()
 
-        scoreSheetTemplate.scores?.add(scoreItemMapper.slimDtoToModel(scoreItem))
+        if (scoreSheetTemplate == null) {
+            logger.info { "MOA-INFO: ScoreSheet with id: $id not found." }
+            return ResponseEntity(
+                WebResponse<String>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find ScoreSheet with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
 
-        scoreSheetRepository.saveAndFlush(scoreSheetTemplate)
+        if (scoreSheetTemplate.scores == null) {
+            scoreSheetTemplate.scores = mutableListOf()
+        }
+
+        val newScoreItem = scoreItemMapper.slimDtoToModel(scoreItem)
+        scoreSheetTemplate.scores!!.add(newScoreItem)
+
+        currentEntityManager.merge(scoreSheetTemplate)
+
+        logger.info { "MOA-INFO: Score item added to ScoreSheet with id: $id." }
 
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
-                message = "Item Added Successfully",
+                message = "Item added successfully",
                 data = "Success"
             )
         )
     }
 
     fun CreateScoreItem(scoreItems: MutableList<ScoreItemDto>, id: Long): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        scoreItems.forEach{ item: ScoreItemDto ->
-            this.scoreItemRepository.save(scoreItemMapper.dtoToModel(item))
+        scoreItems.forEach { item: ScoreItemDto ->
+            val scoreItem = scoreItemMapper.dtoToModel(item)
+            currentEntityManager.persist(scoreItem)
         }
 
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
-                message = "Item Added Successfully",
+                message = "Items Added Successfully",
                 data = "ok"
             )
         )
     }
 
     fun GetScoreSheetById(id: Long): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        val sheet = scoreSheetRepository.findById(id).orElse(null)
+        val sheet = currentEntityManager.find(ScoreSheet::class.java, id)
+            ?: return ResponseEntity(
+                WebResponse<String>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find ScoreSheet with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
 
         return ResponseEntity.ok(
             WebResponse<ScoreSheetDto>(
@@ -96,11 +141,23 @@ class ScoreItemService {
     }
 
     fun saveScoreSheet(scoreSheet: ScoreSheetDto, id: Long): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
 
-        val idea = ideaRepository.findById(scoreSheet.idea!!.id).orElse(null)
-        if(idea.scoreSheets.find { sh -> sh.owner.id == user.id } != null) {
+        val idea = currentEntityManager.find(Idea::class.java, scoreSheet.idea!!.id)
+            ?: return ResponseEntity(
+                WebResponse<ScoreSheetDto>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Idea not found!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+        if (idea.scoreSheets.any { it.owner.id == user?.id }) {
             return ResponseEntity.ok(
                 WebResponse<ScoreSheetDto>(
                     code = HttpStatus.METHOD_NOT_ALLOWED.value(),
@@ -110,25 +167,25 @@ class ScoreItemService {
             )
         }
 
-        val ss = scoreSheet
-        val scores = scoreSheet.scores
+        val newScoreSheet = scoreSheet.copy(
+            id = 0,
+            scores = mutableListOf(),
+            idea = ideaMapper.modelToSlimDto(idea),
+            templateFor = null
+        )
 
-        ss.id = 0
-        ss.scores= emptyList<ScoreItemDto>().toMutableList()
-        ss.idea = ideaMapper.modelToSlimDto(idea)
-        ss.templateFor = null
-        val tmp = scoreSheetRepository.save(scoreSheetMapper.dtoToModel(ss))
-        scores?.forEach{ score ->
+        val savedScoreSheet = scoreSheetRepository.save(scoreSheetMapper.dtoToModel(newScoreSheet))
+
+        scoreSheet.scores?.forEach { score ->
             score.id = 0L
-            score.scoreSheet = scoreSheetMapper.modelToSlimDto(tmp)
+            score.scoreSheet = scoreSheetMapper.modelToSlimDto(savedScoreSheet)
             logger.info { "score: $score" }
-            val s = scoreItemRepository.save(scoreItemMapper.dtoToModel(score))
-            ss.scores!!.add(scoreItemMapper.modelToDto(s))
+            val savedScoreItem = scoreItemRepository.save(scoreItemMapper.dtoToModel(score))
+            newScoreSheet.scores!!.add(scoreItemMapper.modelToDto(savedScoreItem))
         }
 
-
         idea.status = Status.REVIEWED
-        ideaRepository.saveAndFlush(idea)
+        currentEntityManager.merge(idea)
 
         return ResponseEntity.ok(
             WebResponse<ScoreSheetDto>(
@@ -140,18 +197,30 @@ class ScoreItemService {
     }
 
     fun getScoreSheetsByIdea(id: Long): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        val idea = ideaRepository.findById(id).orElse(null)
-        val scoreSheets = emptyList<ScoreSheetDto>().toMutableList()
+        val idea = currentEntityManager.find(Idea::class.java, id)
+            ?: return ResponseEntity(
+                WebResponse<MutableList<ScoreSheetDto>>(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Idea not found!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
 
-        val template = idea.ideaBox.scoreSheetTemplates[0]
-        template.scores?.forEach { score ->
-            score.score = 0
+        val scoreSheets = mutableListOf<ScoreSheetDto>()
+
+        val template = idea.ideaBox.scoreSheetTemplates.firstOrNull()
+        template?.let { scoreSheetTemplate ->
+            scoreSheetTemplate.scores?.forEach { score ->
+                score.score = 0
+            }
+            scoreSheets.add(scoreSheetMapper.modelToDto(scoreSheetTemplate))
         }
 
-        scoreSheets.add(scoreSheetMapper.modelToDto(template))
-
-        idea?.scoreSheets?.forEach { ss ->
+        idea.scoreSheets.forEach { ss ->
             scoreSheets.add(scoreSheetMapper.modelToDto(ss))
         }
 

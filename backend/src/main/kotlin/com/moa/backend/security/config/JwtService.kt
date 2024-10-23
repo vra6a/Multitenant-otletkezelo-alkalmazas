@@ -2,6 +2,7 @@ package com.moa.backend.security.config
 
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.User
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -29,6 +30,7 @@ class JwtService {
         return extractClaim(jwt, Claims::getSubject)
     }
 
+
     fun generateToken(userDetails: UserDetails): String {
         val claims = mutableMapOf<String, Any>()
         if(userRepository.findByEmail(userDetails.username).isPresent) {
@@ -38,6 +40,7 @@ class JwtService {
             claims["lastName"] = user.lastName
             claims["email"] = user.email
             claims["role"] = user.role.toString()
+            claims["tenantId"] = user.tenantId
         }
         return generateToken(claims, userDetails)
     }
@@ -55,7 +58,11 @@ class JwtService {
 
     fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
         var username: String = extractUsername(token)
-        return username.equals(userDetails.username) && !isTokenExpired(token)
+
+        val claims = extractClaims(token)
+
+        val tokenTenantId = claims["tenantId"] as String?
+        return username.equals(userDetails.username) && !isTokenExpired(token) && TenantContext.getCurrentTenant() == tokenTenantId
     }
 
     private fun isTokenExpired(token: String): Boolean {
@@ -71,7 +78,7 @@ class JwtService {
         return claimsResolver(claims)
     }
 
-    private fun extractClaims(jwt: String): Claims {
+    fun extractClaims(jwt: String): Claims {
         return Jwts
             .parserBuilder()
             .setSigningKey(getSignInKey())

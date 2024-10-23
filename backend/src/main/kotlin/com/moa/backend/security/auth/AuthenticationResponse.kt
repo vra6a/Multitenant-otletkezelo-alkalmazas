@@ -11,4 +11,5 @@ data class AuthenticationResponse (
     val lastName: String = "",
     val email: String = "",
     val role: Role,
+    val tenantId: String = ""
 )

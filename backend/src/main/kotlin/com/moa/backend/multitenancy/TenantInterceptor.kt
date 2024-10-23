@@ -7,7 +7,6 @@ import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
-import javax.persistence.EntityManager
 
 @Component
 class TenantInterceptor(
@@ -21,14 +20,12 @@ class TenantInterceptor(
             val entityManager = entityManagerFactory.createEntityManager()
             val session = entityManager.unwrap(Session::class.java)
             session.enableFilter("tenantFilter").setParameter("tenantId", tenantId)
-            // Store the entityManager in a thread-local or similar context for later use
             TenantContext.setEntityManager(entityManager)
         }
         return true
     }
 
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
-        // Clean up after the request
         TenantContext.clear()
     }
 }
