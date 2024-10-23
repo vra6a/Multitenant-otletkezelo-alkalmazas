@@ -1,5 +1,6 @@
 package com.moa.backend.security.config
 
+import com.moa.backend.multitenancy.TenantFilter
 import com.moa.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -20,6 +21,9 @@ class SecurityConfiguration {
 
     @Autowired
     lateinit var jwtAuthFilter: JwtAuthenticationFilter
+
+    @Autowired
+    lateinit var tenantFilter: TenantFilter
 
     @Autowired
     lateinit var authenticationProvider: AuthenticationProvider
@@ -44,6 +48,7 @@ class SecurityConfiguration {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authenticationProvider(authenticationProvider)
+            .addFilterBefore(tenantFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
 
 

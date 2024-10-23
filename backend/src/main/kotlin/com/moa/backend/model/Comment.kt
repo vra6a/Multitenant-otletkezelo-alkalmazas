@@ -1,6 +1,10 @@
 package com.moa.backend.model
 
 
+import org.hibernate.annotations.Filter
+import org.hibernate.annotations.FilterDef
+import org.hibernate.annotations.Filters
+import org.hibernate.annotations.ParamDef
 import java.util.*
 import javax.persistence.*
 

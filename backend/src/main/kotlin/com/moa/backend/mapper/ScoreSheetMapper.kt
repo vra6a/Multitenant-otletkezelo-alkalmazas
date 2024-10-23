@@ -6,6 +6,7 @@ import com.moa.backend.model.dto.ScoreItemDto
 import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaBoxRepository
 import com.moa.backend.repository.ScoreSheetRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,13 +53,14 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
     }
 
     fun initializeScoreSheet(ss: ScoreSheetDto): ScoreSheet {
-
+        val currentTenant = TenantContext.getCurrentTenant().orEmpty()
         return ScoreSheet(
             id = ss.id,
             idea = null,
             owner = userMapper.slimDtoToModel(ss.owner),
             scores = null,
-            templateFor = ss.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) }
+            templateFor = ss.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) },
+            tenantId = currentTenant
         )
     }
 
@@ -68,13 +70,14 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
             domain.scores?.forEach{ scoreItem: ScoreItemDto ->
                 scores.add(scoreItemMapper.dtoToModel(scoreItem))
             }
-
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return ScoreSheet(
                 id = domain.id,
                 idea = domain.idea?.let { ideaMapper.slimDtoToModel(it) },
                 owner = userMapper.slimDtoToModel(domain.owner),
                 scores = scores,
-                templateFor = domain.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) }
+                templateFor = domain.templateFor?.let { ideaBoxMapper.slimDtoToModel(it) },
+                tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -100,7 +103,8 @@ class ScoreSheetMapper: Mapper<ScoreSheetDto, ScoreSheetSlimDto, ScoreSheet> {
             idea = scoreSheet.idea,
             owner = scoreSheet.owner,
             scores = scoreSheet.scores,
-            templateFor = scoreSheet.templateFor
+            templateFor = scoreSheet.templateFor,
+            tenantId = scoreSheet.tenantId
         )
     }
 

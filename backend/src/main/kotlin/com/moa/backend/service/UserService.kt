@@ -5,14 +5,18 @@ import com.moa.backend.model.Role
 import com.moa.backend.model.User
 import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Service
 class UserService {
@@ -23,17 +27,25 @@ class UserService {
     @Autowired
     lateinit var userMapper: UserMapper
 
+    private val logger = KotlinLogging.logger {}
+
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
+
 
     fun getUser(id: Long): ResponseEntity<*> {
-        val user = userRepository.findById(id).orElse(null)
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        val user = currentEntityManager.find(User::class.java, id)
             ?: return ResponseEntity(
-                    WebResponse(
-                        code = HttpStatus.NOT_FOUND.value(),
-                        message = "Cannot find User with this id $id!",
-                        data = null
-                    ),
-                    HttpStatus.NOT_FOUND
-                )
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find User with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
 
         return ResponseEntity.ok(
             WebResponse<UserDto>(
@@ -44,8 +56,15 @@ class UserService {
         )
     }
 
+
     fun getUserByEmail(email: String): ResponseEntity<*> {
-        val user = userRepository.findByEmail(email).orElse(null)
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        val user = currentEntityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User::class.java)
+            .setParameter("email", email)
+            .resultList
+            .firstOrNull()
             ?: return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -64,15 +83,15 @@ class UserService {
         )
     }
 
-    fun getUsers(): ResponseEntity<*> {
-        val users = userRepository.findAll()
-        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
 
-        for( user in users ) {
-            user?.let {
-                response.add(userMapper.modelToSlimDto(user))
-            }
-        }
+    fun getUsers(): ResponseEntity<*> {
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        val users = currentEntityManager.createQuery("SELECT u FROM User u", User::class.java)
+            .resultList
+
+        val response: MutableList<UserSlimDto> = users.map { userMapper.modelToSlimDto(it) }.toMutableList()
 
         return ResponseEntity.ok(
             WebResponse<MutableList<UserSlimDto>>(
@@ -82,16 +101,17 @@ class UserService {
             )
         )
     }
+
 
     fun getJuries(): ResponseEntity<*> {
-        val users = userRepository.findJuries()
-        val response: MutableList<UserSlimDto> = emptyList<UserSlimDto>().toMutableList()
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
 
-        for( user in users ) {
-            user.let {
-                response.add(userMapper.modelToSlimDto(user))
-            }
-        }
+        val users = currentEntityManager.createQuery("SELECT u FROM User u WHERE u.role = :role", User::class.java)
+            .setParameter("role", Role.JURY)
+            .resultList
+
+        val response: MutableList<UserSlimDto> = users.map { userMapper.modelToSlimDto(it) }.toMutableList()
 
         return ResponseEntity.ok(
             WebResponse<MutableList<UserSlimDto>>(
@@ -101,6 +121,7 @@ class UserService {
             )
         )
     }
+
 
     fun editUserRole(id: Long, role: String): ResponseEntity<*> {
         val originalUser = userRepository.findById(id).orElse(null)
@@ -112,20 +133,40 @@ class UserService {
                 ),
                 HttpStatus.NOT_FOUND
             )
-        if(originalUser.role.toString() != role) {
-            originalUser.role = Role.valueOf(role)
+
+        val newRole = try {
+            Role.valueOf(role)
+        } catch (e: IllegalArgumentException) {
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.BAD_REQUEST.value(),
+                    message = "Invalid role: $role",
+                    data = null
+                ),
+                HttpStatus.BAD_REQUEST
+            )
         }
+
+        if (originalUser.role != newRole) {
+            originalUser.role = newRole
+            userRepository.saveAndFlush(originalUser)
+        }
+
         return ResponseEntity.ok(
             WebResponse<UserDto>(
                 code = HttpStatus.OK.value(),
-                message = "User SuccessFully updated!",
-                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
+                message = "User successfully updated!",
+                data = userMapper.modelToDto(originalUser)
             )
         )
     }
 
+
     fun updateUser(id: Long, user: UserDto): ResponseEntity<*> {
-        val originalUser = userRepository.findById(id).orElse(null)
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        val originalUser = currentEntityManager.find(User::class.java, id)
             ?: return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
@@ -135,44 +176,42 @@ class UserService {
                 HttpStatus.NOT_FOUND
             )
 
-        if(!originalUser.firstName.isNullOrEmpty() && originalUser.firstName != user.firstName) {
-            originalUser.firstName = user.firstName
-        }
+        user.firstName?.let { if (it != originalUser.firstName) originalUser.firstName = it }
+        user.lastName?.let { if (it != originalUser.lastName) originalUser.lastName = it }
+        user.email?.let { if (it != originalUser.email) originalUser.email = it }
 
-        if(!originalUser.lastName.isNullOrEmpty() && originalUser.lastName != user.lastName) {
-            originalUser.lastName = user.lastName
-        }
-
-        if(!originalUser.email.isNullOrEmpty() && originalUser.email != user.email) {
-            originalUser.email = user.email
-        }
+        currentEntityManager.merge(originalUser)
 
         return ResponseEntity.ok(
             WebResponse<UserDto>(
                 code = HttpStatus.OK.value(),
-                message = "User SuccessFully updated!",
-                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
+                message = "User successfully updated!",
+                data = userMapper.modelToDto(originalUser)
             )
         )
     }
 
     fun deleteUser(id: Long): ResponseEntity<*> {
-        kotlin.runCatching {
-            userRepository.deleteById(id)
-        }.onFailure {
-            return ResponseEntity(
+        val currentEntityManager = TenantContext.getEntityManager()
+            ?: throw IllegalStateException("EntityManager not found in TenantContext.")
+
+        val originalUser = currentEntityManager.find(User::class.java, id)
+            ?: return ResponseEntity(
                 WebResponse<String>(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Nothing to delete! No User exists with the id $id!",
                     data = null
                 ),
-                HttpStatus.NOT_FOUND)
-        }
+                HttpStatus.NOT_FOUND
+            )
+
+        currentEntityManager.remove(originalUser)
+
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
-                message = "User Successfully Deleted!",
-                data = "User Successfully Deleted!"
+                message = "User successfully deleted!",
+                data = "User successfully deleted!"
             )
         )
     }

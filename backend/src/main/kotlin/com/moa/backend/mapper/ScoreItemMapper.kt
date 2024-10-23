@@ -3,6 +3,7 @@ package com.moa.backend.mapper
 import com.moa.backend.model.ScoreItem
 import com.moa.backend.model.dto.ScoreItemDto
 import com.moa.backend.model.slim.ScoreItemSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.ScoreItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -41,13 +42,15 @@ class ScoreItemMapper: Mapper<ScoreItemDto, ScoreItemSlimDto, ScoreItem> {
 
     override fun dtoToModel(domain: ScoreItemDto): ScoreItem {
         if(domain.id == 0L) {
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return ScoreItem(
                 id = domain.id,
                 score = domain.score,
                 scoreSheet = scoreSheetMapper.slimDtoToModel(domain.scoreSheet),
                 text = domain.text,
                 title = domain.title,
-                type = domain.type
+                type = domain.type,
+                tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -66,7 +69,8 @@ class ScoreItemMapper: Mapper<ScoreItemDto, ScoreItemSlimDto, ScoreItem> {
             score = scoreItem.score,
             text = scoreItem.text,
             title = scoreItem.title,
-            type = scoreItem.type
+            type = scoreItem.type,
+            tenantId = scoreItem.tenantId
         )
     }
 

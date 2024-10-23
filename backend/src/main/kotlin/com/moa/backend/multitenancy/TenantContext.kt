@@ -6,7 +6,7 @@ object TenantContext {
     fun setCurrentTenant(tenantId: String) {
         currentTenant.set(tenantId)
     }
-
+    
     fun getCurrentTenant(): String? {
         return currentTenant.get()
     }

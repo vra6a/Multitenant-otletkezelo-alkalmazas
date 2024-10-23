@@ -5,6 +5,7 @@ import com.moa.backend.model.Tag
 import com.moa.backend.model.dto.TagDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.TagRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -42,10 +43,12 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
 
     override fun dtoToModel(domain: TagDto): Tag {
         if(domain.id == 0L) {
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return Tag(
                 id = domain.id,
                 name = domain.name,
-                taggedIdeas = emptyList<Idea>().toMutableList()
+                taggedIdeas = emptyList<Idea>().toMutableList(),
+                tenantId = currentTenant,
             )
         }
         return idToModel(domain.id)
@@ -61,7 +64,8 @@ class TagMapper: Mapper<TagDto, TagSlimDto, Tag> {
         return Tag(
             id = tag.id,
             name = tag.name,
-            taggedIdeas = tag.taggedIdeas
+            taggedIdeas = tag.taggedIdeas,
+            tenantId = tag.tenantId,
         )
     }
 }

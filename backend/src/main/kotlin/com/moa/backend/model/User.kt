@@ -1,5 +1,9 @@
 package com.moa.backend.model
 
+import org.hibernate.annotations.Filter
+import org.hibernate.annotations.FilterDef
+import org.hibernate.annotations.Filters
+import org.hibernate.annotations.ParamDef
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -53,7 +57,7 @@ open class User (
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var comments: MutableList<Comment>?
-): UserDetails {
+) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities = ArrayList<SimpleGrantedAuthority>()
         authorities.add(SimpleGrantedAuthority(role.name))
@@ -94,7 +98,6 @@ open class User (
                 email == other.email &&
                 role == other.role &&
                 password == other.password
-
     }
 
     override fun hashCode(): Int {
@@ -104,5 +107,4 @@ open class User (
         result = 31 * result + email.hashCode()
         return result
     }
-
 }

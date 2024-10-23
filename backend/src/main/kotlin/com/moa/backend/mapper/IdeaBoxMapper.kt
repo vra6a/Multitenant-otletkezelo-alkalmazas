@@ -9,6 +9,7 @@ import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.model.slim.UserSlimDto
+import com.moa.backend.multitenancy.TenantContext
 import com.moa.backend.repository.IdeaBoxRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -80,6 +81,7 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             domain.scoreSheetTemplates?.forEach{ scoreSheet ->
                 scoreSheetTemplates.add(scoreSheetMapper.slimDtoToModel(scoreSheet))
             }
+            val currentTenant = TenantContext.getCurrentTenant().orEmpty()
             return IdeaBox(
                     id = domain.id,
                     name = domain.name,
@@ -91,6 +93,7 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
                     defaultRequiredJuries = defaultRequiredJuries,
                     scoreSheetTemplates = scoreSheetTemplates,
                     isSclosed = domain.isSclosed,
+                    tenantId = currentTenant
             )
         }
         return idToModel(domain.id)
@@ -130,6 +133,7 @@ class IdeaBoxMapper: Mapper<IdeaBoxDto, IdeaBoxSlimDto, IdeaBox> {
             defaultRequiredJuries = ideaBox.defaultRequiredJuries,
             scoreSheetTemplates = ideaBox.scoreSheetTemplates,
             isSclosed = ideaBox.isSclosed,
+            tenantId = ideaBox.tenantId
         )
     }
 }
