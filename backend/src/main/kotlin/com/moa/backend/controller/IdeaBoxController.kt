@@ -28,7 +28,7 @@ class IdeaBoxController(private val ideaBoxRepository: IdeaBoxRepository) {
 
     @GetMapping("/idea-box")
     fun getIdeaBoxes(
-        @RequestParam("search", defaultValue = "") s: String,
+        @RequestParam("s", defaultValue = "") s: String,
         @RequestParam("sort", defaultValue = "") sort: String,
         @RequestParam("page", defaultValue = "1") page: Int,
         @RequestParam("items", defaultValue = "12") items: Int
