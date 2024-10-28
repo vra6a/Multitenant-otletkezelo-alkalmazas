@@ -1,0 +1,147 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" version="24.8.2">
+  <diagram name="1 oldal" id="t2zU9-ytAp0FJQf-wNZc">
+    <mxGraphModel dx="989" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-1" value="Felhasználó" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="285" y="580" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-16" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="530" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-17" value="Rendszer" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="265" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-26" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Ötletdobozok megtekintése&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="350" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-27" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Regisztráció&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-28" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Bejelentkezés/&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;Kijelentkezés&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="350" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-29" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Ötletek megtekintése&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="350" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-30" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Ötletek létrehozása&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="430" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-31" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Ötletek likeolása/&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;dislikeolása&lt;/font&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="430" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-32" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Kommentek&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;létrehozása&lt;/font&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="430" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-33" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;Saját komment&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;szerkesztése&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="176" y="430" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-35" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;Kommentek likeolása/&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;dislikeolása&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="490" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-36" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;Saját ötletek listázása&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="490" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-37" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="350" y="520" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="105" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-38" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.462;entryY=1.018;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="115" y="400" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="231" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-39" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="340" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="375" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-40" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="340" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="505" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-41" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-32">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="340" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="105" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-42" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-31">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="340" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="375" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-43" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-33">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="340" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="231" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-44" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-30">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="380" y="460" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="410" />
+              <mxPoint x="505" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-45" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-35">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="380" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="515" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9FRHVlAnQhaOPqxT3Skd-46" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="9FRHVlAnQhaOPqxT3Skd-36">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="570" as="sourcePoint" />
+            <mxPoint x="380" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="300" y="515" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
