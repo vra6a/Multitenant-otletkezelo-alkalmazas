@@ -43,8 +43,8 @@
                   {{ jury.firstName + " " + jury.lastName }}
                 </mat-chip>
             </mat-chip-list>
-            <button [disabled]="selectedFullIdea.status == 'APPROVED' || selectedFullIdea.status == 'DENIED'" class="approve" (click)="approveIdea()">Approve Idea</button>
-            <button [disabled]="selectedFullIdea.status == 'APPROVED' || selectedFullIdea.status == 'DENIED'" class="deny" (click)="denyIdea()">Deny Idea</button>
+            <button [disabled]="(selectedFullIdea.status === 'APPROVED' || selectedFullIdea.status === 'DENIED') || !allRequiredJuriesHaveScored()" class="approve" (click)="approveIdea()">Approve Idea</button>
+            <button [disabled]="(selectedFullIdea.status === 'APPROVED' || selectedFullIdea.status === 'DENIED') || !allRequiredJuriesHaveScored()" class="deny" (click)="denyIdea()">Deny Idea</button>
         </div>
         
         <div *ngIf="!selectedFullIdea">

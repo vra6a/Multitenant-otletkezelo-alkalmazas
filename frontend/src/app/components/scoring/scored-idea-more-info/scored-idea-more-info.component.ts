@@ -8,6 +8,7 @@ import { IdeaDto } from 'src/app/models/dto/ideaDto';
 import { ScoreSheetDto } from 'src/app/models/dto/scoreScheetDto';
 import { IdeaScoreSheets } from 'src/app/models/dto/utility/ideaScoreSheets';
 import { WebResponse } from 'src/app/models/webResponse';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { IdeaService } from 'src/app/services/idea.service';
 import { IdeaBoxService } from 'src/app/services/ideaBox.service';
 import { ScoreSheetService } from 'src/app/services/scoreSheet.service';
@@ -27,7 +28,8 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
     private ideaService: IdeaService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SnackBarService
+    private snackBar: SnackBarService,
+    private authService: AuthService
   ) { }
 
   routeSub: Subscription
@@ -44,9 +46,11 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
   viewNumbers = true
   selectedFullIdea: IdeaDto = null
   juries = [4, 6, 7]
+  currentUserRole = null
 
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole()
     this.routeSub = this.route.params.subscribe( params => {
       this.id = params['id']
       this.ideaBoxService
@@ -210,6 +214,17 @@ export class ScoredIdeaMoreInfoComponent implements OnInit {
     this.router.navigate(["scoring","details", this.id])
   }
 
+  allRequiredJuriesHaveScored(): boolean {
+    let idea = this.selectedFullIdea
+    if (!idea.requiredJuries || !idea.scoreSheets) {
+        return false;
+    }
+    let asd = idea.requiredJuries.every((jury) => 
+      idea.scoreSheets!.some((scoreSheet) => scoreSheet.owner?.id === jury.id)
+    );
+    return asd
+  }
+ 
   approveIdea() {
     this.ideaService
     .approveIdea$(this.selectedFullIdea.id)

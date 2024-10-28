@@ -19,16 +19,6 @@
         ></app-user-idea-box-list>
       </mat-tab>
 
-      <!--  Close to Deadline  -->
-      <mat-tab label="Close to deadline" *ngIf="currentUser?.role === 'JURY' || currentUser?.role === 'ADMIN'">
-        <h2>Ideas that are close to their deadline, but haven't been scored yet.</h2>
-      </mat-tab>
-
-      <!--  Juried Scored ideas  -->
-      <mat-tab label="Scored ideas" *ngIf="currentUser?.role === 'JURY' || currentUser?.role === 'ADMIN'">
-        <h2>Ideas that are already scored.</h2>
-      </mat-tab>
-
       <!--  Admin Editing  -->
       <mat-tab label="Edit" *ngIf="currentUser?.role === 'ADMIN'">
         <h2>Edit site data</h2>
