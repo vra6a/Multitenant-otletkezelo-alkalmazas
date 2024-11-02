@@ -52,6 +52,19 @@ class ScoreItemService {
 
     fun AddScoreItemToScoreSheetTemplate(id: Long, scoreItem: ScoreItemSlimDto): ResponseEntity<*> {
 
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${authentication.name} tried to get AddScoreItemToScoreSheetTemplate()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
         val scoreSheetTemplate: ScoreSheet = scoreSheetRepository.findById(id).orElse(null)
 
         scoreSheetTemplate.scores?.add(scoreItemMapper.slimDtoToModel(scoreItem))
@@ -69,6 +82,19 @@ class ScoreItemService {
 
     fun CreateScoreItem(scoreItems: MutableList<ScoreItemDto>, id: Long): ResponseEntity<*> {
 
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${authentication.name} tried to get CreateScoreItem()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
         scoreItems.forEach{ item: ScoreItemDto ->
             this.scoreItemRepository.save(scoreItemMapper.dtoToModel(item))
         }
@@ -84,6 +110,19 @@ class ScoreItemService {
 
     fun GetScoreSheetById(id: Long): ResponseEntity<*> {
 
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${authentication.name} tried to get GetScoreSheetById()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
         val sheet = scoreSheetRepository.findById(id).orElse(null)
 
         return ResponseEntity.ok(
@@ -98,6 +137,18 @@ class ScoreItemService {
     fun saveScoreSheet(scoreSheet: ScoreSheetDto, id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${authentication.name} tried to get saveScoreSheet()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
 
         val idea = ideaRepository.findById(scoreSheet.idea!!.id).orElse(null)
         if(idea.scoreSheets.find { sh -> sh.owner.id == user.id } != null) {
@@ -140,6 +191,19 @@ class ScoreItemService {
     }
 
     fun getScoreSheetsByIdea(id: Long): ResponseEntity<*> {
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${authentication.name} tried to get getScoreSheetsByIdea()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
 
         val idea = ideaRepository.findById(id).orElse(null)
         val scoreSheets = emptyList<ScoreSheetDto>().toMutableList()
