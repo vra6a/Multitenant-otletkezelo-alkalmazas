@@ -32,6 +32,7 @@ class SecurityConfiguration {
             .csrf().disable()
             .authorizeHttpRequests()
             .antMatchers("/api/auth/register", "/api/auth/login").permitAll()
+            .antMatchers("/api/user/{id}/permission", ).hasAnyAuthority("ADMIN")
             .antMatchers("/api/scoreSheet/{id}").hasAnyAuthority("JURY","ADMIN")
             .antMatchers("/api/scoreSheet/create/{id}").hasAnyAuthority("JURY","ADMIN")
             .antMatchers("/api/scoreSheet/{id}/save").hasAnyAuthority("JURY","ADMIN")

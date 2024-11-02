@@ -7,10 +7,12 @@ import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.UserSlimDto
 import com.moa.backend.repository.UserRepository
 import com.moa.backend.utility.WebResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -22,6 +24,9 @@ class UserService {
 
     @Autowired
     lateinit var userMapper: UserMapper
+
+    private val logger = KotlinLogging.logger {}
+
 
 
     fun getUser(id: Long): ResponseEntity<*> {
@@ -103,6 +108,17 @@ class UserService {
     }
 
     fun editUserRole(id: Long, role: String): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if(authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            return ResponseEntity.ok(
+                WebResponse<UserDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         val originalUser = userRepository.findById(id).orElse(null)
             ?: return ResponseEntity(
                 WebResponse(
@@ -112,14 +128,17 @@ class UserService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+        val originalRole = originalUser.role.toString()
+        val newUser = userRepository.saveAndFlush(originalUser)
         if(originalUser.role.toString() != role) {
             originalUser.role = Role.valueOf(role)
         }
+        logger.info {"User Permission updated by user: ${authentication.name}. The change in user ${originalUser.email} is ${originalRole} -> ${newUser.role.toString()}."}
         return ResponseEntity.ok(
             WebResponse<UserDto>(
                 code = HttpStatus.OK.value(),
                 message = "User SuccessFully updated!",
-                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
+                data = userMapper.modelToDto(newUser)
             )
         )
     }
@@ -135,6 +154,19 @@ class UserService {
                 HttpStatus.NOT_FOUND
             )
 
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            if (authentication.name != originalUser.email) {
+                return ResponseEntity.ok(
+                    WebResponse<UserDto>(
+                        code = HttpStatus.UNAUTHORIZED.value(),
+                        message = "User is unauthorized to do this action!",
+                        data = null
+                    )
+                )
+            }
+        }
+
         if(!originalUser.firstName.isNullOrEmpty() && originalUser.firstName != user.firstName) {
             originalUser.firstName = user.firstName
         }
@@ -147,16 +179,30 @@ class UserService {
             originalUser.email = user.email
         }
 
+        val newUser = userRepository.saveAndFlush(originalUser)
+        logger.info { "User ${newUser.email} updated by user: ${authentication.name}." }
+
         return ResponseEntity.ok(
             WebResponse<UserDto>(
                 code = HttpStatus.OK.value(),
                 message = "User SuccessFully updated!",
-                data = userMapper.modelToDto(userRepository.saveAndFlush(originalUser))
+                data = userMapper.modelToDto(newUser)
             )
         )
     }
 
     fun deleteUser(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            return ResponseEntity.ok(
+                WebResponse<UserDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+        val userToDelete = userRepository.findById(id).orElse(null)
         kotlin.runCatching {
             userRepository.deleteById(id)
         }.onFailure {
@@ -168,6 +214,8 @@ class UserService {
                 ),
                 HttpStatus.NOT_FOUND)
         }
+
+        logger.info { "User ${userToDelete.email} deleted by user: ${authentication.name}." }
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
