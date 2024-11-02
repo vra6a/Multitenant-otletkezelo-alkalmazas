@@ -41,6 +41,8 @@ class SecurityConfiguration {
             .antMatchers("/api/idea-box/closedIdeaBoxes").hasAnyAuthority("ADMIN")
             .antMatchers("/api//idea/ideasToScore").hasAnyAuthority("JURY","ADMIN")
             .antMatchers("/api/idea/{id}/scoreSheets").hasAnyAuthority("JURY","ADMIN")
+            .antMatchers("/api/idea/{id}/approve").hasAnyAuthority("ADMIN")
+            .antMatchers("/api/idea/{id}/deny").hasAnyAuthority("ADMIN")
             .antMatchers("/api/score/getIdeas").hasAnyAuthority("JURY","ADMIN")
             .antMatchers("/api/score/getScoredIdeaBoxes").hasAnyAuthority("ADMIN")
             .anyRequest().authenticated()

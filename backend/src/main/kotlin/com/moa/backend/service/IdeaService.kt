@@ -4,6 +4,7 @@ import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.TagMapper
 import com.moa.backend.mapper.UserMapper
 import com.moa.backend.model.*
+import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.IdeaDto
 import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.TagSlimDto
@@ -206,6 +207,22 @@ class IdeaService {
             )
         }
 
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            if(originalIdea.owner.email != authentication.name) {
+                logger.info { "MOA-INFO: Idea edit with id: ${originalIdea.id} failed. Reason: Editing user is not the creator user or admin" }
+                return ResponseEntity(
+                    WebResponse(
+                        code = HttpStatus.UNAUTHORIZED.value(),
+                        message = "You dont have permission to do that!",
+                        data = null
+                    ),
+                    HttpStatus.UNAUTHORIZED
+                )
+            }
+        }
+
+
         if(!originalIdea.title.isNullOrEmpty() && originalIdea.title != idea.title) {
             originalIdea.title = idea.title
         }
@@ -237,6 +254,34 @@ class IdeaService {
     }
 
     fun deleteIdea(id: Long): ResponseEntity<*> {
+        val originalIdea = ideaRepository.findById(id).orElse(null)
+        if(originalIdea == null) {
+            logger.info { "MOA-INFO: Idea with id: ${id} not found" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    message = "Cannot find Idea with this id $id!",
+                    data = null
+                ),
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            if(originalIdea.owner.email != authentication.name) {
+                logger.info { "MOA-INFO: Idea delete with id: ${originalIdea.id} failed. Reason: Editing user is not the creator user or admin" }
+                return ResponseEntity(
+                    WebResponse(
+                        code = HttpStatus.UNAUTHORIZED.value(),
+                        message = "You dont have permission to do that!",
+                        data = null
+                    ),
+                    HttpStatus.UNAUTHORIZED
+                )
+            }
+        }
+
         kotlin.runCatching {
             ideaRepository.deleteById(id)
         }.onFailure {
@@ -347,6 +392,17 @@ class IdeaService {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
 
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${user.email} tried to get ideasToScore()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
 
         val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
         val ideas = ideaRepository.findAll()
@@ -374,6 +430,18 @@ class IdeaService {
     fun getScoredIdeas(): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN" || auth.authority.toString() == "JURY"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${user.email} tried to get getScoredIdeas()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
 
         val response: MutableList<IdeaSlimDto> = emptyList<IdeaSlimDto>().toMutableList()
         val ideas = ideaRepository.findAll()
@@ -405,6 +473,19 @@ class IdeaService {
     fun approveIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${user.email} tried to get approveIdea()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
         var idea: Idea? = null
         if(user == null) {
             logger.info { "MOA-INFO: Authentication error during Approving." }
@@ -435,6 +516,19 @@ class IdeaService {
     fun denyIdea(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByEmail(authentication.name).orElse(null)
+
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "MOA-INFO: Unauthorized user ${user.email} tried to get denyIdea()" }
+            return ResponseEntity(
+                WebResponse(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "You dont have permission to do that!",
+                    data = null
+                ),
+                HttpStatus.UNAUTHORIZED
+            )
+        }
+
         var idea: Idea? = null
         if(user == null) {
             logger.info { "MOA-INFO: Authentication error during Approving." }
