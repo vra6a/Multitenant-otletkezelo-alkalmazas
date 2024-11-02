@@ -9,6 +9,7 @@ import com.moa.backend.model.Judgement
 import com.moa.backend.model.Status
 import com.moa.backend.model.dto.IdeaBoxDto
 import com.moa.backend.model.dto.ScoreSheetDto
+import com.moa.backend.model.dto.UserDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.repository.IdeaBoxRepository
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -106,6 +109,7 @@ class IdeaBoxService {
     }
 
     fun getIdeaBoxes(s: String, pageable: Pageable): ResponseEntity<*> {
+
         val ideaBoxes = ideaBoxRepository.search(s, pageable)
         val response: MutableList<IdeaBoxSlimDto> = emptyList<IdeaBoxSlimDto>().toMutableList()
 
@@ -139,6 +143,18 @@ class IdeaBoxService {
     }
 
     fun createIdeaBox(box: IdeaBoxDto): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to create IdeaBox" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         val data = ideaBoxMapper.modelToDto(ideaBoxRepository.save(ideaBoxMapper.dtoToModel(box)))
 
         logger.info { "MOA-INFO: IdeaBox created with id: ${data.id}. IdeaBox: $data" }
@@ -153,6 +169,18 @@ class IdeaBoxService {
     }
 
     fun updateIdeaBox(id: Long, box: IdeaBoxDto): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to edit ideaBox with id: ${id}" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         val originalBox = ideaBoxRepository.findById(id).orElse(null)
         if(originalBox == null) {
             logger.info { "MOA-INFO: IdeaBox with id: ${id} not found" }
@@ -195,6 +223,18 @@ class IdeaBoxService {
     }
 
     fun deleteIdeaBox(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to delete ideaBox with id: ${id}" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         kotlin.runCatching {
             ideaBoxRepository.deleteById(id)
         }.onFailure {
@@ -220,6 +260,17 @@ class IdeaBoxService {
     }
 
     fun createScoreSheetTemplate(scoreSheet: ScoreSheetDto): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to create scoreSheet for ideaBox with id: ${scoreSheet.templateFor?.id}" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
 
         val ss = this.scoreSheetRepository.saveAndFlush(scoreSheetMapper.initializeScoreSheet(scoreSheet))
         logger.info { "MOA-INFO: Empty ScoreSheet created with id: ${ss.id}" }
@@ -233,6 +284,18 @@ class IdeaBoxService {
     }
 
     fun getScoredIdeaCountByIdeaBox(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use getScoredIdeaCountByIdeaBox()" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         return ResponseEntity.ok(
             WebResponse<String>(
                 code = HttpStatus.OK.value(),
@@ -253,6 +316,17 @@ class IdeaBoxService {
     }
 
     fun checkIfIdeaBoxHasAllRequiredScoreSheets(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use checkIfIdeaBoxHasAllRequiredScoreSheets()" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
 
         var data = false
         val ideaBox = ideaBoxRepository.findById(id).orElse(null)
@@ -272,6 +346,12 @@ class IdeaBoxService {
     }
 
     fun areAllIdeasScoredByRequiredJuries(ideaBox: IdeaBox): Boolean {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use areAllIdeasScoredByRequiredJuries()" }
+            return false
+        }
+
         val ideas = ideaBox.ideas
         ideas.forEach { idea ->
             val requiredJuries = idea.requiredJuries
@@ -288,6 +368,18 @@ class IdeaBoxService {
     }
 
     fun getAverageScoresForIdeaBoxByScore(ideaBoxId: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use getAverageScoresForIdeaBoxByScore()" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         val response: MutableList<IdeaScoreSheets> = emptyList<IdeaScoreSheets>().toMutableList()
 
         val ideaBox = ideaBoxRepository.findById(ideaBoxId).orElse(null)
@@ -305,6 +397,18 @@ class IdeaBoxService {
     }
 
     fun ideaBoxReadyToClose(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use ideaBoxReadyToClose()" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         val currentLocalDate = LocalDate.now()
         val ideaBox = ideaBoxRepository.findById(id).orElse(null)
         if(ideaBox != null) {
@@ -339,6 +443,18 @@ class IdeaBoxService {
     }
 
     fun closeIdeaBox(id: Long): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to close ideaBox with id ${id}" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         var ideaBox = ideaBoxRepository.findById(id).orElse(null)
         if(ideaBox != null) {
             ideaBox.isSclosed = true
@@ -355,6 +471,18 @@ class IdeaBoxService {
     }
 
     fun getClosedIdeaBoxes(): ResponseEntity<*> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to use getClosedIdeaBoxes()" }
+            return ResponseEntity.ok(
+                WebResponse<IdeaBoxDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
         return ResponseEntity.ok(
             WebResponse<MutableList<IdeaBoxDto>>(
                 code = HttpStatus.OK.value(),
