@@ -108,17 +108,6 @@ class UserService {
     }
 
     fun editUserRole(id: Long, role: String): ResponseEntity<*> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        if(authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
-            return ResponseEntity.ok(
-                WebResponse<UserDto>(
-                    code = HttpStatus.UNAUTHORIZED.value(),
-                    message = "User is unauthorized to do this action!",
-                    data = null
-                )
-            )
-        }
-
         val originalUser = userRepository.findById(id).orElse(null)
             ?: return ResponseEntity(
                 WebResponse(
@@ -128,6 +117,20 @@ class UserService {
                 ),
                 HttpStatus.NOT_FOUND
             )
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        if(authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to edit user ${originalUser.email} role" }
+            return ResponseEntity.ok(
+                WebResponse<UserDto>(
+                    code = HttpStatus.UNAUTHORIZED.value(),
+                    message = "User is unauthorized to do this action!",
+                    data = null
+                )
+            )
+        }
+
+
         val originalRole = originalUser.role.toString()
         val newUser = userRepository.saveAndFlush(originalUser)
         if(originalUser.role.toString() != role) {
@@ -157,6 +160,7 @@ class UserService {
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
             if (authentication.name != originalUser.email) {
+                logger.info { "Unauthorized user ${authentication.name} tried to edit user ${originalUser.email}" }
                 return ResponseEntity.ok(
                     WebResponse<UserDto>(
                         code = HttpStatus.UNAUTHORIZED.value(),
@@ -194,6 +198,7 @@ class UserService {
     fun deleteUser(id: Long): ResponseEntity<*> {
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication.authorities.find{ auth -> auth.authority.toString() == "ADMIN"} == null) {
+            logger.info { "Unauthorized user ${authentication.name} tried to delete user by id ${id}" }
             return ResponseEntity.ok(
                 WebResponse<UserDto>(
                     code = HttpStatus.UNAUTHORIZED.value(),
