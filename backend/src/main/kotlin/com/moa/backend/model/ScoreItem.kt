@@ -31,4 +31,30 @@ open class ScoreItem (
 
     @Column(name = "text")
     open var text: String?,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ScoreItem
+
+        if (id != other.id) return false
+        if (type != other.type) return false
+        if (scoreSheet != other.scoreSheet) return false
+        if (title != other.title) return false
+        if (score != other.score) return false
+        if (text != other.text) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + scoreSheet.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (score?.hashCode() ?: 0)
+        result = 31 * result + (text?.hashCode() ?: 0)
+        return result
+    }
+}

@@ -15,20 +15,20 @@ import com.moa.backend.service.IdeaService
 import com.moa.backend.utility.Functions
 import com.moa.backend.utility.WebResponse
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDate
 import java.time.ZoneId
@@ -306,89 +306,7 @@ class IdeaServiceTest {
         verify(exactly = 1) { ideaMapper.modelToDto(saveIdea) }
     }
 
-    @Test
-    fun `updateIdea(id, idea) should return NOT_FOUND when Idea does not exist`() {
-        val id = 1L
-        every { ideaRepository.findById(id) } returns Optional.empty()
 
-        val response: ResponseEntity<*> = ideaService.updateIdea(id, mockk())
-
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), webResponse.code)
-        assertEquals("Cannot find Idea with this id $id!", webResponse.message)
-
-        verify { ideaRepository.findById(id) }
-    }
-
-    @Test
-    fun `updateIdea(id, idea) should update Idea successfully`() {
-        val id = 1L
-        val originalIdea = mockk<Idea>(relaxed = true)
-        val updatedIdeaDto = mockk<IdeaDto>()
-        val updatedIdeaDtoResult = mockk<IdeaDto>()
-
-        every { ideaRepository.findById(id) } returns Optional.of(originalIdea)
-        every { ideaMapper.dtoToModel(updatedIdeaDto) } returns originalIdea
-        every { originalIdea.title } returns "Old Title"
-        every { updatedIdeaDto.title } returns "New Title"
-        every { originalIdea.description } returns "Old Description"
-        every { updatedIdeaDto.description } returns "New Description"
-        every { originalIdea.status } returns Status.SUBMITTED
-        every { updatedIdeaDto.status } returns Status.APPROVED
-        every { updatedIdeaDto.tags } returns mutableListOf<TagSlimDto>()
-        every { ideaRepository.saveAndFlush(originalIdea) } returns originalIdea
-        every { ideaMapper.modelToDto(originalIdea) } returns updatedIdeaDtoResult
-
-        val response: ResponseEntity<*> = ideaService.updateIdea(id, updatedIdeaDto)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea successfully updated!", webResponse.message)
-        assertEquals(updatedIdeaDtoResult, webResponse.data)
-
-        verify { ideaRepository.findById(id) }
-        verify { originalIdea.title = "New Title" }
-        verify { originalIdea.description = "New Description" }
-        verify { originalIdea.status = Status.APPROVED }
-        verify { ideaRepository.saveAndFlush(originalIdea) }
-        verify { ideaMapper.modelToDto(originalIdea) }
-    }
-
-    @Test
-    fun `deleteIdea(id) should delete Idea successfully`() {
-        val id = 1L
-
-        every { ideaRepository.deleteById(id) } returns Unit
-
-        val response: ResponseEntity<*> = ideaService.deleteIdea(id)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea successfully deleted!", webResponse.message)
-        assertEquals("Idea successfully deleted!", webResponse.data)
-
-        verify { ideaRepository.deleteById(id) }
-    }
-
-    @Test
-    fun `deleteIdea(id) should return NOT_FOUND when Idea does not exist`() {
-        val id = 1L
-
-        every { ideaRepository.deleteById(id) } throws Exception("Idea not found")
-
-        val response: ResponseEntity<*> = ideaService.deleteIdea(id)
-
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), webResponse.code)
-        assertEquals("Nothing to delete! No Idea exists with the id $id!", webResponse.message)
-        assertNull(webResponse.data)
-
-        verify { ideaRepository.deleteById(id) }
-    }
 
     @Test
     fun `likeIdea(id) should like Idea successfully`() {
@@ -501,196 +419,682 @@ class IdeaServiceTest {
     }
 
     @Test
-    fun `getIdeasToScore() should return ideas that the user can score`() {
-        val userEmail = "user@example.com"
-        val user = mockk<User>(relaxed = true)
-        val idea1 = mockk<Idea>(relaxed = true)
-        val idea2 = mockk<Idea>(relaxed = true)
-        val ideas = listOf(idea1, idea2)
-
+    fun `updateIdea() should return 404 when idea does not exist`() {
+        val id = 1L
+        val ideaDto = mockk<IdeaDto>(relaxed = true)
         val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
 
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { ideaRepository.findAll() } returns ideas
-        every { idea1.requiredJuries } returns mutableListOf(user)
-        every { idea1.scoreSheets } returns mutableListOf()
-        every { idea2.requiredJuries } returns mutableListOf(mockk())
-        every { ideaMapper.modelToSlimDto(idea1) } returns mockk()
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findById(id) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaService.updateIdea(id, ideaDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Cannot find Idea with this id $id!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { ideaRepository.findById(id) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `updateIdea() should return 401 when user is unauthorized and not the owner`() {
+        val id = 1L
+        val ideaDto = mockk<IdeaDto>(relaxed = true)
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "nonowner@example.com"
+        every { ideaRepository.findById(id) } returns Optional.of(originalIdea)
+        every { originalIdea.owner.email } returns "owner@example.com"
+
+        val response: ResponseEntity<*> = ideaService.updateIdea(id, ideaDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaRepository.findById(id) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `updateIdea() should return 200 when idea is successfully updated by admin`() {
+        val id = 1L
+        val ideaDto = mockk<IdeaDto>(relaxed = true)
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val updatedIdea = mockk<Idea>(relaxed = true)
+        val updatedIdeaDto = mockk<IdeaDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findById(id) } returns Optional.of(originalIdea)
+        every { ideaMapper.modelToDto(any()) } returns updatedIdeaDto
+        every { ideaRepository.saveAndFlush(originalIdea) } returns updatedIdea
+
+        val response: ResponseEntity<*> = ideaService.updateIdea(id, ideaDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea successfully updated!", responseBody.message)
+        assertEquals(updatedIdeaDto, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaRepository.findById(id) }
+        verify { ideaRepository.saveAndFlush(originalIdea) }
+        verify { ideaMapper.modelToDto(updatedIdea) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `updateIdea() should return 200 when idea is successfully updated by owner`() {
+        val id = 1L
+        val ideaDto = mockk<IdeaDto>(relaxed = true)
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val updatedIdea = mockk<Idea>(relaxed = true)
+        val updatedIdeaDto = mockk<IdeaDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "owner@example.com"
+        every { ideaRepository.findById(id) } returns Optional.of(originalIdea)
+        every { originalIdea.owner.email } returns "owner@example.com"
+        every { ideaMapper.modelToDto(any()) } returns updatedIdeaDto
+        every { ideaRepository.saveAndFlush(originalIdea) } returns updatedIdea
+
+        val response: ResponseEntity<*> = ideaService.updateIdea(id, ideaDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea successfully updated!", responseBody.message)
+        assertEquals(updatedIdeaDto, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaRepository.findById(id) }
+        verify { ideaRepository.saveAndFlush(originalIdea) }
+        verify { ideaMapper.modelToDto(updatedIdea) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdea() should return 404 when idea does not exist`() {
+        val ideaId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findById(ideaId) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaService.deleteIdea(ideaId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Cannot find Idea with this id $ideaId!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { ideaRepository.findById(ideaId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdea() should return 401 when user is unauthorized`() {
+        val ideaId = 1L
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "user@example.com"
+        every { ideaRepository.findById(ideaId) } returns Optional.of(originalIdea)
+        every { originalIdea.owner.email } returns "owner@example.com"
+
+        val response: ResponseEntity<*> = ideaService.deleteIdea(ideaId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { ideaRepository.findById(ideaId) }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdea() should return 200 when idea is successfully deleted by admin`() {
+        val ideaId = 1L
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findById(ideaId) } returns Optional.of(originalIdea)
+        every { ideaRepository.deleteById(ideaId) } returns Unit
+
+        val response: ResponseEntity<*> = ideaService.deleteIdea(ideaId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea successfully deleted!", responseBody.message)
+        assertEquals("Idea successfully deleted!", responseBody.data)
+
+        verify { ideaRepository.findById(ideaId) }
+        verify { ideaRepository.deleteById(ideaId) }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdea() should return 200 when idea is successfully deleted by owner`() {
+        val ideaId = 1L
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "owner@example.com"
+        every { ideaRepository.findById(ideaId) } returns Optional.of(originalIdea)
+        every { originalIdea.owner.email } returns "owner@example.com"
+        every { ideaRepository.deleteById(ideaId) } returns Unit
+
+        val response: ResponseEntity<*> = ideaService.deleteIdea(ideaId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea successfully deleted!", responseBody.message)
+        assertEquals("Idea successfully deleted!", responseBody.data)
+
+        verify { ideaRepository.findById(ideaId) }
+        verify { ideaRepository.deleteById(ideaId) }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdea() should return 404 when deletion fails due to repository error`() {
+        val ideaId = 1L
+        val originalIdea = mockk<Idea>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findById(ideaId) } returns Optional.of(originalIdea)
+        every { ideaRepository.deleteById(ideaId) } throws EmptyResultDataAccessException(1)
+
+        val response: ResponseEntity<*> = ideaService.deleteIdea(ideaId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Nothing to delete! No Idea exists with the id $ideaId!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { ideaRepository.findById(ideaId) }
+        verify { ideaRepository.deleteById(ideaId) }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeas() should return 401 when user is not ADMIN or JURY`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val user = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "user@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { userRepository.findByEmail("user@example.com") } returns Optional.of(user)
+        every { user.email } returns "user@example.com"
+
+        val response: ResponseEntity<*> = ideaService.getScoredIdeas()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { userRepository.findByEmail("user@example.com") }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeas() should return empty list when there are no ideas and user is ADMIN`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaRepository.findAll() } returns emptyList()
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(testUtil.createMockUser())
+
+
+        val response: ResponseEntity<*> = ideaService.getScoredIdeas()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(emptyList<IdeaSlimDto>(), responseBody.data)
+
+        verify { ideaRepository.findAll() }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeas() should return fully scored ideas for JURY`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val idea = mockk<Idea>(relaxed = true)
+        val scoreSheet1 = mockk<ScoreSheet>(relaxed = true)
+        val requiredJury = mockk<User>(relaxed = true)
+        val mappedDto = mockk<IdeaSlimDto>(relaxed = true)
+        val user = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "jury@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("JURY"))
+
+        every { userRepository.findByEmail("jury@example.com") } returns Optional.of(user)
+        every { user.email } returns "jury@example.com"
+
+        every { ideaRepository.findAll() } returns listOf(idea)
+        every { idea.requiredJuries } returns mutableListOf(requiredJury)
+        every { requiredJury.email } returns "jury@example.com"
+        every { idea.scoreSheets } returns mutableListOf(scoreSheet1)
+        every { scoreSheet1.templateFor } returns null
+        every { scoreSheet1.owner.email } returns "jury@example.com"
+
+        every { ideaMapper.modelToSlimDto(idea) } returns mappedDto
+
+        val response: ResponseEntity<*> = ideaService.getScoredIdeas()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(listOf(mappedDto), responseBody.data)
+
+        verify { ideaRepository.findAll() }
+        verify { userRepository.findByEmail("jury@example.com") }
+        verify { ideaMapper.modelToSlimDto(idea) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeas() should not return partially scored ideas for ADMIN`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val idea = mockk<Idea>(relaxed = true)
+        val scoreSheet1 = mockk<ScoreSheet>(relaxed = true)
+        val requiredJury = mockk<User>(relaxed = true)
+        val adminUser = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+
+        every { ideaRepository.findAll() } returns listOf(idea)
+
+        every { idea.requiredJuries } returns mutableListOf(requiredJury)
+        every { requiredJury.email } returns "jury@example.com"
+        every { idea.scoreSheets } returns mutableListOf(scoreSheet1)
+        every { scoreSheet1.templateFor } returns null
+        every { scoreSheet1.owner.email } returns "another_jury@example.com"
+
+        val response: ResponseEntity<*> = ideaService.getScoredIdeas()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(emptyList<IdeaSlimDto>(), responseBody.data)
+
+        verify { ideaRepository.findAll() }
+        verify { securityContext.authentication }
+        verify { userRepository.findByEmail("admin@example.com") }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeas() should return only fully scored ideas when there are mixed scored and unscored ideas`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val fullyScoredIdea = mockk<Idea>(relaxed = true)
+        val partiallyScoredIdea = mockk<Idea>(relaxed = true)
+        val scoreSheet1 = mockk<ScoreSheet>(relaxed = true)
+        val requiredJury = mockk<User>(relaxed = true)
+        val mappedDto = mockk<IdeaSlimDto>(relaxed = true)
+        val adminUser = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+        every { ideaRepository.findAll() } returns listOf(fullyScoredIdea, partiallyScoredIdea)
+        every { fullyScoredIdea.requiredJuries } returns mutableListOf(requiredJury)
+        every { requiredJury.email } returns "jury@example.com"
+        every { fullyScoredIdea.scoreSheets } returns mutableListOf(scoreSheet1)
+        every { scoreSheet1.templateFor } returns null
+        every { scoreSheet1.owner.email } returns "jury@example.com"
+        every { partiallyScoredIdea.requiredJuries } returns mutableListOf(requiredJury)
+        every { partiallyScoredIdea.scoreSheets } returns mutableListOf()
+        every { ideaMapper.modelToSlimDto(fullyScoredIdea) } returns mappedDto
+
+        val response: ResponseEntity<*> = ideaService.getScoredIdeas()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(listOf(mappedDto), responseBody.data)
+
+        verify { userRepository.findByEmail("admin@example.com") }
+        verify { ideaRepository.findAll() }
+        verify { ideaMapper.modelToSlimDto(fullyScoredIdea) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getIdeasToScore() should return ideas for scoring for authorized users`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val authorizedUser = mockk<User>(relaxed = true)
+        val requiredIdea = mockk<Idea>(relaxed = true)
+        val otherIdea = mockk<Idea>(relaxed = true)
+        val scoreSheet = mockk<ScoreSheet>(relaxed = true)
+        val mappedDto = mockk<IdeaSlimDto>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "jury@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("JURY"))
+        every { userRepository.findByEmail("jury@example.com") } returns Optional.of(authorizedUser)
+
+        every { ideaRepository.findAll() } returns listOf(requiredIdea, otherIdea)
+        every { requiredIdea.requiredJuries } returns mutableListOf(authorizedUser)
+        every { otherIdea.requiredJuries } returns mutableListOf()
+        every { requiredIdea.scoreSheets } returns mutableListOf(scoreSheet)
+        every { scoreSheet.owner.email } returns "other.jury@example.com"
+        every { ideaMapper.modelToSlimDto(requiredIdea) } returns mappedDto
 
         val response: ResponseEntity<*> = ideaService.getIdeasToScore()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertTrue((webResponse.data as List<*>).isNotEmpty())
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(listOf(mappedDto), responseBody.data)
 
-        verify { userRepository.findByEmail(userEmail) }
+        verify { userRepository.findByEmail("jury@example.com") }
         verify { ideaRepository.findAll() }
-        verify { ideaMapper.modelToSlimDto(idea1) }
-        verify(exactly = 0) { ideaMapper.modelToSlimDto(idea2) }
+        verify { ideaMapper.modelToSlimDto(requiredIdea) }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `approveIdea(id) should approve idea successfully for admin user`() {
-        val id = 1L
-        val userEmail = "admin@example.com"
-        val user = mockk<User>(relaxed = true)
-        val idea = mockk<Idea>(relaxed = true)
-        val ideaDto = mockk<IdeaDto>(relaxed = true)
-
+    fun `getIdeasToScore() should return unauthorized for non-admin or non-jury users`() {
         val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
+        val unauthorizedUser = mockk<User>(relaxed = true)
 
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.ADMIN
-        every { ideaRepository.findById(id) } returns Optional.of(idea)
-        every { idea.status } returns Status.SUBMITTED
-        every { ideaMapper.modelToDto(idea) } returns ideaDto
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "user@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { userRepository.findByEmail("user@example.com") } returns Optional.of(unauthorizedUser)
+
+        val response: ResponseEntity<*> = ideaService.getIdeasToScore()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { userRepository.findByEmail("user@example.com") }
+        verify(exactly = 0) { ideaRepository.findAll() }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `approveIdea() should approve idea for admin user`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val adminUser = mockk<User>(relaxed = true)
+        val idea = mockk<Idea>(relaxed = true)
+        val mappedDto = mockk<IdeaDto>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+        every { adminUser.role } returns Role.ADMIN
+
+        every { ideaRepository.findById(1L) } returns Optional.of(idea)
         every { ideaRepository.save(idea) } returns idea
+        every { ideaMapper.modelToDto(idea) } returns mappedDto
 
-        val response: ResponseEntity<*> = ideaService.approveIdea(id)
+        val response: ResponseEntity<*> = ideaService.approveIdea(1L)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was approved successfully", webResponse.message)
-        assertEquals(ideaDto, webResponse.data)
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Was approved successfully", responseBody.message)
+        assertEquals(mappedDto, responseBody.data)
 
-        verify { userRepository.findByEmail(userEmail) }
-        verify { ideaRepository.findById(id) }
+        verify { ideaRepository.findById(1L) }
         verify { idea.status = Status.APPROVED }
         verify { ideaRepository.save(idea) }
         verify { ideaMapper.modelToDto(idea) }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `approveIdea(id) should return NOT_FOUND when user is not admin`() {
-        val id = 1L
-        val userEmail = "user@example.com"
-        val user = mockk<User>(relaxed = true)
+    fun `approveIdea() should return unauthorized for non-admin users`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val nonAdminUser = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "user@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { userRepository.findByEmail("user@example.com") } returns Optional.of(nonAdminUser)
+
+        val response: ResponseEntity<*> = ideaService.approveIdea(1L)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { userRepository.findByEmail("user@example.com") }
+        verify(exactly = 0) { ideaRepository.findById(any()) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `approveIdea() should return OK with message when idea is not found`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val adminUser = mockk<User>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+        every { adminUser.role } returns Role.ADMIN
+
+        every { ideaRepository.findById(1L) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaService.approveIdea(1L)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Was approved successfully", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { ideaRepository.findById(1L) }
+        verify(exactly = 0) { ideaRepository.save(any()) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `denyIdea() should deny idea for admin user`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val adminUser = mockk<User>(relaxed = true)
         val idea = mockk<Idea>(relaxed = true)
+        val mappedDto = mockk<IdeaDto>(relaxed = true)
 
-        val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
 
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.USER
-        every { ideaRepository.findById(id) } returns Optional.of(idea)
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+        every { adminUser.role } returns Role.ADMIN
 
-        val response: ResponseEntity<*> = ideaService.approveIdea(id)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was approved successfully", webResponse.message)
-        assertNull(webResponse.data)
-    }
-
-    @Test
-    fun `approveIdea(id) should return NOT_FOUND when idea does not exist`() {
-        val id = 1L
-        val userEmail = "admin@example.com"
-        val user = mockk<User>(relaxed = true)
-
-        val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
-
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.ADMIN
-        every { ideaRepository.findById(id) } returns Optional.empty()
-
-        val response: ResponseEntity<*> = ideaService.approveIdea(id)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was approved successfully", webResponse.message)
-        assertNull(webResponse.data)
-    }
-
-    @Test
-    fun `denyIdea(id) should deny idea successfully for admin user`() {
-        val id = 1L
-        val userEmail = "admin@example.com"
-        val user = mockk<User>(relaxed = true)
-        val idea = mockk<Idea>(relaxed = true)
-        val ideaDto = mockk<IdeaDto>(relaxed = true)
-
-        val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
-
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.ADMIN
-        every { ideaRepository.findById(id) } returns Optional.of(idea)
-        every { idea.status } returns Status.SUBMITTED
-        every { ideaMapper.modelToDto(idea) } returns ideaDto
+        every { ideaRepository.findById(1L) } returns Optional.of(idea)
         every { ideaRepository.save(idea) } returns idea
+        every { ideaMapper.modelToDto(idea) } returns mappedDto
 
-        val response: ResponseEntity<*> = ideaService.denyIdea(id)
+        val response: ResponseEntity<*> = ideaService.denyIdea(1L)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was denied successfully", webResponse.message)
-        assertEquals(ideaDto, webResponse.data)
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Was denied successfully", responseBody.message)
+        assertEquals(mappedDto, responseBody.data)
 
-        verify { userRepository.findByEmail(userEmail) }
-        verify { ideaRepository.findById(id) }
+        verify { ideaRepository.findById(1L) }
         verify { idea.status = Status.DENIED }
         verify { ideaRepository.save(idea) }
         verify { ideaMapper.modelToDto(idea) }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `denyIdea(id) should return NOT_FOUND when user is not admin`() {
-        val id = 1L
-        val userEmail = "user@example.com"
-        val user = mockk<User>(relaxed = true)
-        val idea = mockk<Idea>(relaxed = true)
-
+    fun `denyIdea() should return unauthorized for non-admin users`() {
         val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
+        val nonAdminUser = mockk<User>(relaxed = true)
 
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.USER
-        every { ideaRepository.findById(id) } returns Optional.of(idea)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
 
-        val response: ResponseEntity<*> = ideaService.denyIdea(id)
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "user@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { userRepository.findByEmail("user@example.com") } returns Optional.of(nonAdminUser)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was denied successfully", webResponse.message)
-        assertNull(webResponse.data)
+        val response: ResponseEntity<*> = ideaService.denyIdea(1L)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("You dont have permission to do that!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { userRepository.findByEmail("user@example.com") }
+        verify(exactly = 0) { ideaRepository.findById(any()) }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `denyIdea(id) should return NOT_FOUND when idea does not exist`() {
-        val id = 1L
-        val userEmail = "admin@example.com"
-        val user = mockk<User>(relaxed = true)
-
+    fun `denyIdea() should return OK with message when idea is not found`() {
         val authentication = mockk<Authentication>(relaxed = true)
-        every { authentication.name } returns userEmail
-        SecurityContextHolder.getContext().authentication = authentication
+        val adminUser = mockk<User>(relaxed = true)
 
-        every { userRepository.findByEmail(userEmail) } returns Optional.of(user)
-        every { user.role } returns Role.ADMIN
-        every { ideaRepository.findById(id) } returns Optional.empty()
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
 
-        val response: ResponseEntity<*> = ideaService.denyIdea(id)
+        every { securityContext.authentication } returns authentication
+        every { authentication.name } returns "admin@example.com"
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { userRepository.findByEmail("admin@example.com") } returns Optional.of(adminUser)
+        every { adminUser.role } returns Role.ADMIN
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("Idea Was denied successfully", webResponse.message)
-        assertNull(webResponse.data)
+        every { ideaRepository.findById(1L) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaService.denyIdea(1L)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Was denied successfully", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { ideaRepository.findById(1L) }
+        verify(exactly = 0) { ideaRepository.save(any()) }
+
+        SecurityContextHolder.clearContext()
     }
 }

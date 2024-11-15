@@ -23,7 +23,7 @@
         <div *ngIf="selectedIdea != null">
             <h1>Details - {{ selectedIdea?.title }}</h1>
             <p>{{ selectedIdea?.description }}</p>
-            <p>{{ selectedIdea?.creationDate }}</p>
+            <p>{{ selectedIdea?.creationDate | date }}</p>
             
             <mat-stepper orientation="vertical">
                 <mat-step *ngFor="let item of scoreSheet?.scores; let i = index">

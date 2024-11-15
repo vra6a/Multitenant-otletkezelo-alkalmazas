@@ -5,14 +5,17 @@ import com.moa.backend.mapper.IdeaBoxMapper
 import com.moa.backend.mapper.IdeaMapper
 import com.moa.backend.mapper.ScoreSheetMapper
 import com.moa.backend.mapper.UserMapper
-import com.moa.backend.model.IdeaBox
+import com.moa.backend.model.*
 import com.moa.backend.model.dto.IdeaBoxDto
+import com.moa.backend.model.dto.ScoreSheetDto
 import com.moa.backend.model.slim.IdeaBoxSlimDto
+import com.moa.backend.model.slim.IdeaSlimDto
 import com.moa.backend.model.slim.ScoreSheetSlimDto
 import com.moa.backend.repository.*
 import com.moa.backend.service.IdeaBoxService
 import com.moa.backend.service.IdeaService
 import com.moa.backend.utility.Functions
+import com.moa.backend.utility.IdeaScoreSheets
 import com.moa.backend.utility.WebResponse
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.MockKAnnotations
@@ -20,18 +23,25 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import java.awt.print.Pageable
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
 @SpringBootTest
@@ -67,6 +77,12 @@ class IdeaBoxServiceTest {
 
     @MockkBean
     lateinit var scoreSheetService: ScoreItemRepository
+
+    @MockkBean
+    lateinit var securityContext: SecurityContext
+
+    @MockkBean
+    lateinit var securityContextHolder: SecurityContextHolder
 
     @Autowired
     lateinit var ideaBoxService: IdeaBoxService
@@ -226,122 +242,759 @@ class IdeaBoxServiceTest {
     }
 
     @Test
-    fun `createIdeaBox should save IdeaBox and return 200 with created IdeaBoxDto`() {
-        val ideaBoxDto = testUtil.createMockIdeaBoxDto()
-        val ideaBox = testUtil.createMockIdeaBox()
-        val savedIdeaBox = ideaBox.copy(id = 1L)
+    fun `updateIdeaBox() should return 401 when user is unauthorized`() {
+        val ideaBoxId = 1L
+        val ideaBoxDto = mockk<IdeaBoxDto>()
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
 
-        every { ideaBoxMapper.dtoToModel(ideaBoxDto) } returns ideaBox
-        every { ideaBoxMapper.modelToDto(savedIdeaBox) } returns ideaBoxDto
+        SecurityContextHolder.setContext(securityContext)
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf()
+        every { authentication.name } returns "testUser"
 
-        every { ideaBoxRepository.save(ideaBox) } returns savedIdeaBox
+        val response: ResponseEntity<*> = ideaBoxService.updateIdeaBox(ideaBoxId, ideaBoxDto)
 
-        val response: ResponseEntity<*> = ideaBoxService.createIdeaBox(ideaBoxDto)
+        println("Authorities: ${authentication.authorities}")
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val responseBody = response.body as WebResponse<IdeaBoxDto>
-        assertEquals(HttpStatus.OK.value(), responseBody.code)
-        assertEquals("Idea Box successfully created!", responseBody.message)
-        assertEquals(ideaBoxDto, responseBody.data)
-
-        verify { ideaBoxMapper.dtoToModel(ideaBoxDto) }
-        verify { ideaBoxRepository.save(ideaBox) }
-        verify { ideaBoxMapper.modelToDto(savedIdeaBox) }
-    }
-
-    @Test
-    fun `updateIdeaBox should update the IdeaBox and return 200 with updated IdeaBoxDto`() {
-        val ideaBoxDto = testUtil.createMockIdeaBoxDto()
-        val originalIdeaBox = testUtil.createMockIdeaBox()
-        val updatedIdeaBox = originalIdeaBox.copy(
-            name = "Updated IdeaBox",
-            description = "Updated Description"
-        )
-
-        every { ideaBoxRepository.findById(1L) } returns Optional.of(originalIdeaBox)
-        every { ideaBoxRepository.save(originalIdeaBox) } returns updatedIdeaBox
-
-        every { ideaBoxMapper.modelToDto(updatedIdeaBox) } returns ideaBoxDto
-
-        val response: ResponseEntity<*> = ideaBoxService.updateIdeaBox(1L, ideaBoxDto)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val responseBody = response.body as WebResponse<IdeaBoxDto>
-        assertEquals(HttpStatus.OK.value(), responseBody.code)
-        assertEquals("Idea Box successfully updated!", responseBody.message)
-        assertEquals(ideaBoxDto, responseBody.data)
-
-        verify { ideaBoxRepository.findById(1L) }
-        verify { ideaBoxRepository.save(originalIdeaBox) }
-
-        verify { ideaBoxMapper.modelToDto(updatedIdeaBox) }
-    }
-
-    @Test
-    fun `updateIdeaBox should return 404 if IdeaBox not found`() {
-        every { ideaBoxRepository.findById(1L) } returns Optional.empty()
-
-        val response: ResponseEntity<*> = ideaBoxService.updateIdeaBox(1L, testUtil.createMockIdeaBoxDto())
-
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
         val responseBody = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
-        assertEquals("Cannot find IdeaBox with this id 1!", responseBody.message)
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
         assertEquals(null, responseBody.data)
 
-        verify { ideaBoxRepository.findById(1L) }
+        verify { securityContext.authentication }
+        verify { authentication.authorities }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `deleteIdeaBox should return 200 when deletion is successful`() {
-        every { ideaBoxRepository.deleteById(1L) } returns Unit
+    fun `updateIdeaBox() should return 404 when idea box is not found`() {
+        val ideaBoxId = 1L
+        val ideaBoxDto = mockk<IdeaBoxDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
 
-        val response: ResponseEntity<*> = ideaBoxService.deleteIdeaBox(1L)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaBoxService.updateIdeaBox(ideaBoxId, ideaBoxDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Cannot find IdeaBox with this id $ideaBoxId!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { authentication.authorities }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `updateIdeaBox() should return 200 when idea box is successfully updated`() {
+        val ideaBoxId = 1L
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+        val ideaBoxDto = mockk<IdeaBoxDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+        val savedIdeaBox = mockk<IdeaBox>(relaxed = true)
+        val savedIdeaBoxDto = mockk<IdeaBoxDto>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBoxRepository.save(ideaBox) } returns savedIdeaBox
+        every { ideaBoxMapper.modelToDto(savedIdeaBox) } returns savedIdeaBoxDto
+
+        val response: ResponseEntity<*> = ideaBoxService.updateIdeaBox(ideaBoxId, ideaBoxDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Box successfully updated!", responseBody.message)
+        assertEquals(savedIdeaBoxDto, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { authentication.authorities }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+        verify { ideaBoxRepository.save(ideaBox) }
+        verify { ideaBoxMapper.modelToDto(savedIdeaBox) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `ideaBoxReadyToClose() should return 401 when user is unauthorized`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.ideaBoxReadyToClose(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `ideaBoxReadyToClose() should return false when IdeaBox is not ready to close due to end date`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBox.endDate } returns Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+
+        val response: ResponseEntity<*> = ideaBoxService.ideaBoxReadyToClose(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<Boolean>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("IdeaBox is not ready to close because the date", responseBody.message)
+        assertEquals(false, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `ideaBoxReadyToClose() should return false when IdeaBox is not ready to close due to idea status`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+        val idea = mockk<Idea>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBox.endDate } returns Date.from(LocalDate.now().minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+        every { ideaBox.ideas } returns mutableListOf(idea)
+        every { idea.status } returns Status.REVIEWED
+
+        val response: ResponseEntity<*> = ideaBoxService.ideaBoxReadyToClose(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<Boolean>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("IdeaBox is not ready to close because status", responseBody.message)
+        assertEquals(false, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `ideaBoxReadyToClose() should return true when IdeaBox is ready to close`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBox.endDate } returns Date.from(LocalDate.now().minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+        every { ideaBox.ideas } returns mutableListOf()
+
+        val response: ResponseEntity<*> = ideaBoxService.ideaBoxReadyToClose(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<Boolean>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("IdeaBox ready to close", responseBody.message)
+        assertEquals(true, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdeaBox() should return 401 when user is unauthorized`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.deleteIdeaBox(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdeaBox() should return 404 when IdeaBox does not exist`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.deleteById(ideaBoxId) } throws EmptyResultDataAccessException(1)
+
+        val response: ResponseEntity<*> = ideaBoxService.deleteIdeaBox(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<String>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Nothing to delete! No Idea Box exists with the id $ideaBoxId!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.deleteById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `deleteIdeaBox() should return 200 when IdeaBox is successfully deleted`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.deleteById(ideaBoxId) } returns Unit
+
+        val response: ResponseEntity<*> = ideaBoxService.deleteIdeaBox(ideaBoxId)
+
         val responseBody = response.body as WebResponse<String>
         assertEquals(HttpStatus.OK.value(), responseBody.code)
         assertEquals("Idea Box successfully deleted!", responseBody.message)
         assertEquals("Idea Box successfully deleted!", responseBody.data)
 
-        verify { ideaBoxRepository.deleteById(1L) }
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.deleteById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `deleteIdeaBox should return 404 when IdeaBox does not exist`() {
-        every { ideaBoxRepository.deleteById(1L) } throws RuntimeException("IdeaBox not found")
+    fun `getAverageScoresForIdeaBoxByScore() should return 401 when user is unauthorized`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
 
-        val response: ResponseEntity<*> = ideaBoxService.deleteIdeaBox(1L)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
 
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.getAverageScoresForIdeaBoxByScore(ideaBoxId)
+
         val responseBody = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
-        assertEquals("Nothing to delete! No Idea Box exists with the id 1!", responseBody.message)
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
         assertEquals(null, responseBody.data)
 
-        verify { ideaBoxRepository.deleteById(1L) }
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
     }
 
     @Test
-    fun `createScoreSheetTemplate should return 200 when scoreSheet is created successfully`() {
-        val scoreSheetDto = testUtil.createMockScoreSheetDto()
-        val scoreSheet = testUtil.createMockScoreSheet()
-        val scoreSheetSlimDto = testUtil.createMockSlimScoreSheetDto()
+    fun `getAverageScoresForIdeaBoxByScore() should return empty list when IdeaBox does not exist`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
 
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaBoxService.getAverageScoresForIdeaBoxByScore(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<MutableList<IdeaScoreSheets>>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(emptyList<IdeaScoreSheets>(), responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getAverageScoresForIdeaBoxByScore() should return idea scores successfully`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val ideaBox = mockk<IdeaBox>()
+        val idea = mockk<Idea>(relaxed = true)
+        val scoreSheet = mockk<ScoreSheet>(relaxed = true)
+        val ideaSlimDto = mockk<IdeaSlimDto>()
+        val scoreSheetsDto = mockk<MutableList<ScoreSheetDto>>()
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBox.ideas } returns mutableListOf(idea)
+        every { ideaMapper.modelToSlimDto(idea) } returns ideaSlimDto
+        every { scoreSheetMapper.modelListToDto(idea.scoreSheets) } returns scoreSheetsDto
+
+        val response: ResponseEntity<*> = ideaBoxService.getAverageScoresForIdeaBoxByScore(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<MutableList<IdeaScoreSheets>>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("", responseBody.message)
+        assertEquals(1, responseBody.data?.size)
+        assertEquals(IdeaScoreSheets(ideaSlimDto, scoreSheetsDto), responseBody.data?.first())
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+        verify { ideaMapper.modelToSlimDto(idea) }
+        verify { scoreSheetMapper.modelListToDto(idea.scoreSheets) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `areAllIdeasScoredByRequiredJuries() should return false when user is unauthorized`() {
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val result = ideaBoxService.areAllIdeasScoredByRequiredJuries(ideaBox)
+
+        assertFalse(result)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `areAllIdeasScoredByRequiredJuries() should return false when not all required juries have scored`() {
+        val ideaBox = mockk<IdeaBox>()
+        val idea = mockk<Idea>(relaxed = true)
+        val requiredJury = mockk<User>(relaxed = true) {
+            every { id } returns 1L
+        }
+        val missingJury = mockk<User>(relaxed = true) {
+            every { id } returns 2L
+        }
+        val scoreSheet = mockk<ScoreSheet>(relaxed = true) {
+            every { owner.id } returns 1L
+        }
+
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBox.ideas } returns mutableListOf(idea)
+        every { idea.requiredJuries } returns mutableListOf(requiredJury, missingJury)
+        every { idea.scoreSheets } returns mutableListOf(scoreSheet)
+
+        val result = ideaBoxService.areAllIdeasScoredByRequiredJuries(ideaBox)
+
+        assertFalse(result)
+
+        verify { securityContext.authentication }
+        verify { ideaBox.ideas }
+        verify { idea.requiredJuries }
+        verify { idea.scoreSheets }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `areAllIdeasScoredByRequiredJuries() should return true when all required juries have scored`() {
+        val ideaBox = mockk<IdeaBox>()
+        val idea = mockk<Idea>(relaxed = true)
+        val jury1 = mockk<User>(relaxed = true) {
+            every { id } returns 1L
+        }
+        val jury2 = mockk<User>(relaxed = true) {
+            every { id } returns 2L
+        }
+        val scoreSheet1 = mockk<ScoreSheet>(relaxed = true) {
+            every { owner.id } returns 1L
+        }
+        val scoreSheet2 = mockk<ScoreSheet>(relaxed = true) {
+            every { owner.id } returns 2L
+        }
+
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBox.ideas } returns mutableListOf(idea)
+        every { idea.requiredJuries } returns mutableListOf(jury1, jury2)
+        every { idea.scoreSheets } returns mutableListOf(scoreSheet1, scoreSheet2)
+
+        val result = ideaBoxService.areAllIdeasScoredByRequiredJuries(ideaBox)
+
+        assertTrue(result)
+
+        verify { securityContext.authentication }
+        verify { ideaBox.ideas }
+        verify { idea.requiredJuries }
+        verify { idea.scoreSheets }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `createScoreSheetTemplate() should return unauthorized when user is not an admin`() {
+        val scoreSheetDto = mockk<ScoreSheetDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.createScoreSheetTemplate(scoreSheetDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `createScoreSheetTemplate() should return success when user is admin and score sheet is created`() {
+        val scoreSheetDto = mockk<ScoreSheetDto>(relaxed = true)
+        val scoreSheet = mockk<ScoreSheet>(relaxed = true)
+        val scoreSheetSlimDto = mockk<ScoreSheetSlimDto>(relaxed = true)
+
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { scoreSheetRepository.saveAndFlush(any()) } returns scoreSheet
         every { scoreSheetMapper.initializeScoreSheet(scoreSheetDto) } returns scoreSheet
-        every { scoreSheetRepository.saveAndFlush(scoreSheet) } returns scoreSheet
         every { scoreSheetMapper.modelToSlimDto(scoreSheet) } returns scoreSheetSlimDto
 
         val response: ResponseEntity<*> = ideaBoxService.createScoreSheetTemplate(scoreSheetDto)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val responseBody = response.body as WebResponse<ScoreSheetSlimDto>
+        val responseBody = response.body as WebResponse<*>
         assertEquals(HttpStatus.OK.value(), responseBody.code)
         assertEquals("ScoreSheet Created, ready to be filled", responseBody.message)
         assertEquals(scoreSheetSlimDto, responseBody.data)
 
+        verify { securityContext.authentication }
+        verify { scoreSheetRepository.saveAndFlush(any()) }
         verify { scoreSheetMapper.initializeScoreSheet(scoreSheetDto) }
-        verify { scoreSheetRepository.saveAndFlush(scoreSheet) }
         verify { scoreSheetMapper.modelToSlimDto(scoreSheet) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `createIdeaBox() should return unauthorized when user is not an admin`() {
+        val ideaBoxDto = mockk<IdeaBoxDto>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.createIdeaBox(ideaBoxDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `createIdeaBox() should return success when user is admin and idea box is created`() {
+        val ideaBoxDto = mockk<IdeaBoxDto>(relaxed = true)
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+        val ideaBoxDtoResponse = mockk<IdeaBoxDto>(relaxed = true)
+
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaBoxMapper.dtoToModel(ideaBoxDto) } returns ideaBox
+        every { ideaBoxRepository.save(ideaBox) } returns ideaBox
+        every { ideaBoxMapper.modelToDto(ideaBox) } returns ideaBoxDtoResponse
+
+        val response: ResponseEntity<*> = ideaBoxService.createIdeaBox(ideaBoxDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("Idea Box successfully created!", responseBody.message)
+        assertEquals(ideaBoxDtoResponse, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxMapper.dtoToModel(ideaBoxDto) }
+        verify { ideaBoxRepository.save(ideaBox) }
+        verify { ideaBoxMapper.modelToDto(ideaBox) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `closeIdeaBox() should return unauthorized when user is not an admin`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.closeIdeaBox(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `closeIdeaBox() should close idea box successfully when user is admin`() {
+        val ideaBoxId = 1L
+        val ideaBox = mockk<IdeaBox>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.of(ideaBox)
+        every { ideaBoxRepository.saveAndFlush(ideaBox) } returns ideaBox
+
+        val response: ResponseEntity<*> = ideaBoxService.closeIdeaBox(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("IdeaBox was closed successfully", responseBody.message)
+        assertEquals("Success!", responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+        verify { ideaBoxRepository.saveAndFlush(ideaBox) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `closeIdeaBox() should return not found when ideaBox does not exist`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaBoxService.closeIdeaBox(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("IdeaBox was closed successfully", responseBody.message)
+        assertEquals("Success!", responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `checkIfIdeaBoxHasAllRequiredScoreSheets() should return unauthorized when user is not an admin`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.checkIfIdeaBoxHasAllRequiredScoreSheets(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `checkIfIdeaBoxHasAllRequiredScoreSheets() should return false when ideaBox is not found`() {
+        val ideaBoxId = 1L
+        val authentication = mockk<Authentication>(relaxed = true)
+
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { ideaBoxRepository.findById(ideaBoxId) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = ideaBoxService.checkIfIdeaBoxHasAllRequiredScoreSheets(ideaBoxId)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals(false, responseBody.data)
+
+        verify { securityContext.authentication }
+        verify { ideaBoxRepository.findById(ideaBoxId) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getClosedIdeaBoxes() should return unauthorized when user is not admin`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.getClosedIdeaBoxes()
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+
+        verify { securityContext.authentication }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeaCountByIdeaBox() should return count for admin`() {
+        val id = 123L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+
+        every { ideaBoxRepository.countScoredIdeasByIdeaBoxId(id) } returns 5L
+
+        val response: ResponseEntity<*> = ideaBoxService.getScoredIdeaCountByIdeaBox(id)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("5", responseBody.data)
+        assertEquals("", responseBody.message)
+
+        verify { ideaBoxRepository.countScoredIdeasByIdeaBoxId(id) }
+
+        SecurityContextHolder.clearContext()
+    }
+
+    @Test
+    fun `getScoredIdeaCountByIdeaBox() should return unauthorized for non-admin user`() {
+        val id = 123L
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        SecurityContextHolder.setContext(securityContext)
+
+        every { securityContext.authentication } returns authentication
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+
+        val response: ResponseEntity<*> = ideaBoxService.getScoredIdeaCountByIdeaBox(id)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertEquals(null, responseBody.data)
+
+        verify(exactly = 0) { ideaBoxRepository.countScoredIdeasByIdeaBoxId(id) }
+
+        SecurityContextHolder.clearContext()
     }
 }

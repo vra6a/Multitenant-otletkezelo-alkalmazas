@@ -25,6 +25,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import java.util.*
 
 @SpringBootTest
@@ -196,32 +200,6 @@ class UserServiceTest {
         verify { userRepository.findJuries() }
     }
 
-    @Test
-    fun `editUserRole(id, role) should update user role successfully`() {
-        val id = 1L
-        val newRole = "ADMIN"
-        val userEmail = "user@example.com"
-        val originalUser = mockk<User>(relaxed = true)
-        val updatedUserDto = mockk<UserDto>(relaxed = true)
-
-        every { userRepository.findById(id) } returns Optional.of(originalUser)
-        every { originalUser.role } returns Role.USER
-        every { userMapper.modelToDto(any()) } returns updatedUserDto
-        every { userRepository.saveAndFlush(originalUser) } returns originalUser
-
-        val response: ResponseEntity<*> = userService.editUserRole(id, newRole)
-
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<UserDto>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("User SuccessFully updated!", webResponse.message)
-        assertEquals(updatedUserDto, webResponse.data)
-
-        verify { userRepository.findById(id) }
-        verify { originalUser.role = Role.ADMIN }
-        verify { userRepository.saveAndFlush(originalUser) }
-        verify { userMapper.modelToDto(originalUser) }
-    }
 
     @Test
     fun `editUserRole(id, role) should return NOT_FOUND when user does not exist`() {
@@ -242,90 +220,207 @@ class UserServiceTest {
     }
 
     @Test
-    fun `updateUser(id, user) should update user details successfully`() {
-        val id = 1L
+    fun `updateUser() should return NOT_FOUND if the user does not exist`() {
         val userDto = testUtil.createMockUserDto()
-        val originalUser = mockk<User>(relaxed = false)
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
 
-        every { userRepository.findById(id) } returns Optional.of(originalUser)
+        every { userRepository.findById(1L) } returns Optional.empty()
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
 
-        every { originalUser.firstName } returns "Jane"
-        every { originalUser.lastName } returns "Smith"
-        every { originalUser.email } returns "jane.smith@example.com"
+        val response: ResponseEntity<*> = userService.updateUser(1L, userDto)
 
-        every { originalUser.firstName = any() } just Runs
-        every { originalUser.lastName = any() } just Runs
-        every { originalUser.email = any() } just Runs
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Cannot find User with this id 1!", responseBody.message)
+        assertNull(responseBody.data)
+    }
 
-        val updatedUserDto = mockk<UserDto>(relaxed = true)
-        every { userMapper.modelToDto(originalUser) } returns updatedUserDto
-        every { userRepository.saveAndFlush(originalUser) } returns originalUser
+    @Test
+    fun `updateUser() should return UNAUTHORIZED if the user is not authorized to update`() {
+        val userDto = testUtil.createMockUserDto()
+        val originalUser = mockk<User>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
 
-        val response: ResponseEntity<*> = userService.updateUser(id, userDto)
+        every { userRepository.findById(1L) } returns Optional.of(originalUser)
+        every { originalUser.email } returns "user@test.com" // Original user's email
+        every { authentication.name } returns "another.user@example.com"  // Unauthorized user
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<UserDto>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("User SuccessFully updated!", webResponse.message)
-        assertEquals(updatedUserDto, webResponse.data)
+        val response: ResponseEntity<*> = userService.updateUser(1L, userDto)
 
-        verify { userRepository.findById(id) }
-        verify { originalUser.firstName = userDto.firstName }
-        verify { originalUser.lastName = userDto.lastName }
-        verify { originalUser.email = userDto.email }
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+    }
+
+    @Test
+    fun `updateUser() should successfully update user when authorized`() {
+        val userDto = testUtil.createMockUserDto()
+        val originalUser = mockk<User>(relaxed = true)
+        val updatedUser = mockk<User>(relaxed = true)
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        val userDtoResponse = mockk<UserDto>(relaxed = true)
+
+        every { userRepository.findById(1L) } returns Optional.of(originalUser)
+        every { originalUser.email } returns "user@test.com"
+        every { originalUser.firstName = userDto.firstName } returns Unit
+        every { originalUser.lastName = userDto.lastName } returns Unit
+        every { originalUser.email = userDto.email } returns Unit
+        every { userRepository.saveAndFlush(originalUser) } returns updatedUser
+        every { userMapper.modelToDto(updatedUser) } returns userDtoResponse
+        every { authentication.name } returns "user@test.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
+
+        val response: ResponseEntity<*> = userService.updateUser(1L, userDto)
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("User SuccessFully updated!", responseBody.message)
+        assertEquals(userDtoResponse, responseBody.data)
+
         verify { userRepository.saveAndFlush(originalUser) }
-        verify { userMapper.modelToDto(originalUser) }
     }
 
     @Test
-    fun `updateUser(id, user) should return NOT_FOUND when user does not exist`() {
-        val id = 1L
-        val userDto = testUtil.createMockUserDto()
+    fun `deleteUser() should return UNAUTHORIZED if the user is not an admin`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
 
-        every { userRepository.findById(id) } returns Optional.empty()
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "regular.user@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
 
-        val response: ResponseEntity<*> = userService.updateUser(id, userDto)
+        val response: ResponseEntity<*> = userService.deleteUser(1L)
 
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), webResponse.code)
-        assertEquals("Cannot find User with this id $id!", webResponse.message)
-        assertNull(webResponse.data)
-
-        verify { userRepository.findById(id) }
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
     }
 
     @Test
-    fun `deleteUser(id) should delete user successfully`() {
-        val id = 1L
+    fun `deleteUser() should return NOT_FOUND if the user does not exist`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
 
-        every { userRepository.deleteById(id) } just Runs
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { authentication.name } returns "admin@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
 
-        val response: ResponseEntity<*> = userService.deleteUser(id)
+        every { userRepository.findById(1L) } returns Optional.empty()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.OK.value(), webResponse.code)
-        assertEquals("User Successfully Deleted!", webResponse.message)
-        assertEquals("User Successfully Deleted!", webResponse.data)
+        val response: ResponseEntity<*> = userService.deleteUser(1L)
 
-        verify { userRepository.deleteById(id) }
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Nothing to delete! No User exists with the id 1!", responseBody.message)
+        assertNull(responseBody.data)
     }
 
     @Test
-    fun `deleteUser(id) should return NOT_FOUND when user does not exist`() {
-        val id = 1L
+    fun `deleteUser() should successfully delete user when authorized`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        val userToDelete = mockk<User>(relaxed = true)
 
-        every { userRepository.deleteById(id) } throws EmptyResultDataAccessException(404)
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { authentication.name } returns "admin@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
 
-        val response: ResponseEntity<*> = userService.deleteUser(id)
+        every { userRepository.findById(1L) } returns Optional.of(userToDelete)
+        every { userRepository.deleteById(1L) } returns Unit
+        every { userToDelete.email } returns "user.to.delete@example.com"
 
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        val webResponse = response.body as WebResponse<*>
-        assertEquals(HttpStatus.NOT_FOUND.value(), webResponse.code)
-        assertEquals("Nothing to delete! No User exists with the id $id!", webResponse.message)
-        assertNull(webResponse.data)
+        val response: ResponseEntity<*> = userService.deleteUser(1L)
 
-        verify { userRepository.deleteById(id) }
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("User Successfully Deleted!", responseBody.message)
+        assertEquals("User Successfully Deleted!", responseBody.data)
+
+        verify { userRepository.deleteById(1L) }
     }
+
+    @Test
+    fun `editUserRole() should return NOT_FOUND if the user is not found`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { authentication.name } returns "admin@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
+
+        every { userRepository.findById(1L) } returns Optional.empty()
+
+        val response: ResponseEntity<*> = userService.editUserRole(1L, "USER")
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseBody.code)
+        assertEquals("Cannot find User with this id 1!", responseBody.message)
+        assertNull(responseBody.data)
+    }
+
+    @Test
+    fun `editUserRole() should return UNAUTHORIZED if the user is not an admin`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        val userToEdit = mockk<User>(relaxed = true)
+
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
+        every { authentication.name } returns "regular.user@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
+
+        every { userRepository.findById(1L) } returns Optional.of(userToEdit)
+        every { userToEdit.email } returns "user.to.edit@example.com"
+
+        val response: ResponseEntity<*> = userService.editUserRole(1L, "ADMIN")
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), responseBody.code)
+        assertEquals("User is unauthorized to do this action!", responseBody.message)
+        assertNull(responseBody.data)
+    }
+
+    @Test
+    fun `editUserRole() should successfully update the user role when authorized`() {
+        val authentication = mockk<Authentication>(relaxed = true)
+        val securityContext = mockk<SecurityContext>(relaxed = true)
+        val originalUser = mockk<User>(relaxed = true)
+        val updatedUser = mockk<User>(relaxed = true)
+        val userDto = mockk<UserDto>(relaxed = true)
+
+        every { authentication.authorities } returns listOf(SimpleGrantedAuthority("ADMIN"))
+        every { authentication.name } returns "admin@example.com"
+        every { securityContext.authentication } returns authentication
+        SecurityContextHolder.setContext(securityContext)
+
+        every { userRepository.findById(1L) } returns Optional.of(originalUser)
+        every { userRepository.saveAndFlush(originalUser) } returns updatedUser
+        every { originalUser.email } returns "user.to.edit@example.com"
+        every { originalUser.role } returns Role.USER
+        every { updatedUser.role } returns Role.ADMIN
+        every { userMapper.modelToDto(updatedUser) } returns userDto
+
+        val response: ResponseEntity<*> = userService.editUserRole(1L, "ADMIN")
+
+        val responseBody = response.body as WebResponse<*>
+        assertEquals(HttpStatus.OK.value(), responseBody.code)
+        assertEquals("User SuccessFully updated!", responseBody.message)
+        assertEquals(userDto, responseBody.data)
+
+        verify { userRepository.saveAndFlush(originalUser) }
+    }
+
 }

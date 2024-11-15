@@ -73,7 +73,16 @@ class IdeaBoxMapperTest {
 
         val ideaBox = ideaBoxMapper.dtoToModel(ideaBoxDto)
 
-        Assertions.assertEquals(expectedIdeaBox, ideaBox)
+        Assertions.assertEquals(expectedIdeaBox.id, ideaBox.id)
+        Assertions.assertEquals(expectedIdeaBox.name, ideaBox.name)
+        Assertions.assertEquals(expectedIdeaBox.description, ideaBox.description)
+        Assertions.assertEquals(expectedIdeaBox.startDate, ideaBox.startDate)
+        Assertions.assertEquals(expectedIdeaBox.endDate, ideaBox.endDate)
+        Assertions.assertEquals(expectedIdeaBox.creator, ideaBox.creator)
+        Assertions.assertEquals(expectedIdeaBox.ideas, ideaBox.ideas)
+        Assertions.assertEquals(expectedIdeaBox.defaultRequiredJuries, ideaBox.defaultRequiredJuries)
+        Assertions.assertEquals(expectedIdeaBox.scoreSheetTemplates, ideaBox.scoreSheetTemplates)
+        Assertions.assertEquals(expectedIdeaBox.isSclosed, ideaBox.isSclosed)
     }
 
     @Test

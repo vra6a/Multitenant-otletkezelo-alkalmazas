@@ -137,7 +137,7 @@ class CommentService {
             return ResponseEntity(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
-                    message = "Cannot find Comment with this id $comment.id!",
+                    message = "Cannot find Comment with this id ${comment.id}!",
                     data = null
                 ),
                 HttpStatus.NOT_FOUND

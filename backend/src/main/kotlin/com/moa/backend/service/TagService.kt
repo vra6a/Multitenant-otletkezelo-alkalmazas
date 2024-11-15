@@ -21,13 +21,12 @@ class TagService {
 
     fun getTag(id: Long): ResponseEntity<*> {
         val tag = tagRepository.findById(id).orElse(null)
-            ?: return ResponseEntity(
+            ?: return ResponseEntity.ok(
                 WebResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     message = "Cannot find Tag with this id $id!",
                     data = null
-                ),
-                HttpStatus.NOT_FOUND
+                )
             )
         return ResponseEntity.ok(
             WebResponse<TagDto>(
@@ -88,6 +87,8 @@ class TagService {
             )
         )
     }
+
+
 
 
 }
