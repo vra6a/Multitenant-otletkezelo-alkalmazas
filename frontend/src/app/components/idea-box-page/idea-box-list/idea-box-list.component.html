@@ -6,7 +6,11 @@
         <h2>Create Idea Box or browse from live ones!</h2>
       </div>
       <div>
-        <button mat-raised-button [routerLink]="'create'">Create</button>
+        <button
+          mat-raised-button
+          [routerLink]="'create'"
+          *ngIf="currentUser?.role == 'ADMIN'"
+          >Create</button>
         <button
           mat-stroked-button
           [routerLink]="'manage'"

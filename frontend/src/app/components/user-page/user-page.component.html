@@ -12,7 +12,7 @@
       </mat-tab>
 
       <!--  Idea Boxes  -->
-      <mat-tab label="Idea Boxes">
+      <mat-tab label="Idea Boxes" *ngIf="currentUser?.role === 'ADMIN'">
         <h2>Own Idea boxes</h2>
         <app-user-idea-box-list
           [ideaBoxes]="currentUser?.ideaBoxes"

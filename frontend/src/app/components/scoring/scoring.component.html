@@ -4,7 +4,7 @@
 
     <mat-tab-group>
       <!--  Create Score Sheets  -->
-      <mat-tab label="Create Score Sheet">
+      <mat-tab label="Create Score Sheet" *ngIf="currentUser?.role == 'ADMIN'">
         <h2>Create Score Sheet for idea Boxes</h2>
         <app-create-score-sheet></app-create-score-sheet>
       </mat-tab>
@@ -22,7 +22,7 @@
       </mat-tab>
 
       <!--  View closed Idea Boxes  -->
-      <mat-tab label="View Closed Idea Boxes" *ngIf="currentUser?.role != 'USER'">
+      <mat-tab label="View Closed Idea Boxes" *ngIf="currentUser?.role == 'ADMIN'">
         <h2>View Closed Idea Boxes</h2>
         <app-closed-idea-boxes></app-closed-idea-boxes>
       </mat-tab>
