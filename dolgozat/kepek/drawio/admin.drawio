@@ -1,0 +1,211 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.8.6">
+  <diagram id="hoVeocwZu1LVJNLuiMSS" name="1 oldal">
+    <mxGraphModel dx="989" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="eKWnohq56emdPk-MV51N-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="350" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-2" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="410" y="750" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-3" value="Regisztráció" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="680" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-4" value="Rendszer" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="390" y="250" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-5" value="Bejelentkezés/&lt;div&gt;Kijelentkezés&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="630" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-6" value="Ötletdobozok megtekintése" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="580" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-7" value="Ötletek létrehozása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="680" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-8" value="Összes ötlet szer-&lt;div&gt;kesztése/törlése&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="630" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-9" value="Kommentek létrehozása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="580" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-10" value="Összes komment&lt;div&gt;szerkesztése/&lt;span style=&quot;background-color: initial;&quot;&gt;törlése&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="265" y="470" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-11" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="425" y="740" as="sourcePoint" />
+            <mxPoint x="360" y="810" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="495" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-12" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="740" as="sourcePoint" />
+            <mxPoint x="430" y="610" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-13" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="680" as="sourcePoint" />
+            <mxPoint x="440" y="630" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-14" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-8">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="680" as="sourcePoint" />
+            <mxPoint x="440" y="630" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-15" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="680" as="sourcePoint" />
+            <mxPoint x="440" y="630" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-16" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="740" as="sourcePoint" />
+            <mxPoint x="440" y="690" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="740" as="sourcePoint" />
+            <mxPoint x="440" y="690" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-18" value="Ötletek kedvelése/&lt;div&gt;kedvelés vissza-&lt;/div&gt;&lt;div&gt;vonása&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="380" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-19" value="Kommentek kedvelése/&lt;div&gt;kedvelés vissza-&lt;/div&gt;&lt;div&gt;vonása&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="380" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-20" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-18">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="610" as="sourcePoint" />
+            <mxPoint x="450" y="560" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-21" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="610" as="sourcePoint" />
+            <mxPoint x="450" y="560" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-22" value="Ötletek pontozása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="455" y="470" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-23" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-22">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="435" y="760" as="sourcePoint" />
+            <mxPoint x="405" y="465" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="495" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-24" value="Ötletdobozok létrehozása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="530" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-25" value="Pontozott ötletek megtekintése" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-26" value="Pontozási lapok létrehozása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="530" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-27" value="Ötletek bírálata" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="330" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-28" value="Ötletdobozok lezárása" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-29" value="Lezárt ötletdobozok megtekintése" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-30" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-24">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-31" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-32" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-25">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-33" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-34" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-29">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eKWnohq56emdPk-MV51N-35" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="eKWnohq56emdPk-MV51N-2" target="eKWnohq56emdPk-MV51N-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="560" as="sourcePoint" />
+            <mxPoint x="440" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="425" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
