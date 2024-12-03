@@ -128,3 +128,5 @@ CREATE TABLE IF NOT EXISTS tenant2.idea_tags (
     CONSTRAINT `FK3gt86actmlp7683x3buwfakb4` FOREIGN KEY (`idea_id`) REFERENCES `idea` (`id`),
     CONSTRAINT `FKcw5ikpmc6lgu7ykgj2u30suuc` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO tenant2.user VALUES (1,'t2admin','t2','admin','$2a$10$sniOf1X1lNVJAaPwe.DV4OSOu2O4PVPdlXlnd97ai5G/TatZH2bO.','ADMIN'),(2,'t2user','t2','user','$2a$10$aQIC.Fz8rEci4yZG3KQAHO8zI8XTpIt2vjLjtDdJKrMRKS7wMijAi','USER'),(3,'t2jury','t2','jury','$2a$10$qWN26.lAImrsU2vHnNAj8eRniUdywxPkSb6Ea4OkvVwZJUoa.UNKW','JURY');
