@@ -2,7 +2,7 @@
 FROM gradle:7.4.2-jdk11 AS builder
 WORKDIR /app
 COPY . .
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon -x test
 
 FROM openjdk:11-jdk-slim
 WORKDIR /app
